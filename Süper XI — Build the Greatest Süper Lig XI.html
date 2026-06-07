@@ -1,0 +1,2136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Süper XI — Build the Greatest Süper Lig XI</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#c8922a;--gold-dim:rgba(200,146,42,0.1);--gold-border:rgba(200,146,42,0.45);
+  --bg:#f2efe8;--bg2:#e8e3da;--bg3:#d8d2c6;--bg4:#c4bdb0;
+  --card:#ffffff;
+  --text:#1a1714;--text2:#5a5040;--text3:#9a9080;
+  --green:#1a4a2e;--green2:#2a6a42;
+  --serif:'EB Garamond',serif;--sans:'Oswald',sans-serif;
+  --shadow:0 2px 16px rgba(0,0,0,0.07);
+  --bar:60px;
+}
+[data-theme="dark"]{
+  --bg:#0f1117;--bg2:#181b24;--bg3:#242836;--bg4:#343a4d;
+  --card:#1c2030;
+  --text:#e8e4dc;--text2:#9a9488;--text3:#5a5a6a;
+  --green:#3a9a58;--green2:#4aba6a;
+  --shadow:0 2px 16px rgba(0,0,0,0.4);
+  --card-hover:#252a3a;--card-sel:#1e2840;
+}
+:root{--card-hover:#fffdf9;--card-sel:#fffdf9}
+[data-theme="dark"] #pitch-svg rect:first-child,[data-theme="dark"] #squad-svg rect:first-child{filter:brightness(0.7)}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+.screen{display:none;background:var(--bg)}
+.screen.active{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
+#s-intro{align-items:center;justify-content:center;text-align:center;padding:48px 24px;gap:28px;min-height:100vh}
+.intro-badge{font-size:11px;letter-spacing:5px;color:var(--text3);border:1px solid var(--bg4);padding:6px 18px;display:inline-block}
+.intro-logo{font-size:80px;font-weight:700;letter-spacing:8px;color:var(--green);line-height:1}
+.intro-tagline{font-family:var(--serif);font-style:italic;font-size:20px;color:var(--text2);max-width:500px;line-height:1.6}
+.intro-divider{width:56px;height:2px;background:var(--gold);margin:0 auto}
+.section-label{font-size:11px;letter-spacing:4px;color:var(--text3);margin-bottom:12px;font-weight:600}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:540px;width:100%}
+.mode-card{background:var(--card);border:2px solid var(--bg3);padding:22px 18px;cursor:pointer;transition:all .2s;text-align:center}
+.mode-card:hover{border-color:var(--gold-border);background:var(--card-hover)}
+.mode-card.sel{border-color:var(--gold);background:var(--card-sel)}
+.mode-card-title{font-size:16px;font-weight:600;letter-spacing:2px;margin-bottom:8px}
+.mode-card-desc{font-family:var(--serif);font-size:14px;color:var(--text2);line-height:1.5}
+.formations{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:520px}
+.f-btn{font-family:var(--sans);font-size:15px;font-weight:500;letter-spacing:2px;color:var(--text);background:var(--card);border:2px solid var(--bg3);padding:12px 22px;cursor:pointer;transition:all .2s}
+.f-btn:hover{border-color:var(--gold-border);color:var(--green)}
+.f-btn.sel{border-color:var(--gold);color:var(--green);background:var(--card-sel);font-weight:700}
+.options-row{display:flex;align-items:center;gap:24px;flex-wrap:wrap;justify-content:center}
+.toggle-wrap{display:flex;align-items:center;gap:9px;font-size:12px;letter-spacing:2px;color:var(--text3);cursor:pointer;user-select:none;padding:4px 0}
+.tog{width:38px;height:20px;background:var(--bg3);border-radius:10px;position:relative;transition:.2s;flex-shrink:0}
+.tog.on{background:var(--gold)}
+.tog::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:2px;left:2px;transition:.2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.tog.on::after{left:20px}
+.cta{font-family:var(--sans);font-size:14px;font-weight:700;letter-spacing:5px;background:var(--green);color:#fff;border:none;padding:18px 56px;cursor:pointer;transition:all .2s;opacity:.3;pointer-events:none}
+.cta.on{opacity:1;pointer-events:all}
+.cta:hover{background:var(--green2)}
+.topbar{height:var(--bar);display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:2px solid var(--bg3);background:var(--card);flex-shrink:0;box-shadow:var(--shadow);z-index:10}
+.topbar-title{font-size:20px;font-weight:700;letter-spacing:5px;color:var(--green)}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.topbar-prog{font-size:12px;letter-spacing:3px;color:var(--text3);font-weight:600}
+#s-draft.active{height:100vh;overflow:hidden;display:grid;grid-template-rows:var(--bar) 1fr}
+.draft-main{display:grid;grid-template-columns:480px 1fr;overflow:hidden;height:100%}
+.left-col{border-right:2px solid var(--bg3);background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px;overflow:hidden}
+#pitch-svg{width:100%;max-width:420px;height:auto;display:block;filter:drop-shadow(0 4px 20px rgba(0,0,0,0.13))}
+.overall-box{background:var(--card);border:2px solid var(--bg3);padding:12px 18px;max-width:420px;width:100%;box-shadow:var(--shadow)}
+.ob-title{font-size:10px;letter-spacing:4px;color:var(--text3);margin-bottom:10px;font-weight:600}
+.ob-main{display:flex;align-items:center;gap:18px}
+.ob-rating{font-size:48px;font-weight:700;color:var(--green);line-height:1;min-width:68px}
+.ob-bars{flex:1}
+.ob-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.ob-bar-label{font-size:10px;letter-spacing:1px;color:var(--text3);width:30px;flex-shrink:0}
+.ob-bar-track{flex:1;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.ob-bar-fill{height:100%;background:var(--green);border-radius:3px;transition:width .4s}
+.ob-bar-val{font-size:11px;font-weight:700;color:var(--text2);width:24px;text-align:right;flex-shrink:0}
+.ob-count{font-size:10px;color:var(--text3);letter-spacing:1px;margin-top:6px}
+.pitch-col{background:var(--card);display:flex;flex-direction:column;overflow:hidden}
+.draft-action-bar{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:2px solid var(--bg3);flex-shrink:0;background:var(--card)}
+.draft-action-bar .spin-btn{flex:1;font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:4px;background:var(--green);color:#fff;border:none;padding:14px;cursor:pointer;transition:all .2s}
+.draft-action-bar .spin-btn:hover{background:var(--green2)}
+.draft-action-bar .spin-btn:disabled{opacity:.35;cursor:not-allowed}
+.draft-action-bar .lock-btn{flex:1;font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:3px;background:var(--green);color:#fff;border:none;padding:14px;cursor:pointer;transition:all .2s;opacity:.3;pointer-events:none}
+.draft-action-bar .lock-btn.on{opacity:1;pointer-events:all}
+.draft-action-bar .lock-btn:hover{background:var(--green2)}
+.draft-action-bar .respin-btn{font-family:var(--sans);font-size:12px;font-weight:500;letter-spacing:2px;background:transparent;color:var(--text2);border:1px solid var(--bg3);padding:14px 16px;cursor:pointer;transition:all .2s;opacity:.3;pointer-events:none;white-space:nowrap;flex-shrink:0}
+.draft-action-bar .respin-btn.on{opacity:1;pointer-events:all}
+.draft-action-bar .respin-btn:hover{border-color:var(--gold-border);color:var(--green)}
+.draft-prog-bar{font-size:11px;letter-spacing:2px;color:var(--text3);font-weight:600;flex-shrink:0}
+.spinner-panel{display:flex;flex-direction:column;align-items:stretch;flex:1;overflow:hidden}
+.spinner-panel.hidden{display:none}
+.spin-zone{padding:32px 24px 24px;flex-shrink:0;display:flex;flex-direction:column;align-items:stretch;gap:14px}
+.spin-eyebrow{font-size:10px;letter-spacing:4px;color:var(--text3);font-weight:600;text-align:center}
+.team-revealed{display:flex;align-items:center;gap:14px;padding:16px 24px;border-top:2px solid var(--bg3);background:var(--bg2);flex-shrink:0}
+.team-revealed.hidden{display:none}
+.tr-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+.tr-name{font-size:20px;font-weight:700;color:var(--green);letter-spacing:1px}
+.tr-season{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--text2);margin-left:4px}
+.tr-tier{font-size:9px;letter-spacing:1px;padding:3px 8px;margin-left:auto;flex-shrink:0}
+.player-panel{display:flex;flex-direction:column;flex:1;overflow:hidden}
+.player-panel.hidden{display:none}
+.rc-head{padding:12px 20px 10px;border-bottom:1px solid var(--bg3);flex-shrink:0}
+.rc-eyebrow{font-size:9px;letter-spacing:4px;color:var(--text3);margin-bottom:3px;font-weight:600}
+.rc-team-label{font-size:16px;font-weight:600;color:var(--green);letter-spacing:.5px}
+.rc-season-label{font-family:var(--serif);font-style:italic;font-size:13px;color:var(--text2)}
+.slot-machine{position:relative;height:120px;overflow:hidden;border:2px solid var(--bg3);background:var(--bg2)}
+.slot-machine::before,.slot-machine::after{content:'';position:absolute;left:0;right:0;height:30px;z-index:2;pointer-events:none}
+.slot-machine::before{top:0;background:linear-gradient(to bottom,var(--bg2),transparent)}
+.slot-machine::after{bottom:0;background:linear-gradient(to top,var(--bg2),transparent)}
+.slot-highlight{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);height:40px;border-top:2px solid var(--gold);border-bottom:2px solid var(--gold);background:rgba(200,146,42,0.07);z-index:1;pointer-events:none}
+.slot-track{position:absolute;left:0;right:0;top:0;will-change:transform}
+.slot-item{height:40px;display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0}
+.slot-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.slot-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;color:var(--text)}
+.slot-year{font-size:12px;color:var(--text3);font-weight:500;flex-shrink:0}
+.slot-item.active .slot-name{color:var(--green)}
+.slot-item.active .slot-year{color:var(--gold)}
+.team-scroll{flex:1;overflow-y:auto;padding:10px}
+.lc-eyebrow{font-size:10px;letter-spacing:4px;color:var(--text3);font-weight:600;margin-bottom:8px;padding:12px 16px 0}
+.era-select{font-family:var(--sans);font-size:12px;background:var(--bg2);color:var(--text);border:1px solid var(--bg3);padding:8px 10px;width:calc(100% - 20px);margin:0 10px 10px;letter-spacing:1px}
+.team-card{display:flex;align-items:center;gap:10px;padding:11px 12px;border:1px solid var(--bg3);background:var(--bg2);margin-bottom:6px;cursor:pointer;transition:all .15s;min-height:52px}
+.team-card:hover{border-color:var(--gold-border);background:var(--card)}
+.team-card.sel{border-color:var(--gold);background:var(--card-sel)}
+.tc-badge{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;color:#fff;letter-spacing:.5px}
+.tc-info{flex:1;min-width:0}
+.tc-name{font-size:13px;font-weight:600;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tc-season{font-family:var(--serif);font-size:12px;color:var(--text2)}
+.tc-tier{font-size:9px;letter-spacing:1px;padding:3px 7px;flex-shrink:0}
+.player-table{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.pt-row{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--bg2);transition:background .1s;min-height:56px}
+.pt-row:not(.used){cursor:pointer}
+.pt-row:not(.used):hover,.pt-row:not(.used):active{background:var(--bg2)}
+.pt-row.sel{background:var(--card-sel);border-left:3px solid var(--gold);padding-left:13px}
+.pt-row.used{opacity:.35;pointer-events:none}
+.pt-rat-badge{width:42px;height:42px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pt-rat-num{font-size:16px;font-weight:700;color:#fff;transition:opacity .2s}
+.pt-rat-num.hidden{opacity:0}
+.pt-player-info{flex:1;min-width:0}
+.pt-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pt-club{font-size:11px;color:var(--text3);letter-spacing:.5px;margin-top:2px}
+.pt-badges{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0;max-width:100px}
+.pos-badge{font-size:9px;font-weight:700;letter-spacing:.5px;padding:3px 6px;border-radius:3px;background:var(--green);color:#fff;white-space:nowrap}
+.used-badge{background:var(--bg3);color:var(--text3)}
+.slot-picker{padding:10px 20px;background:var(--card-sel);border-bottom:2px solid var(--gold-border);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.slot-picker-label{font-size:10px;letter-spacing:2px;color:var(--text3);margin-right:4px;white-space:nowrap;font-weight:600}
+.slot-pick-btn{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:1px;background:var(--bg3);color:var(--text);border:1px solid var(--bg4);padding:7px 14px;cursor:pointer;border-radius:3px;transition:all .15s}
+.slot-pick-btn:hover,.slot-pick-btn:active,.slot-pick-btn.active{background:var(--green);color:#fff;border-color:var(--green)}
+#s-squad.active{display:grid;grid-template-rows:auto 1fr auto;height:100vh;overflow:hidden}
+.squad-head{text-align:center;padding:24px 20px 18px;border-bottom:2px solid var(--bg3);background:var(--card);flex-shrink:0}
+.squad-head h1{font-size:36px;font-weight:700;letter-spacing:7px;color:var(--green)}
+.squad-head p{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--text2);margin-top:5px}
+.squad-body{display:grid;grid-template-columns:1fr 320px;overflow:hidden}
+.squad-pitch{display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg)}
+#squad-svg{width:100%;max-width:380px;height:auto;display:block;filter:drop-shadow(0 4px 20px rgba(0,0,0,0.1))}
+.squad-right{padding:18px;overflow-y:auto;border-left:2px solid var(--bg3);background:var(--card);display:flex;flex-direction:column;gap:14px}
+.r-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bg2)}
+.r-pos{font-size:10px;letter-spacing:2px;color:var(--gold);width:32px;flex-shrink:0;font-weight:700}
+.r-name{font-size:13px;font-weight:600;flex:1}
+.r-club{font-family:var(--serif);font-style:italic;font-size:11px;color:var(--text2)}
+.r-rat{font-size:12px;font-weight:700;color:var(--green);flex-shrink:0}
+.squad-overall-box{background:var(--bg2);border:1px solid var(--bg3);padding:14px}
+.squad-foot{display:flex;gap:12px;padding:16px;border-top:2px solid var(--bg3);background:var(--card);flex-shrink:0}
+.sim-btn{font-family:var(--sans);font-size:14px;font-weight:700;letter-spacing:4px;background:var(--green);color:#fff;border:none;padding:15px;flex:1;cursor:pointer;transition:all .2s}
+.sim-btn:hover{background:var(--green2)}
+.rst-btn{font-family:var(--sans);font-size:12px;letter-spacing:2px;background:transparent;color:var(--text3);border:2px solid var(--bg3);padding:15px 20px;cursor:pointer;transition:all .2s}
+.rst-btn:hover,.rst-btn:active{color:var(--text);border-color:var(--bg4)}
+#s-season.active{display:grid;grid-template-rows:var(--bar) 1fr;height:100vh;overflow:hidden}
+.sbar{height:var(--bar);display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:2px solid var(--bg3);background:var(--card);flex-shrink:0;box-shadow:var(--shadow)}
+.sbar-title{font-size:18px;font-weight:700;letter-spacing:4px;color:var(--green)}
+.sbar-right{display:flex;align-items:center;gap:14px}
+.speed-wrap{font-size:11px;letter-spacing:2px;color:var(--text3);display:flex;align-items:center;gap:8px}
+.speed-wrap select{font-family:var(--sans);font-size:12px;background:var(--bg2);color:var(--text);border:1px solid var(--bg3);padding:5px 8px}
+.skip-btn{font-family:var(--sans);font-size:11px;letter-spacing:2px;background:transparent;color:var(--text3);border:1px solid var(--bg3);padding:7px 16px;cursor:pointer;transition:all .2s}
+.skip-btn:hover{color:var(--text)}
+.season-main{display:grid;grid-template-columns:1fr 320px;overflow:hidden;height:100%}
+.matches-col{overflow-y:auto;padding:14px;-webkit-overflow-scrolling:touch}
+.gw-block{margin-bottom:18px}
+.gw-label{font-size:10px;letter-spacing:4px;color:var(--text3);margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid var(--bg3);font-weight:600}
+.match-row{display:flex;align-items:stretch;margin-bottom:4px;background:var(--card);border:1px solid var(--bg3);overflow:hidden;opacity:0;transform:translateY(3px);transition:opacity .22s,transform .22s;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.match-row.shown{opacity:1;transform:none}
+.match-home{flex:1;text-align:right;padding:8px 12px;font-size:12px;font-weight:500}
+.match-home.us{color:var(--green);font-weight:700}
+.match-score{padding:6px 12px;background:var(--bg2);font-size:13px;font-weight:700;letter-spacing:2px;min-width:60px;text-align:center;flex-shrink:0;border-left:1px solid var(--bg3);border-right:1px solid var(--bg3);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.match-score.win{color:#2e7d32}
+.match-score.loss{color:#c62828}
+.match-score.draw{color:#5a5040}
+.match-scorers{font-size:8px;color:var(--text3);line-height:1.4;margin-top:2px;font-family:var(--serif);font-style:italic}
+.match-away{flex:1;padding:8px 12px;font-size:12px;font-weight:500}
+.match-away.us{color:var(--green);font-weight:700}
+.table-col{border-left:2px solid var(--bg3);display:flex;flex-direction:column;overflow:hidden;background:var(--card)}
+.table-head{padding:12px 14px;border-bottom:2px solid var(--bg3);font-size:10px;letter-spacing:4px;color:var(--text3);font-weight:600}
+.league-table{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.lt-header{display:grid;grid-template-columns:22px 1fr 26px 26px 26px 32px;padding:6px 12px;font-size:9px;letter-spacing:2px;color:var(--text3);border-bottom:1px solid var(--bg3);font-weight:600}
+.lt-row{display:grid;grid-template-columns:22px 1fr 26px 26px 26px 32px;padding:6px 12px;font-size:11px;border-bottom:1px solid var(--bg2);transition:background .2s}
+.lt-row.us{background:var(--card-sel);border-left:3px solid var(--gold)}
+.lt-row.champion{border-left:3px solid var(--green)}
+.lt-pos{color:var(--text3);font-size:10px}
+.lt-name{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:4px}
+.lt-name.us{color:var(--green);font-weight:700}
+.lt-num{text-align:center;color:var(--text2)}
+.lt-pts{text-align:center;font-weight:700}
+.lt-row.us .lt-pts{color:var(--green)}
+#s-result.active{align-items:center;justify-content:flex-start;padding:40px 24px 48px;gap:18px;background:var(--bg);overflow-y:auto}
+.res-top{text-align:center;width:100%}
+.res-trophy{font-size:80px;display:block;animation:pop .6s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes pop{from{transform:scale(0) rotate(-20deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.res-record{font-size:56px;font-weight:700;letter-spacing:6px;color:var(--green);animation:up .4s .2s both}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.res-tagline{font-family:var(--serif);font-style:italic;font-size:22px;color:var(--text2);animation:up .4s .32s both}
+.res-stats{display:flex;gap:36px;animation:up .4s .44s both;justify-content:center;flex-wrap:wrap}
+.res-stat{text-align:center}
+.res-stat-n{font-size:40px;font-weight:700;color:var(--green)}
+.res-stat-l{font-size:10px;letter-spacing:4px;color:var(--text3);margin-top:3px}
+.res-body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;max-width:960px;width:100%;animation:up .4s .56s both}
+.res-card{background:var(--card);border:2px solid var(--bg3);padding:16px 18px;box-shadow:var(--shadow)}
+.res-card-title{font-size:10px;letter-spacing:4px;color:var(--text3);margin-bottom:12px;font-weight:600}
+.res-player{display:flex;align-items:center;padding:5px 0;border-bottom:1px solid var(--bg2);font-size:12px;gap:6px}
+.res-player:last-child{border:none}
+.res-player-pos{color:var(--gold);width:30px;font-size:9px;letter-spacing:1px;font-weight:700;flex-shrink:0}
+.res-player-name{flex:1;font-weight:500}
+.res-player-rat{color:var(--green);font-weight:700;flex-shrink:0}
+.pos-compare{display:flex;align-items:center;justify-content:center;gap:24px;padding:12px 0}
+.pos-block{text-align:center}
+.pos-num{font-size:52px;font-weight:700;line-height:1}
+.pos-lbl{font-size:10px;letter-spacing:3px;color:var(--text3);margin-top:3px}
+.pos-arrow{font-size:28px;color:var(--text3)}
+.scorer-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--bg2);font-size:12px}
+.scorer-row:last-child{border:none}
+.scorer-goals{font-size:20px;font-weight:700;color:var(--green);width:30px;flex-shrink:0;text-align:center}
+.scorer-name{flex:1;font-weight:500}
+.res-msg{max-width:880px;width:100%;font-family:var(--serif);font-size:17px;line-height:1.75;color:var(--text2);text-align:center;animation:up .4s .68s both}
+.play-again{font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:5px;background:var(--green);color:#fff;border:none;padding:17px 52px;cursor:pointer;animation:up .4s .78s both;transition:all .2s}
+.play-again:hover{background:var(--green2)}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
+#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999}
+.dm-btn{font-family:var(--sans);font-size:18px;background:none;border:none;cursor:pointer;padding:4px 6px;line-height:1;opacity:.7;transition:opacity .2s;flex-shrink:0}
+.dm-btn:hover{opacity:1}
+.res-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;animation:up .4s .85s both}
+.share-btn,.save-btn{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:2px;border:none;padding:13px 28px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px}
+.share-btn{background:var(--green);color:#fff}
+.share-btn:hover{background:var(--green2)}
+.save-btn{background:var(--card);color:var(--green);border:2px solid var(--green)}
+.save-btn:hover{background:var(--bg2)}
+#share-canvas{display:none}
+.mob-sim-bar{display:none;flex-direction:column;gap:6px;padding:10px 14px;background:var(--card);border-bottom:2px solid var(--bg3);flex-shrink:0;position:sticky;top:0;z-index:20;box-shadow:var(--shadow)}
+.mob-sim-progress{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.mob-sim-fill{height:100%;background:var(--green);border-radius:2px;transition:width .3s;width:0%}
+.mob-sim-label{font-size:10px;letter-spacing:2px;color:var(--text3);font-weight:600}
+.mob-sim-skip{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:2px;background:var(--green);color:#fff;border:none;padding:9px;cursor:pointer;width:100%}
+.mob-sim-skip:hover{background:var(--green2)}
+.pos-col-gk{background:#b35c00!important}
+.pos-col-def{background:#1a4a8f!important}
+.pos-col-mid{background:#1a5c38!important}
+.pos-col-att{background:#7b2020!important}
+.used-badge{background:var(--bg3)!important;color:var(--text3)!important}
+@media(max-width:700px){
+  .mob-sim-bar{display:flex}
+  .sbar .speed-wrap{display:none}
+  .sbar .skip-btn{display:none}
+}
+.mob-tabs{display:none;background:var(--card);border-bottom:2px solid var(--bg3);flex-shrink:0}
+.mob-tabs-inner{display:flex}
+.mob-tab{flex:1;font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:2px;color:var(--text3);background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;padding:11px 4px;cursor:pointer;transition:all .15s;text-align:center}
+.mob-tab.active{color:var(--green);border-bottom-color:var(--green)}
+.mob-season-tabs{display:none;background:var(--card);border-bottom:2px solid var(--bg3);flex-shrink:0}
+.mob-season-tab{flex:1;font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:2px;color:var(--text3);background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;padding:11px 4px;cursor:pointer;text-align:center}
+.mob-season-tab.active{color:var(--green);border-bottom-color:var(--green)}
+@media (max-width:700px){
+  #s-intro{padding:28px 16px;gap:20px}
+  .intro-logo{font-size:52px;letter-spacing:4px}
+  .intro-tagline{font-size:16px}
+  .mode-grid{grid-template-columns:1fr;gap:10px;max-width:400px}
+  .mode-card{padding:18px 16px}
+  .mode-card-desc{display:block;font-size:13px}
+  .mode-card-title{font-size:15px}
+  .f-btn{padding:10px 14px;font-size:13px}
+  .cta{padding:15px 36px;font-size:13px;letter-spacing:3px;width:100%;max-width:400px}
+  #s-draft.active{grid-template-rows:var(--bar) 1fr;height:auto;min-height:100vh;overflow:auto}
+  .mob-tabs{display:none}
+  .draft-main{display:flex;flex-direction:column;height:auto;overflow:visible}
+  .left-col,.pitch-col{position:static;display:flex !important;width:100%}
+  .pitch-col{flex-direction:column;order:1;border-right:none;border-bottom:2px solid var(--bg3)}
+  .left-col{flex-direction:column;order:2;align-items:center;padding:16px;background:var(--bg);gap:12px;justify-content:flex-start}
+  #pitch-svg{max-width:340px;width:100%}
+  .overall-box{max-width:340px;width:100%}
+  .draft-action-bar{flex-wrap:wrap;gap:8px;padding:10px 12px}
+  .draft-action-bar .spin-btn,.draft-action-bar .lock-btn{flex:1;min-width:100px;font-size:12px;padding:12px}
+  .draft-action-bar .respin-btn{font-size:10px;padding:12px 10px}
+  .left-col #pitch-svg{max-width:300px}
+  #s-squad.active{height:auto;min-height:100vh;grid-template-rows:auto auto 1fr auto;overflow:auto}
+  .squad-body{grid-template-columns:1fr;overflow:visible}
+  .squad-pitch{padding:14px;order:1}
+  #squad-svg{max-width:300px}
+  .squad-right{border-left:none;border-top:2px solid var(--bg3);order:2;padding:14px;max-height:none;overflow:visible}
+  .squad-head h1{font-size:26px;letter-spacing:4px}
+  #s-season.active{grid-template-rows:var(--bar) auto 1fr}
+  .mob-season-tabs{display:flex}
+  .season-main{grid-template-columns:1fr;position:relative}
+  .table-col{position:absolute;inset:0;z-index:5;display:none}
+  .table-col.mob-visible{display:flex}
+  .sbar-title{font-size:14px;letter-spacing:2px}
+  .speed-wrap{display:none}
+  .skip-btn{font-size:10px;padding:6px 10px;letter-spacing:1px}
+  .res-body{grid-template-columns:1fr}
+  .res-record{font-size:38px;letter-spacing:3px}
+  .res-tagline{font-size:17px}
+  .res-stats{gap:20px}
+  .res-stat-n{font-size:32px}
+  #s-result.active{padding:28px 16px 40px;gap:14px}
+}
+</style>
+</head>
+<body>
+<canvas id="confetti-canvas"></canvas>
+<div id="s-intro" class="screen active">
+  <div class="intro-badge">Süper Lig · All Eras · 1990–2026</div>
+  <div class="intro-logo">SÜPER XI</div>
+  <div class="intro-tagline">Spin the slot, draft a legendary Süper Lig squad, and conquer a perfect season.</div>
+  <div class="intro-divider"></div>
+  <div style="width:100%;max-width:540px">
+    <div class="section-label">Choose your draft style</div>
+    <div class="mode-grid" id="mode-grid">
+      <div class="mode-card" data-m="position">
+        <div class="mode-card-title">SPIN &amp; PICK</div>
+        <div class="mode-card-desc">Spin to get a random team — then pick any player from their squad, choosing which open position to fill.</div>
+      </div>
+      <div class="mode-card" data-m="squad">
+        <div class="mode-card-title">SQUAD FIRST</div>
+        <div class="mode-card-desc">Choose a real Süper Lig team and season, then fill each position from that squad's roster.</div>
+      </div>
+    </div>
+  </div>
+  <div style="width:100%;max-width:540px">
+    <div class="section-label">Choose your formation</div>
+    <div class="formations" id="formations">
+      <button class="f-btn" data-f="4-3-3">4-3-3</button>
+      <button class="f-btn" data-f="4-4-2">4-4-2</button>
+      <button class="f-btn" data-f="3-5-2">3-5-2</button>
+      <button class="f-btn" data-f="4-2-3-1">4-2-3-1</button>
+      <button class="f-btn" data-f="5-3-2">5-3-2</button>
+      <button class="f-btn" data-f="3-4-3">3-4-3</button>
+    </div>
+  </div>
+  <div class="options-row">
+    <label class="toggle-wrap"><div class="tog on" id="rat-tog"></div>SHOW RATINGS</label>
+    <button class="dm-btn" id="dm-tog-intro" title="Toggle dark mode">🌙</button>
+  </div>
+  <button class="cta" id="btn-start">HADI BAŞLAYALIM →</button>
+</div>
+<div id="s-draft" class="screen">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button id="btn-restart" title="Restart game" style="font-family:var(--sans);font-size:18px;background:none;border:none;cursor:pointer;color:var(--text3);padding:4px 6px;line-height:1;transition:color .2s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text3)'">←</button>
+      <div class="topbar-title">SÜPER XI</div>
+    </div>
+    <div class="topbar-right">
+      <label class="toggle-wrap" style="font-size:10px;color:var(--text3)"><div class="tog on" id="rat-tog-d"></div>RATINGS</label>
+      <button class="dm-btn" id="dm-tog-draft" title="Toggle dark mode">🌙</button>
+    </div>
+  </div>
+  <div class="mob-tabs">
+    <div class="mob-tabs-inner">
+      <button class="mob-tab active" data-col="left">⚽ PITCH</button>
+      <button class="mob-tab" data-col="pitch">⚙ SPIN / PICK</button>
+    </div>
+  </div>
+  <div class="draft-main">
+    <div class="left-col mob-active">
+      <svg id="pitch-svg" viewBox="0 0 380 540" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="overall-box" id="overall-box">
+        <div class="ob-title">SQUAD RATING</div>
+        <div class="ob-main">
+          <div class="ob-rating" id="ob-rating">—</div>
+          <div class="ob-bars">
+            <div class="ob-bar-row"><div class="ob-bar-label">ATT</div><div class="ob-bar-track"><div class="ob-bar-fill" id="ob-att" style="width:0%"></div></div><div class="ob-bar-val" id="ob-att-v">—</div></div>
+            <div class="ob-bar-row"><div class="ob-bar-label">MID</div><div class="ob-bar-track"><div class="ob-bar-fill" id="ob-mid" style="width:0%"></div></div><div class="ob-bar-val" id="ob-mid-v">—</div></div>
+            <div class="ob-bar-row"><div class="ob-bar-label">DEF</div><div class="ob-bar-track"><div class="ob-bar-fill" id="ob-def" style="width:0%"></div></div><div class="ob-bar-val" id="ob-def-v">—</div></div>
+            <div class="ob-bar-row"><div class="ob-bar-label">GK</div><div class="ob-bar-track"><div class="ob-bar-fill" id="ob-gk" style="width:0%"></div></div><div class="ob-bar-val" id="ob-gk-v">—</div></div>
+          </div>
+        </div>
+        <div class="ob-count" id="ob-count">0 of 11 players selected</div>
+      </div>
+    </div>
+    <div class="pitch-col mob-active">
+      <div class="draft-action-bar">
+        <button class="spin-btn" id="btn-spin">SPIN</button>
+        <button class="lock-btn" id="btn-lock">LOCK IN ✓</button>
+        <button class="respin-btn" id="btn-respin">↻ RE-SPIN</button>
+        <div class="draft-prog-bar" id="draft-prog">0 / 11</div>
+      </div>
+      <div class="spinner-panel" id="spinner-panel">
+        <div id="wheel-zone">
+          <div class="spin-zone">
+            <div class="spin-eyebrow">SPIN TO GET A TEAM</div>
+            <div class="slot-machine">
+              <div class="slot-highlight"></div>
+              <div class="slot-track" id="slot-track"></div>
+            </div>
+          </div>
+        </div>
+        <div class="team-revealed hidden" id="team-revealed">
+          <div class="tr-dot" id="tr-dot"></div>
+          <div>
+            <span class="tr-name" id="tr-name"></span>
+            <span class="tr-season" id="tr-season"></span>
+          </div>
+          <div class="tr-tier" id="tr-tier"></div>
+        </div>
+        <div id="team-zone" style="display:none;flex:1;flex-direction:column;overflow:hidden">
+          <div class="lc-eyebrow">PICK A TEAM &amp; SEASON</div>
+          <select class="era-select" id="era-filter">
+            <option value="">All Seasons (1990–2026)</option>
+            <option value="1990s">1990s</option>
+            <option value="2000s">2000s</option>
+            <option value="2010s">2010s</option>
+            <option value="2020s">2020s</option>
+          </select>
+          <div class="team-scroll" id="team-list"></div>
+        </div>
+      </div>
+      <div class="player-panel hidden" id="player-panel">
+        <div class="rc-head">
+          <div class="rc-eyebrow" id="rc-eyebrow">PICK A PLAYER</div>
+          <div class="rc-team-label" id="rc-team-label"></div>
+          <div class="rc-season-label" id="rc-season-label"></div>
+        </div>
+        <div class="player-table" id="player-table"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="s-squad" class="screen">
+  <div class="squad-head">
+    <h1>YOUR SÜPER XI</h1>
+    <p id="squad-sub"></p>
+  </div>
+  <div class="squad-body">
+    <div class="squad-pitch"><svg id="squad-svg" viewBox="0 0 380 540" xmlns="http://www.w3.org/2000/svg"></svg></div>
+    <div class="squad-right">
+      <div id="squad-overall-box" class="squad-overall-box"></div>
+      <div id="squad-roster"></div>
+    </div>
+  </div>
+  <div class="squad-foot">
+    <button class="sim-btn" id="btn-simulate">SIMULATE THE SEASON →</button>
+    <button class="rst-btn" id="btn-reset-squad">START OVER</button>
+  </div>
+</div>
+<div id="s-season" class="screen">
+  <div class="sbar">
+    <div class="sbar-title">SÜPER LIG <span id="season-year" style="color:var(--text3);font-size:12px;letter-spacing:2px"></span></div>
+    <div class="sbar-right">
+      <div class="speed-wrap">SPEED<select id="speed-sel"><option value="420">Normal</option><option value="120">Fast</option><option value="16">Ludicrous</option></select></div>
+      <button class="skip-btn" id="btn-skip">SKIP TO END</button>
+    </div>
+  </div>
+  <div class="mob-sim-bar" id="mob-sim-bar">
+    <div class="mob-sim-progress">
+      <div class="mob-sim-fill" id="mob-sim-fill"></div>
+    </div>
+    <div class="mob-sim-label" id="mob-sim-label">Matchday 1 of 34</div>
+    <button class="mob-sim-skip" id="btn-skip-mob">SIM REST OF SEASON</button>
+  </div>
+  <div class="mob-season-tabs">
+    <button class="mob-season-tab active" data-stab="matches">MATCHES</button>
+    <button class="mob-season-tab" data-stab="table">STANDINGS</button>
+  </div>
+  <div class="season-main" style="position:relative">
+    <div class="matches-col" id="matches-col"></div>
+    <div class="table-col" id="table-col">
+      <div class="table-head">STANDINGS</div>
+      <div class="league-table">
+        <div class="lt-header"><div></div><div>Club</div><div style="text-align:center">W</div><div style="text-align:center">D</div><div style="text-align:center">L</div><div style="text-align:center">Pts</div></div>
+        <div id="lt-body"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="s-result" class="screen">
+  <div class="res-top">
+    <span class="res-trophy" id="res-trophy">🏆</span>
+    <div class="res-record" id="res-record"></div>
+    <div class="res-tagline" id="res-tagline"></div>
+  </div>
+  <div class="res-stats" id="res-stats"></div>
+  <div class="res-body" id="res-body"></div>
+  <div class="res-msg" id="res-msg"></div>
+  <div class="res-actions">
+    <button class="share-btn" id="btn-share">📤 SHARE RESULT</button>
+    <button class="save-btn" id="btn-save">💾 SAVE IMAGE</button>
+    <button class="play-again" id="btn-again">PLAY AGAIN</button>
+  </div>
+  <canvas id="share-canvas"></canvas>
+</div>
+<script>
+document.querySelectorAll('.mob-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const col = tab.dataset.col;
+    document.querySelectorAll('.mob-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const dm = document.querySelector('.draft-main');
+    ['left-col','pitch-col'].forEach(c => { const el=dm.querySelector('.'+c); if(el) el.classList.remove('mob-active'); });
+    const target = dm.querySelector('.' + col + '-col');
+    if(target) target.classList.add('mob-active');
+  });
+});
+document.querySelectorAll('.mob-season-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.mob-season-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const tc = document.getElementById('table-col');
+    if (tab.dataset.stab === 'table') tc.classList.add('mob-visible');
+    else tc.classList.remove('mob-visible');
+  });
+});
+const FORMATIONS={
+  '4-3-3':{slots:[
+    {pos:'GK',x:190,y:494},{pos:'RB',x:310,y:410},{pos:'CB',x:242,y:416},{pos:'CB',x:142,y:416},{pos:'LB',x:74,y:410},
+    {pos:'CM',x:264,y:298},{pos:'CM',x:190,y:284},{pos:'CM',x:116,y:298},
+    {pos:'RW',x:304,y:168},{pos:'ST',x:190,y:136},{pos:'LW',x:76,y:168}]},
+  '4-4-2':{slots:[
+    {pos:'GK',x:190,y:494},{pos:'RB',x:310,y:410},{pos:'CB',x:242,y:416},{pos:'CB',x:142,y:416},{pos:'LB',x:74,y:410},
+    {pos:'RM',x:308,y:288},{pos:'CM',x:236,y:282},{pos:'CM',x:148,y:282},{pos:'LM',x:76,y:288},
+    {pos:'ST',x:244,y:150},{pos:'ST',x:136,y:150}]},
+  '3-5-2':{slots:[
+    {pos:'GK',x:190,y:494},{pos:'CB',x:264,y:420},{pos:'CB',x:190,y:416},{pos:'CB',x:116,y:420},
+    {pos:'RWB',x:326,y:298},{pos:'CM',x:254,y:284},{pos:'CM',x:190,y:270},{pos:'CM',x:126,y:284},{pos:'LWB',x:54,y:298},
+    {pos:'ST',x:244,y:150},{pos:'ST',x:136,y:150}]},
+  '4-2-3-1':{slots:[
+    {pos:'GK',x:190,y:494},{pos:'RB',x:310,y:410},{pos:'CB',x:242,y:416},{pos:'CB',x:142,y:416},{pos:'LB',x:74,y:410},
+    {pos:'CDM',x:238,y:318},{pos:'CDM',x:146,y:318},
+    {pos:'RAM',x:292,y:212},{pos:'CAM',x:190,y:202},{pos:'LAM',x:88,y:212},
+    {pos:'ST',x:190,y:114}]},
+  '5-3-2':{slots:[
+    {pos:'GK',x:190,y:494},{pos:'RWB',x:332,y:408},{pos:'CB',x:262,y:420},{pos:'CB',x:190,y:426},{pos:'CB',x:118,y:420},{pos:'LWB',x:48,y:408},
+    {pos:'CM',x:254,y:288},{pos:'CM',x:190,y:274},{pos:'CM',x:126,y:288},
+    {pos:'ST',x:244,y:150},{pos:'ST',x:136,y:150}]},
+  '3-4-3':{slots:[
+    {pos:'GK',x:190,y:494},{pos:'CB',x:264,y:420},{pos:'CB',x:190,y:416},{pos:'CB',x:116,y:420},
+    {pos:'RM',x:308,y:290},{pos:'CM',x:238,y:280},{pos:'CM',x:146,y:280},{pos:'LM',x:76,y:290},
+    {pos:'RW',x:298,y:158},{pos:'ST',x:190,y:138},{pos:'LW',x:82,y:158}]}
+};
+const POS_FULL={GK:'Goalkeeper',RB:'Right Back',LB:'Left Back',CB:'Centre Back',CM:'Central Mid',CDM:'Defensive Mid',CAM:'Attacking Mid',RM:'Right Mid',LM:'Left Mid',RW:'Right Wing',LW:'Left Wing',RWB:'Right Wing-Back',LWB:'Left Wing-Back',RAM:'Right Attacking Mid',LAM:'Left Attacking Mid',ST:'Striker'};
+const ATT_POS=new Set(['ST','RW','LW','RAM','LAM','CAM']);
+const MID_POS=new Set(['CM','CDM','RM','LM']);
+const DEF_POS=new Set(['RB','LB','CB','RWB','LWB']);
+const TEAMS=[
+  {id:'gala9900',name:'Galatasaray',season:'1999/00',decade:'2000s',tier:'elite',col:'#cc0000',strength:96,predicted:1,players:[
+    {n:'Claudio Taffarel',pos:'GK',r:86},{n:'Hakan Arıkan',pos:'GK',r:68},
+    {n:'Bülent Korkmaz',pos:'RB',r:80},{n:'Capone',pos:'RB',r:70},
+    {n:'Bülent Korkmaz',pos:'CB',r:82},{n:'Alpay Özalan',pos:'CB',r:80},{n:'Gökhan Keskin',pos:'CB',r:68},
+    {n:'Ümit Davala',pos:'LB',r:76},{n:'Ergün Penbe',pos:'LWB',r:72},
+    {n:'Okan Buruk',pos:'CDM',r:80},{n:'Suat Kaya',pos:'CDM',r:72},
+    {n:'Hakan Ünsal',pos:'CM',r:78},{n:'Okan Buruk',pos:'CM',r:80},
+    {n:'Gheorghe Hagi',pos:'CAM',r:92},{n:'Hasan Şaş',pos:'RAM',r:80},
+    {n:'Hasan Şaş',pos:'RW',r:80},{n:'Arif Erdem',pos:'LW',r:76},
+    {n:'Hakan Şükür',pos:'ST',r:86},{n:'Mário Jardel',pos:'ST',r:88},{n:'Arif Erdem',pos:'ST',r:76}
+  ]},
+  {id:'gala9394',name:'Galatasaray',season:'1993/94',decade:'1990s',tier:'elite',col:'#cc0000',strength:87,predicted:1,players:[
+    {n:'Claudio Taffarel',pos:'GK',r:82},{n:'Hakan Arıkan',pos:'GK',r:66},
+    {n:'Bülent Korkmaz',pos:'RB',r:78},{n:'Capone',pos:'RB',r:68},
+    {n:'Bülent Korkmaz',pos:'CB',r:80},{n:'Alpay Özalan',pos:'CB',r:76},{n:'Gökhan Keskin',pos:'CB',r:68},
+    {n:'Ümit Davala',pos:'LB',r:74},{n:'Ergün Penbe',pos:'LWB',r:70},
+    {n:'Okan Buruk',pos:'CDM',r:78},{n:'Suat Kaya',pos:'CDM',r:70},
+    {n:'Hakan Ünsal',pos:'CM',r:76},{n:'Hakan Şükür',pos:'CM',r:80},
+    {n:'Gheorghe Hagi',pos:'CAM',r:90},{n:'Arif Erdem',pos:'RAM',r:74},
+    {n:'Arif Erdem',pos:'RW',r:74},{n:'Hasan Şaş',pos:'LW',r:76},
+    {n:'Hakan Şükür',pos:'ST',r:82},{n:'Arif Erdem',pos:'ST',r:74},{n:'Kubilay Turkyilmaz',pos:'ST',r:76}
+  ]},
+  {id:'gala9697',name:'Galatasaray',season:'1996/97',decade:'1990s',tier:'elite',col:'#cc0000',strength:88,predicted:1,players:[
+    {n:'Claudio Taffarel',pos:'GK',r:84},{n:'Hakan Arıkan',pos:'GK',r:66},
+    {n:'Bülent Korkmaz',pos:'RB',r:80},{n:'Ergün Penbe',pos:'RB',r:72},
+    {n:'Bülent Korkmaz',pos:'CB',r:82},{n:'Alpay Özalan',pos:'CB',r:78},{n:'Gökhan Keskin',pos:'CB',r:68},
+    {n:'Ümit Davala',pos:'LB',r:76},{n:'Ergün Penbe',pos:'LWB',r:72},
+    {n:'Okan Buruk',pos:'CDM',r:80},{n:'Suat Kaya',pos:'CDM',r:70},
+    {n:'Hakan Ünsal',pos:'CM',r:78},{n:'Hakan Şükür',pos:'CM',r:82},
+    {n:'Gheorghe Hagi',pos:'CAM',r:90},{n:'Arif Erdem',pos:'RAM',r:76},
+    {n:'Hasan Şaş',pos:'RW',r:78},{n:'Arif Erdem',pos:'LW',r:76},
+    {n:'Hakan Şükür',pos:'ST',r:84},{n:'Arif Erdem',pos:'ST',r:76},{n:'Kubilay Turkyilmaz',pos:'ST',r:76}
+  ]},
+  {id:'gala0001',name:'Galatasaray',season:'2000/01',decade:'2000s',tier:'elite',col:'#cc0000',strength:90,predicted:1,players:[
+    {n:'Claudio Taffarel',pos:'GK',r:84},{n:'Hakan Arıkan',pos:'GK',r:68},
+    {n:'Bülent Korkmaz',pos:'RB',r:80},{n:'Ergün Penbe',pos:'RB',r:72},
+    {n:'Bülent Korkmaz',pos:'CB',r:82},{n:'Alpay Özalan',pos:'CB',r:80},{n:'Gökhan Keskin',pos:'CB',r:69},
+    {n:'Ümit Davala',pos:'LB',r:76},{n:'Ergün Penbe',pos:'LWB',r:72},
+    {n:'Okan Buruk',pos:'CDM',r:80},{n:'Suat Kaya',pos:'CDM',r:70},
+    {n:'Hakan Ünsal',pos:'CM',r:78},{n:'Okan Buruk',pos:'CM',r:80},
+    {n:'Hasan Şaş',pos:'CAM',r:80},{n:'Arif Erdem',pos:'RAM',r:76},
+    {n:'Hasan Şaş',pos:'RW',r:80},{n:'Arif Erdem',pos:'LW',r:76},
+    {n:'Hakan Şükür',pos:'ST',r:86},{n:'Mário Jardel',pos:'ST',r:82},{n:'Arif Erdem',pos:'ST',r:76}
+  ]},
+  {id:'gala0203',name:'Galatasaray',season:'2002/03',decade:'2000s',tier:'elite',col:'#cc0000',strength:86,predicted:1,players:[
+    {n:'Faryd Mondragón',pos:'GK',r:78},{n:'Hakan Arıkan',pos:'GK',r:66},
+    {n:'Sabri Sarıoğlu',pos:'RB',r:70},{n:'Servet Çetin',pos:'RB',r:72},
+    {n:'Servet Çetin',pos:'CB',r:72},{n:'Emre Aşık',pos:'CB',r:70},{n:'Gökhan Zan',pos:'CB',r:68},
+    {n:'Hakan Balta',pos:'LB',r:68},{n:'Ümit Davala',pos:'LWB',r:72},
+    {n:'Arda Turan',pos:'CDM',r:72},{n:'Okan Buruk',pos:'CDM',r:76},
+    {n:'Okan Buruk',pos:'CM',r:76},{n:'Hakan Ünsal',pos:'CM',r:74},
+    {n:'Hasan Şaş',pos:'CAM',r:78},{n:'Arif Erdem',pos:'RAM',r:74},
+    {n:'Hasan Şaş',pos:'RW',r:78},{n:'Arif Erdem',pos:'LW',r:74},
+    {n:'Hakan Şükür',pos:'ST',r:84},{n:'Hasan Şaş',pos:'ST',r:76},{n:'Arif Erdem',pos:'ST',r:74}
+  ]},
+  {id:'gala0607',name:'Galatasaray',season:'2006/07',decade:'2000s',tier:'good',col:'#cc0000',strength:80,predicted:2,players:[
+    {n:'Faryd Mondragón',pos:'GK',r:78},{n:'Hakan Arıkan',pos:'GK',r:66},
+    {n:'Sabri Sarıoğlu',pos:'RB',r:72},{n:'Servet Çetin',pos:'RB',r:72},
+    {n:'Servet Çetin',pos:'CB',r:74},{n:'Emre Aşık',pos:'CB',r:72},{n:'Gökhan Zan',pos:'CB',r:70},
+    {n:'Hakan Balta',pos:'LB',r:70},{n:'Ünal Karaman',pos:'LWB',r:64},
+    {n:'Arda Turan',pos:'CDM',r:76},{n:'Lincoln',pos:'CDM',r:72},
+    {n:'Lincoln',pos:'CM',r:72},{n:'Arda Turan',pos:'CM',r:76},
+    {n:'Hakan Şükür',pos:'CAM',r:76},{n:'Mehmet Yozgatlı',pos:'RAM',r:68},
+    {n:'Mehmet Yozgatlı',pos:'RW',r:68},{n:'Arda Turan',pos:'LW',r:76},
+    {n:'Hakan Şükür',pos:'ST',r:76},{n:'Ümit Karan',pos:'ST',r:74},{n:'Lincoln',pos:'ST',r:70}
+  ]},
+  {id:'gala0809',name:'Galatasaray',season:'2008/09',decade:'2000s',tier:'good',col:'#cc0000',strength:80,predicted:2,players:[
+    {n:'Faryd Mondragón',pos:'GK',r:76},{n:'Ufuk Ceylan',pos:'GK',r:64},
+    {n:'Sabri Sarıoğlu',pos:'RB',r:74},{n:'Servet Çetin',pos:'RB',r:74},
+    {n:'Servet Çetin',pos:'CB',r:74},{n:'Emre Aşık',pos:'CB',r:70},{n:'Gökhan Zan',pos:'CB',r:70},
+    {n:'Hakan Balta',pos:'LB',r:70},{n:'Ünal Karaman',pos:'LWB',r:62},
+    {n:'Arda Turan',pos:'CDM',r:80},{n:'Lincoln',pos:'CDM',r:70},
+    {n:'Lincoln',pos:'CM',r:70},{n:'Arda Turan',pos:'CM',r:80},
+    {n:'Arda Turan',pos:'CAM',r:82},{n:'Ayhan Akman',pos:'RAM',r:70},
+    {n:'Ayhan Akman',pos:'RW',r:70},{n:'Kewell',pos:'LW',r:72},
+    {n:'Kewell',pos:'ST',r:72},{n:'Ümit Karan',pos:'ST',r:74},{n:'Arda Turan',pos:'ST',r:80}
+  ]},
+  {id:'gala1112',name:'Galatasaray',season:'2011/12',decade:'2010s',tier:'elite',col:'#cc0000',strength:87,predicted:1,players:[
+    {n:'Fernando Muslera',pos:'GK',r:82},{n:'Ufuk Ceylan',pos:'GK',r:62},
+    {n:'Sabri Sarıoğlu',pos:'RB',r:76},{n:'Hakan Balta',pos:'RB',r:73},
+    {n:'Felipe Melo',pos:'CB',r:78},{n:'Servet Çetin',pos:'CB',r:76},{n:'Semih Kaya',pos:'CB',r:70},
+    {n:'Hakan Balta',pos:'LB',r:73},{n:'Elano',pos:'LWB',r:76},
+    {n:'Selçuk İnan',pos:'CDM',r:82},{n:'Felipe Melo',pos:'CDM',r:78},
+    {n:'Elano',pos:'CM',r:76},{n:'Selçuk İnan',pos:'CM',r:82},
+    {n:'Arda Turan',pos:'CAM',r:84},{n:'Hamit Altıntop',pos:'RAM',r:78},
+    {n:'Hamit Altıntop',pos:'RW',r:78},{n:'Arda Turan',pos:'LW',r:84},
+    {n:'Burak Yılmaz',pos:'ST',r:86},{n:'Semih Şentürk',pos:'ST',r:70},{n:'Johan Elmander',pos:'ST',r:74}
+  ]},
+  {id:'gala1213',name:'Galatasaray',season:'2012/13',decade:'2010s',tier:'elite',col:'#cc0000',strength:89,predicted:1,players:[
+    {n:'Fernando Muslera',pos:'GK',r:83},{n:'Ufuk Ceylan',pos:'GK',r:62},
+    {n:'Sabri Sarıoğlu',pos:'RB',r:76},{n:'Hakan Balta',pos:'RB',r:74},
+    {n:'Felipe Melo',pos:'CB',r:78},{n:'Servet Çetin',pos:'CB',r:76},{n:'Semih Kaya',pos:'CB',r:72},
+    {n:'Hakan Balta',pos:'LB',r:74},{n:'Gökhan Gönül',pos:'LWB',r:72},
+    {n:'Selçuk İnan',pos:'CDM',r:83},{n:'Felipe Melo',pos:'CDM',r:78},
+    {n:'Wesley Sneijder',pos:'CM',r:88},{n:'Selçuk İnan',pos:'CM',r:83},
+    {n:'Wesley Sneijder',pos:'CAM',r:88},{n:'Hamit Altıntop',pos:'RAM',r:78},
+    {n:'Hamit Altıntop',pos:'RW',r:78},{n:'Arda Turan',pos:'LW',r:86},
+    {n:'Burak Yılmaz',pos:'ST',r:88},{n:'Didier Drogba',pos:'ST',r:84},{n:'Umut Bulut',pos:'ST',r:70}
+  ]},
+  {id:'gala1314',name:'Galatasaray',season:'2013/14',decade:'2010s',tier:'elite',col:'#cc0000',strength:88,predicted:1,players:[
+    {n:'Fernando Muslera',pos:'GK',r:83},{n:'Ufuk Ceylan',pos:'GK',r:62},
+    {n:'Sabri Sarıoğlu',pos:'RB',r:76},{n:'Hakan Balta',pos:'RB',r:74},
+    {n:'Felipe Melo',pos:'CB',r:78},{n:'Servet Çetin',pos:'CB',r:74},{n:'Semih Kaya',pos:'CB',r:72},
+    {n:'Hakan Balta',pos:'LB',r:74},{n:'Gökhan Gönül',pos:'LWB',r:72},
+    {n:'Selçuk İnan',pos:'CDM',r:83},{n:'Felipe Melo',pos:'CDM',r:78},
+    {n:'Wesley Sneijder',pos:'CM',r:86},{n:'Selçuk İnan',pos:'CM',r:83},
+    {n:'Wesley Sneijder',pos:'CAM',r:86},{n:'Aurelien Chedjou',pos:'RAM',r:72},
+    {n:'Burak Yılmaz',pos:'RW',r:82},{n:'Umut Bulut',pos:'LW',r:72},
+    {n:'Didier Drogba',pos:'ST',r:82},{n:'Burak Yılmaz',pos:'ST',r:82},{n:'Umut Bulut',pos:'ST',r:72}
+  ]},
+  {id:'gala1819',name:'Galatasaray',season:'2018/19',decade:'2010s',tier:'elite',col:'#cc0000',strength:86,predicted:1,players:[
+    {n:'Fernando Muslera',pos:'GK',r:82},{n:'Sinan Bolat',pos:'GK',r:68},
+    {n:'Serdar Aziz',pos:'RB',r:72},{n:'Marcao',pos:'RB',r:76},
+    {n:'Serdar Aziz',pos:'CB',r:72},{n:'Marcao',pos:'CB',r:78},{n:'Christian Luyindama',pos:'CB',r:74},
+    {n:'Bengü',pos:'LB',r:65},{n:'Bengü',pos:'LWB',r:65},
+    {n:'Badou Ndiaye',pos:'CDM',r:76},{n:'Emre Akbaba',pos:'CDM',r:72},
+    {n:'Selçuk İnan',pos:'CM',r:80},{n:'Emre Akbaba',pos:'CM',r:72},
+    {n:'Radamel Falcao',pos:'CAM',r:83},{n:'Ryan Babel',pos:'RAM',r:76},
+    {n:'Ryan Babel',pos:'RW',r:76},{n:'Younès Belhanda',pos:'LW',r:76},
+    {n:'Radamel Falcao',pos:'ST',r:83},{n:'Eren Derdiyok',pos:'ST',r:70},{n:'Mbaye Diagne',pos:'ST',r:74}
+  ]},
+  {id:'gala2223',name:'Galatasaray',season:'2022/23',decade:'2020s',tier:'elite',col:'#cc0000',strength:91,predicted:1,players:[
+    {n:'Fernando Muslera',pos:'GK',r:78},{n:'İnaki Peña',pos:'GK',r:72},
+    {n:'Sacha Boey',pos:'RB',r:76},{n:'Serdar Aziz',pos:'RB',r:70},
+    {n:'Marcao',pos:'CB',r:80},{n:'Victor Nelsson',pos:'CB',r:78},{n:'Abdülkerim Bardakcı',pos:'CB',r:72},
+    {n:'Patrick van Aanholt',pos:'LB',r:72},{n:'Angeliño',pos:'LWB',r:74},
+    {n:'Lucas Torreira',pos:'CDM',r:82},{n:'Sergio Oliveira',pos:'CDM',r:76},
+    {n:'Kerem Aktürkoğlu',pos:'CM',r:80},{n:'Barış Alper Yılmaz',pos:'CM',r:74},
+    {n:'Dries Mertens',pos:'CAM',r:82},{n:'Hakim Ziyech',pos:'RAM',r:80},
+    {n:'Hakim Ziyech',pos:'RW',r:80},{n:'Kerem Aktürkoğlu',pos:'LW',r:80},
+    {n:'Mauro Icardi',pos:'ST',r:82},{n:'Yunus Akgün',pos:'ST',r:70},{n:'Emre Mor',pos:'ST',r:68}
+  ]},
+  {id:'gala2324',name:'Galatasaray',season:'2023/24',decade:'2020s',tier:'elite',col:'#cc0000',strength:92,predicted:1,players:[
+    {n:'Fernando Muslera',pos:'GK',r:78},{n:'İnaki Peña',pos:'GK',r:72},
+    {n:'Sacha Boey',pos:'RB',r:78},{n:'Davinson Sánchez',pos:'RB',r:74},
+    {n:'Davinson Sánchez',pos:'CB',r:80},{n:'Victor Nelsson',pos:'CB',r:78},{n:'Abdülkerim Bardakcı',pos:'CB',r:74},
+    {n:'Angeliño',pos:'LB',r:76},{n:'Salis Abdul Samed',pos:'LWB',r:70},
+    {n:'Lucas Torreira',pos:'CDM',r:82},{n:'Sergio Oliveira',pos:'CDM',r:74},
+    {n:'Kerem Aktürkoğlu',pos:'CM',r:82},{n:'Barış Alper Yılmaz',pos:'CM',r:76},
+    {n:'Dries Mertens',pos:'CAM',r:80},{n:'Hakim Ziyech',pos:'RAM',r:80},
+    {n:'Hakim Ziyech',pos:'RW',r:80},{n:'Kerem Aktürkoğlu',pos:'LW',r:82},
+    {n:'Mauro Icardi',pos:'ST',r:84},{n:'Victor Osimhen',pos:'ST',r:88},{n:'Yunus Akgün',pos:'ST',r:70}
+  ]},
+  {id:'gala2425',name:'Galatasaray',season:'2024/25',decade:'2020s',tier:'elite',col:'#cc0000',strength:94,predicted:1,players:[
+    {n:'Fernando Muslera',pos:'GK',r:76},{n:'Milik Yıldız',pos:'GK',r:64},
+    {n:'Sacha Boey',pos:'RB',r:78},{n:'Davinson Sánchez',pos:'RB',r:74},
+    {n:'Davinson Sánchez',pos:'CB',r:80},{n:'Victor Nelsson',pos:'CB',r:78},{n:'Abdülkerim Bardakcı',pos:'CB',r:74},
+    {n:'Angeliño',pos:'LB',r:76},{n:'Salis Abdul Samed',pos:'LWB',r:70},
+    {n:'Lucas Torreira',pos:'CDM',r:82},{n:'Salis Abdul Samed',pos:'CDM',r:70},
+    {n:'Kerem Aktürkoğlu',pos:'CM',r:82},{n:'Barış Alper Yılmaz',pos:'CM',r:76},
+    {n:'Dries Mertens',pos:'CAM',r:80},{n:'Hakim Ziyech',pos:'RAM',r:80},
+    {n:'Leroy Sané',pos:'RW',r:82},{n:'Kerem Aktürkoğlu',pos:'LW',r:82},
+    {n:'Victor Osimhen',pos:'ST',r:90},{n:'Mauro Icardi',pos:'ST',r:80},{n:'Yunus Akgün',pos:'ST',r:70}
+  ]},
+  {id:'gala2526',name:'Galatasaray',season:'2025/26',decade:'2020s',tier:'elite',col:'#cc0000',strength:92,predicted:1,players:[
+    {n:'Fernando Muslera',pos:'GK',r:74},{n:'Milik Yıldız',pos:'GK',r:66},
+    {n:'Sacha Boey',pos:'RB',r:78},{n:'Davinson Sánchez',pos:'RB',r:76},
+    {n:'Davinson Sánchez',pos:'CB',r:80},{n:'Victor Nelsson',pos:'CB',r:78},{n:'Abdülkerim Bardakcı',pos:'CB',r:76},
+    {n:'Angeliño',pos:'LB',r:76},{n:'Salis Abdul Samed',pos:'LWB',r:72},
+    {n:'Lucas Torreira',pos:'CDM',r:82},{n:'Salis Abdul Samed',pos:'CDM',r:72},
+    {n:'Kerem Aktürkoğlu',pos:'CM',r:84},{n:'Barış Alper Yılmaz',pos:'CM',r:78},
+    {n:'Hakim Ziyech',pos:'CAM',r:80},{n:'Leroy Sané',pos:'RAM',r:82},
+    {n:'Leroy Sané',pos:'RW',r:82},{n:'Kerem Aktürkoğlu',pos:'LW',r:84},
+    {n:'Victor Osimhen',pos:'ST',r:88},{n:'Mauro Icardi',pos:'ST',r:78},{n:'Yunus Akgün',pos:'ST',r:72}
+  ]},
+  {id:'fener9091',name:'Fenerbahçe',season:'1990/91',decade:'1990s',tier:'good',col:'#003399',strength:82,predicted:2,players:[
+    {n:'Şenol Güneş',pos:'GK',r:80},{n:'Hayrettin Demirbaş',pos:'GK',r:66},
+    {n:'Rıdvan Dilmen',pos:'RB',r:76},{n:'Aykut Kocaman',pos:'RB',r:74},
+    {n:'Uğur Tütüneker',pos:'CB',r:72},{n:'Kemal Aslan',pos:'CB',r:70},{n:'Rıdvan Dilmen',pos:'CB',r:74},
+    {n:'Yılmaz Vural',pos:'LB',r:70},{n:'Zeki Rıza Sporel',pos:'LWB',r:68},
+    {n:'Aykut Kocaman',pos:'CDM',r:74},{n:'Uğur Tütüneker',pos:'CDM',r:72},
+    {n:'Tanju Çolak',pos:'CM',r:82},{n:'Aykut Kocaman',pos:'CM',r:74},
+    {n:'Tanju Çolak',pos:'CAM',r:84},{n:'Can Bartu Jr.',pos:'RAM',r:70},
+    {n:'Tanju Çolak',pos:'RW',r:82},{n:'Yılmaz Vural',pos:'LW',r:70},
+    {n:'Tanju Çolak',pos:'ST',r:86},{n:'İsmet Tosyalı',pos:'ST',r:70},{n:'Mehmet Özdilek',pos:'ST',r:68}
+  ]},
+  {id:'fener9697',name:'Fenerbahçe',season:'1996/97',decade:'1990s',tier:'elite',col:'#003399',strength:88,predicted:1,players:[
+    {n:'Rustu Reçber',pos:'GK',r:84},{n:'Cüneyt Tanman',pos:'GK',r:64},
+    {n:'Oğuz Çetin',pos:'RB',r:74},{n:'Tolunay Kafkas',pos:'RB',r:72},
+    {n:'Bülent Uygun',pos:'CB',r:76},{n:'Oğuz Çetin',pos:'CB',r:74},{n:'Kemal Aslan',pos:'CB',r:72},
+    {n:'Müslüm Özbekli',pos:'LB',r:72},{n:'Müslüm Özbekli',pos:'LWB',r:72},
+    {n:'Oğuz Çetin',pos:'CDM',r:74},{n:'Tolunay Kafkas',pos:'CDM',r:72},
+    {n:'Saffet Sancaklı',pos:'CM',r:74},{n:'Oğuz Çetin',pos:'CM',r:74},
+    {n:'Jay-Jay Okocha',pos:'CAM',r:88},{n:'Elvir Balić',pos:'RAM',r:80},
+    {n:'Elvir Balić',pos:'RW',r:80},{n:'Jay-Jay Okocha',pos:'LW',r:88},
+    {n:'Elvir Balić',pos:'ST',r:80},{n:'Hakan Şükür',pos:'ST',r:82},{n:'Saffet Sancaklı',pos:'ST',r:72}
+  ]},
+  {id:'fener9899',name:'Fenerbahçe',season:'1998/99',decade:'1990s',tier:'elite',col:'#003399',strength:86,predicted:1,players:[
+    {n:'Rustu Reçber',pos:'GK',r:86},{n:'Cüneyt Tanman',pos:'GK',r:64},
+    {n:'Oğuz Çetin',pos:'RB',r:76},{n:'Tolunay Kafkas',pos:'RB',r:72},
+    {n:'Bülent Uygun',pos:'CB',r:76},{n:'Aydın Toscalı',pos:'CB',r:70},{n:'Müslüm Özbekli',pos:'CB',r:72},
+    {n:'Müslüm Özbekli',pos:'LB',r:72},{n:'Tolunay Kafkas',pos:'LWB',r:72},
+    {n:'Oğuz Çetin',pos:'CDM',r:76},{n:'Saffet Sancaklı',pos:'CDM',r:70},
+    {n:'Saffet Sancaklı',pos:'CM',r:70},{n:'Oğuz Çetin',pos:'CM',r:76},
+    {n:'Jay-Jay Okocha',pos:'CAM',r:88},{n:'Elvir Balić',pos:'RAM',r:78},
+    {n:'Elvir Balić',pos:'RW',r:78},{n:'Cordon',pos:'LW',r:72},
+    {n:'Hakan Şükür',pos:'ST',r:84},{n:'Elvir Balić',pos:'ST',r:78},{n:'Viorel Moldovan',pos:'ST',r:74}
+  ]},
+  {id:'fener0102',name:'Fenerbahçe',season:'2001/02',decade:'2000s',tier:'elite',col:'#003399',strength:87,predicted:1,players:[
+    {n:'Rustu Reçber',pos:'GK',r:88},{n:'Cüneyt Tanman',pos:'GK',r:64},
+    {n:'Oğuz Çetin',pos:'RB',r:76},{n:'Tolunay Kafkas',pos:'RB',r:72},
+    {n:'Bülent Uygun',pos:'CB',r:76},{n:'Servet Çetin',pos:'CB',r:72},{n:'Müslüm Özbekli',pos:'CB',r:72},
+    {n:'Müslüm Özbekli',pos:'LB',r:72},{n:'Tolunay Kafkas',pos:'LWB',r:72},
+    {n:'Stephen Appiah',pos:'CDM',r:80},{n:'Anatoliy Tymoshchuk',pos:'CDM',r:76},
+    {n:'Anatoliy Tymoshchuk',pos:'CM',r:76},{n:'Stephen Appiah',pos:'CM',r:80},
+    {n:'Tuncay Şanlı',pos:'CAM',r:78},{n:'Elvir Balić',pos:'RAM',r:76},
+    {n:'Elvir Balić',pos:'RW',r:76},{n:'Stéphane Dalmat',pos:'LW',r:72},
+    {n:'Pierre van Hooijdonk',pos:'ST',r:80},{n:'Elvir Balić',pos:'ST',r:76},{n:'Tuncay Şanlı',pos:'ST',r:78}
+  ]},
+  {id:'fener0506',name:'Fenerbahçe',season:'2005/06',decade:'2000s',tier:'elite',col:'#003399',strength:87,predicted:1,players:[
+    {n:'Rustu Reçber',pos:'GK',r:84},{n:'Volkan Demirel',pos:'GK',r:78},
+    {n:'Roberto Carlos',pos:'RB',r:84},{n:'Stephen Appiah',pos:'RB',r:76},
+    {n:'Edu Dracena',pos:'CB',r:76},{n:'Luciano',pos:'CB',r:72},{n:'Servet Çetin',pos:'CB',r:72},
+    {n:'Roberto Carlos',pos:'LB',r:84},{n:'Deniz Barış',pos:'LWB',r:68},
+    {n:'Stephen Appiah',pos:'CDM',r:82},{n:'Mehmet Topuz',pos:'CDM',r:72},
+    {n:'Mehmet Topuz',pos:'CM',r:72},{n:'Saša Pandža',pos:'CM',r:74},
+    {n:'Tuncay Şanlı',pos:'CAM',r:82},{n:'Stéphane Dalmat',pos:'RAM',r:74},
+    {n:'Tuncay Şanlı',pos:'RW',r:82},{n:'Pierre van Hooijdonk',pos:'LW',r:80},
+    {n:'Nicolas Anelka',pos:'ST',r:84},{n:'Pierre van Hooijdonk',pos:'ST',r:80},{n:'Tuncay Şanlı',pos:'ST',r:82}
+  ]},
+  {id:'fener0708',name:'Fenerbahçe',season:'2007/08',decade:'2000s',tier:'elite',col:'#003399',strength:89,predicted:1,players:[
+    {n:'Volkan Demirel',pos:'GK',r:84},{n:'Rustu Reçber',pos:'GK',r:78},
+    {n:'Gökhan Gönül',pos:'RB',r:78},{n:'Lugano',pos:'RB',r:78},
+    {n:'Lugano',pos:'CB',r:80},{n:'Carlos',pos:'CB',r:72},{n:'Servet Çetin',pos:'CB',r:74},
+    {n:'Roberto Carlos',pos:'LB',r:80},{n:'Deivid',pos:'LWB',r:72},
+    {n:'Mehmet Topuz',pos:'CDM',r:74},{n:'Diego Ribas',pos:'CDM',r:78},
+    {n:'Diego Ribas',pos:'CM',r:78},{n:'Tuncay Şanlı',pos:'CM',r:80},
+    {n:'Alex de Souza',pos:'CAM',r:90},{n:'Tuncay Şanlı',pos:'RAM',r:80},
+    {n:'Alex de Souza',pos:'RW',r:90},{n:'Deivid',pos:'LW',r:72},
+    {n:'Deivid',pos:'ST',r:72},{n:'Gerson',pos:'ST',r:68},{n:'Tuncay Şanlı',pos:'ST',r:80}
+  ]},
+  {id:'fener1011',name:'Fenerbahçe',season:'2010/11',decade:'2010s',tier:'elite',col:'#003399',strength:88,predicted:1,players:[
+    {n:'Volkan Demirel',pos:'GK',r:84},{n:'Serkan Kırıntılı',pos:'GK',r:62},
+    {n:'Gökhan Gönül',pos:'RB',r:80},{n:'Hasan Ali Kaldırım',pos:'RB',r:74},
+    {n:'Edu Dracena',pos:'CB',r:78},{n:'Bekir İrtegün',pos:'CB',r:72},{n:'Lugano',pos:'CB',r:80},
+    {n:'Hasan Ali Kaldırım',pos:'LB',r:74},{n:'Emmanuel de Souza',pos:'LWB',r:68},
+    {n:'Mehmet Topal',pos:'CDM',r:80},{n:'Emre Belözoğlu',pos:'CDM',r:82},
+    {n:'Emre Belözoğlu',pos:'CM',r:82},{n:'Cristian Baroni',pos:'CM',r:74},
+    {n:'Cristian Baroni',pos:'CAM',r:74},{n:'Cristian Baroni',pos:'RAM',r:74},
+    {n:'Semih Şentürk',pos:'RW',r:72},{n:'Güiza',pos:'LW',r:72},
+    {n:'Roberto Soldado',pos:'ST',r:82},{n:'Semih Şentürk',pos:'ST',r:72},{n:'Moussa Sow',pos:'ST',r:78}
+  ]},
+  {id:'fener1415',name:'Fenerbahçe',season:'2014/15',decade:'2010s',tier:'good',col:'#003399',strength:84,predicted:2,players:[
+    {n:'Volkan Demirel',pos:'GK',r:82},{n:'Caner Erkin',pos:'RB',r:76},
+    {n:'Gökhan Gönül',pos:'RB',r:80},{n:'Miroslav Stoch',pos:'RB',r:70},
+    {n:'Michal Kadlec',pos:'CB',r:76},{n:'Dedryck Boyata',pos:'CB',r:74},{n:'Simon Kjaer',pos:'CB',r:80},
+    {n:'Caner Erkin',pos:'LB',r:76},{n:'Hasan Ali Kaldırım',pos:'LWB',r:74},
+    {n:'Mehmet Topal',pos:'CDM',r:80},{n:'Raul Meireles',pos:'CDM',r:80},
+    {n:'Emre Belözoğlu',pos:'CM',r:80},{n:'Raul Meireles',pos:'CM',r:80},
+    {n:'Miroslav Stoch',pos:'CAM',r:70},{n:'Nani',pos:'RAM',r:80},
+    {n:'Nani',pos:'RW',r:80},{n:'Miroslav Stoch',pos:'LW',r:70},
+    {n:'Robin van Persie',pos:'ST',r:86},{n:'Moussa Sow',pos:'ST',r:76},{n:'Fernandão',pos:'ST',r:72}
+  ]},
+  {id:'fener1617',name:'Fenerbahçe',season:'2016/17',decade:'2010s',tier:'good',col:'#003399',strength:82,predicted:2,players:[
+    {n:'Volkan Demirel',pos:'GK',r:80},{n:'Harun Tekin',pos:'GK',r:68},
+    {n:'Gökhan Gönül',pos:'RB',r:78},{n:'Hasan Ali Kaldırım',pos:'RB',r:72},
+    {n:'Şener Özbayraklı',pos:'CB',r:72},{n:'Simon Kjaer',pos:'CB',r:80},{n:'Serdar Aziz',pos:'CB',r:70},
+    {n:'Hasan Ali Kaldırım',pos:'LB',r:72},{n:'Hasan Ali Kaldırım',pos:'LWB',r:72},
+    {n:'Mehmet Topal',pos:'CDM',r:78},{n:'Alper Potuk',pos:'CDM',r:72},
+    {n:'Alper Potuk',pos:'CM',r:72},{n:'Souza',pos:'CM',r:76},
+    {n:'Nani',pos:'CAM',r:78},{n:'Jeremain Lens',pos:'RAM',r:72},
+    {n:'Nani',pos:'RW',r:78},{n:'Jeremain Lens',pos:'LW',r:72},
+    {n:'Robin van Persie',pos:'ST',r:78},{n:'Moussa Sow',pos:'ST',r:72},{n:'Fernandão',pos:'ST',r:68}
+  ]},
+  {id:'fener1920',name:'Fenerbahçe',season:'2019/20',decade:'2020s',tier:'good',col:'#003399',strength:76,predicted:3,players:[
+    {n:'Altay Bayındır',pos:'GK',r:78},{n:'Berke Özer',pos:'GK',r:64},
+    {n:'Bright Osayi-Samuel',pos:'RB',r:72},{n:'Hasan Ali Kaldırım',pos:'RB',r:72},
+    {n:'Attila Szalai',pos:'CB',r:76},{n:'Serdar Aziz',pos:'CB',r:70},{n:'Diego',pos:'CB',r:70},
+    {n:'Hasan Ali Kaldırım',pos:'LB',r:72},{n:'Hasan Ali Kaldırım',pos:'LWB',r:72},
+    {n:'Luiz Gustavo',pos:'CDM',r:80},{n:'Ozan Tufan',pos:'CDM',r:72},
+    {n:'Ozan Tufan',pos:'CM',r:72},{n:'İrfan Can Kahveci',pos:'CM',r:76},
+    {n:'Mesut Özil',pos:'CAM',r:82},{n:'Lemos',pos:'RAM',r:66},
+    {n:'Henrique',pos:'RW',r:68},{n:'İrfan Can Kahveci',pos:'LW',r:76},
+    {n:'Mbwana Samatta',pos:'ST',r:72},{n:'Papiss Cissé',pos:'ST',r:70},{n:'Vedat Muriqi',pos:'ST',r:74}
+  ]},
+  {id:'fener2122',name:'Fenerbahçe',season:'2021/22',decade:'2020s',tier:'good',col:'#003399',strength:80,predicted:2,players:[
+    {n:'Altay Bayındır',pos:'GK',r:80},{n:'Berke Özer',pos:'GK',r:66},
+    {n:'Bright Osayi-Samuel',pos:'RB',r:74},{n:'İsmail Yüksek',pos:'RB',r:66},
+    {n:'Attila Szalai',pos:'CB',r:78},{n:'Serdar Aziz',pos:'CB',r:72},{n:'Gustavo Henrique',pos:'CB',r:72},
+    {n:'Caner Erkin',pos:'LB',r:72},{n:'Hasan Ali Kaldırım',pos:'LWB',r:72},
+    {n:'Miha Zajc',pos:'CDM',r:72},{n:'Ozan Tufan',pos:'CDM',r:74},
+    {n:'Ozan Tufan',pos:'CM',r:74},{n:'İrfan Can Kahveci',pos:'CM',r:78},
+    {n:'Mesut Özil',pos:'CAM',r:80},{n:'Ferdi Kadıoğlu',pos:'RAM',r:76},
+    {n:'Ferdi Kadıoğlu',pos:'RW',r:76},{n:'İrfan Can Kahveci',pos:'LW',r:78},
+    {n:'Enner Valencia',pos:'ST',r:80},{n:'Mergim Berisha',pos:'ST',r:70},{n:'Serdar Dursun',pos:'ST',r:68}
+  ]},
+  {id:'fener2324',name:'Fenerbahçe',season:'2023/24',decade:'2020s',tier:'elite',col:'#003399',strength:92,predicted:2,players:[
+    {n:'Dominik Livaković',pos:'GK',r:84},{n:'İrfan Can Eğribayat',pos:'GK',r:70},
+    {n:'Bright Osayi-Samuel',pos:'RB',r:76},{n:'İsmail Yüksek',pos:'RB',r:68},
+    {n:'Çağlar Söyüncü',pos:'CB',r:80},{n:'Alexander Djiku',pos:'CB',r:76},{n:'Jayden Oosterwolde',pos:'CB',r:74},
+    {n:'Jayden Oosterwolde',pos:'LB',r:74},{n:'İsmail Yüksek',pos:'LWB',r:68},
+    {n:'Sebastian Szymanski',pos:'CDM',r:80},{n:'Fred',pos:'CDM',r:78},
+    {n:'İrfan Can Kahveci',pos:'CM',r:80},{n:'Sebastian Szymanski',pos:'CM',r:80},
+    {n:'Edin Džeko',pos:'CAM',r:78},{n:'Dusan Tadic',pos:'CAM',r:82},
+    {n:'Dusan Tadic',pos:'RW',r:82},{n:'İrfan Can Kahveci',pos:'LW',r:80},
+    {n:'Edin Džeko',pos:'ST',r:78},{n:'Michy Batshuayi',pos:'ST',r:72},{n:'Umut Nayir',pos:'ST',r:64}
+  ]},
+  {id:'fener2526',name:'Fenerbahçe',season:'2025/26',decade:'2020s',tier:'elite',col:'#003399',strength:88,predicted:2,players:[
+    {n:'Dominik Livaković',pos:'GK',r:84},{n:'İrfan Can Eğribayat',pos:'GK',r:70},
+    {n:'Bright Osayi-Samuel',pos:'RB',r:76},{n:'Jayden Oosterwolde',pos:'RB',r:74},
+    {n:'Çağlar Söyüncü',pos:'CB',r:80},{n:'Alexander Djiku',pos:'CB',r:76},{n:'Jayden Oosterwolde',pos:'CB',r:74},
+    {n:'Jayden Oosterwolde',pos:'LB',r:74},{n:'İsmail Yüksek',pos:'LWB',r:70},
+    {n:'Fred',pos:'CDM',r:78},{n:'Sebastian Szymanski',pos:'CDM',r:80},
+    {n:'İrfan Can Kahveci',pos:'CM',r:80},{n:"N'Golo Kanté",pos:'CM',r:84},
+    {n:"N'Golo Kanté",pos:'CAM',r:84},{n:'Marco Asensio',pos:'RAM',r:80},
+    {n:'Marco Asensio',pos:'RW',r:80},{n:'İrfan Can Kahveci',pos:'LW',r:80},
+    {n:'Edin Džeko',pos:'ST',r:76},{n:'Michy Batshuayi',pos:'ST',r:72},{n:'Vedat Muriqi',pos:'ST',r:74}
+  ]},
+  {id:'besik9091',name:'Beşiktaş',season:'1990/91',decade:'1990s',tier:'elite',col:'#1a1a1a',strength:90,predicted:1,players:[
+    {n:'Rüştü Reçber',pos:'GK',r:76},{n:'Hayrettin',pos:'GK',r:64},
+    {n:'Metin Tekin',pos:'RB',r:78},{n:'Ali Gültiken',pos:'RB',r:74},
+    {n:'Rıza Çalımbay',pos:'CB',r:78},{n:'Recep Çetin',pos:'CB',r:76},{n:'İhsan Hepsev',pos:'CB',r:70},
+    {n:'Ali Gültiken',pos:'LB',r:74},{n:'Mehmet Ekşioğlu',pos:'LWB',r:70},
+    {n:'Recep Çetin',pos:'CDM',r:76},{n:'Metin Tekin',pos:'CDM',r:74},
+    {n:'Metin Tekin',pos:'CM',r:78},{n:'Recep Çetin',pos:'CM',r:76},
+    {n:'Sergen Yalçın',pos:'CAM',r:82},{n:'Gordon Durie',pos:'RAM',r:76},
+    {n:'Gordon Durie',pos:'RW',r:76},{n:'Rıza Çalımbay',pos:'LW',r:72},
+    {n:'Feyyaz Uçar',pos:'ST',r:80},{n:'Gordon Durie',pos:'ST',r:76},{n:'İhsan Hepsev',pos:'ST',r:68}
+  ]},
+  {id:'besik9293',name:'Beşiktaş',season:'1992/93',decade:'1990s',tier:'elite',col:'#1a1a1a',strength:88,predicted:1,players:[
+    {n:'Rüştü Reçber',pos:'GK',r:80},{n:'Hayrettin',pos:'GK',r:64},
+    {n:'Metin Tekin',pos:'RB',r:78},{n:'Ali Gültiken',pos:'RB',r:74},
+    {n:'Rıza Çalımbay',pos:'CB',r:78},{n:'Gökhan Keskin',pos:'CB',r:74},{n:'Recep Çetin',pos:'CB',r:76},
+    {n:'Ali Gültiken',pos:'LB',r:74},{n:'Mehmet Ekşioğlu',pos:'LWB',r:70},
+    {n:'Recep Çetin',pos:'CDM',r:76},{n:'Oğuz Çetin',pos:'CDM',r:70},
+    {n:'Sergen Yalçın',pos:'CM',r:84},{n:'Metin Tekin',pos:'CM',r:78},
+    {n:'Sergen Yalçın',pos:'CAM',r:84},{n:'Rıza Çalımbay',pos:'RAM',r:76},
+    {n:'Feyyaz Uçar',pos:'RW',r:78},{n:'İsmet Tosyalı',pos:'LW',r:70},
+    {n:'Feyyaz Uçar',pos:'ST',r:80},{n:'İsmet Tosyalı',pos:'ST',r:70},{n:'Sergen Yalçın',pos:'ST',r:82}
+  ]},
+  {id:'besik9596',name:'Beşiktaş',season:'1995/96',decade:'1990s',tier:'good',col:'#1a1a1a',strength:78,predicted:2,players:[
+    {n:'Rüştü Reçber',pos:'GK',r:78},{n:'Hayrettin',pos:'GK',r:62},
+    {n:'Metin Tekin',pos:'RB',r:76},{n:'Mustafa Denizli',pos:'RB',r:68},
+    {n:'Rıza Çalımbay',pos:'CB',r:76},{n:'Gökhan Keskin',pos:'CB',r:72},{n:'Recep Çetin',pos:'CB',r:74},
+    {n:'Gökhan Keskin',pos:'LB',r:72},{n:'Metin Tekin',pos:'LWB',r:74},
+    {n:'Recep Çetin',pos:'CDM',r:74},{n:'Metin Tekin',pos:'CDM',r:74},
+    {n:'Sergen Yalçın',pos:'CM',r:82},{n:'Metin Tekin',pos:'CM',r:74},
+    {n:'Sergen Yalçın',pos:'CAM',r:82},{n:'Feyyaz Uçar',pos:'RAM',r:76},
+    {n:'Feyyaz Uçar',pos:'RW',r:76},{n:'İsmet Tosyalı',pos:'LW',r:70},
+    {n:'Feyyaz Uçar',pos:'ST',r:78},{n:'İsmet Tosyalı',pos:'ST',r:70},{n:'Sergen Yalçın',pos:'ST',r:80}
+  ]},
+  {id:'besik9899',name:'Beşiktaş',season:'1998/99',decade:'1990s',tier:'good',col:'#1a1a1a',strength:76,predicted:3,players:[
+    {n:'Rüştü Reçber',pos:'GK',r:80},{n:'Hayrettin',pos:'GK',r:62},
+    {n:'Metin Tekin',pos:'RB',r:74},{n:'Vedat Işıkara',pos:'RB',r:64},
+    {n:'Rıza Çalımbay',pos:'CB',r:74},{n:'Gökhan Keskin',pos:'CB',r:70},{n:'Vedat Işıkara',pos:'CB',r:64},
+    {n:'Gökhan Keskin',pos:'LB',r:70},{n:'Metin Tekin',pos:'LWB',r:72},
+    {n:'Recep Çetin',pos:'CDM',r:72},{n:'Metin Tekin',pos:'CDM',r:72},
+    {n:'Sergen Yalçın',pos:'CM',r:82},{n:'Metin Tekin',pos:'CM',r:72},
+    {n:'Sergen Yalçın',pos:'CAM',r:82},{n:'Ahmet İlhan Özek',pos:'RAM',r:70},
+    {n:'Ahmet İlhan Özek',pos:'RW',r:70},{n:'Tayfur Havutçu',pos:'LW',r:66},
+    {n:'Feyyaz Uçar',pos:'ST',r:72},{n:'Ahmet İlhan Özek',pos:'ST',r:70},{n:'Sergen Yalçın',pos:'ST',r:80}
+  ]},
+  {id:'besik0203',name:'Beşiktaş',season:'2002/03',decade:'2000s',tier:'good',col:'#1a1a1a',strength:76,predicted:3,players:[
+    {n:'Rüştü Reçber',pos:'GK',r:82},{n:'Hayrettin',pos:'GK',r:62},
+    {n:'İbrahim Toraman',pos:'RB',r:68},{n:'Talat Dumankaya',pos:'RB',r:66},
+    {n:'Gökhan Zan',pos:'CB',r:72},{n:'İbrahim Toraman',pos:'CB',r:70},{n:'Umit Ozturk',pos:'CB',r:68},
+    {n:'Gökhan Zan',pos:'LB',r:72},{n:'Talat Dumankaya',pos:'LWB',r:66},
+    {n:'Sergen Yalçın',pos:'CDM',r:80},{n:'Mehmet Aurelio',pos:'CDM',r:72},
+    {n:'Sergen Yalçın',pos:'CM',r:80},{n:'Mehmet Aurelio',pos:'CM',r:72},
+    {n:'Sergen Yalçın',pos:'CAM',r:82},{n:'Suat Kaya',pos:'RAM',r:68},
+    {n:'Paulo Sérgio',pos:'RW',r:74},{n:'Paulo Sérgio',pos:'LW',r:74},
+    {n:'Paulo Sérgio',pos:'ST',r:74},{n:'İlhan Mansız',pos:'ST',r:70},{n:'Sergen Yalçın',pos:'ST',r:78}
+  ]},
+  {id:'besik0506',name:'Beşiktaş',season:'2005/06',decade:'2000s',tier:'good',col:'#1a1a1a',strength:76,predicted:3,players:[
+    {n:'Rüştü Reçber',pos:'GK',r:82},{n:'Sinan Bolat',pos:'GK',r:64},
+    {n:'İbrahim Toraman',pos:'RB',r:70},{n:'Ricardinho',pos:'RB',r:68},
+    {n:'Gökhan Zan',pos:'CB',r:70},{n:'Serdar Topraktepe',pos:'CB',r:66},{n:'Uche Okechukwu',pos:'CB',r:68},
+    {n:'Uche Okechukwu',pos:'LB',r:68},{n:'Delgado',pos:'LWB',r:66},
+    {n:'Sergen Yalçın',pos:'CDM',r:78},{n:'Rodrigo Tello',pos:'CDM',r:68},
+    {n:'Sergen Yalçın',pos:'CM',r:80},{n:'Ibrahima Bakayoko',pos:'CM',r:68},
+    {n:'Sergen Yalçın',pos:'CAM',r:80},{n:'İlhan Mansız',pos:'RAM',r:72},
+    {n:'İlhan Mansız',pos:'RW',r:72},{n:'Rodrigo Tello',pos:'LW',r:70},
+    {n:'Rodrigo Tello',pos:'ST',r:70},{n:'Burak Yılmaz',pos:'ST',r:76},{n:'İlhan Mansız',pos:'ST',r:72}
+  ]},
+  {id:'besik0809',name:'Beşiktaş',season:'2008/09',decade:'2000s',tier:'good',col:'#1a1a1a',strength:78,predicted:3,players:[
+    {n:'Rüştü Reçber',pos:'GK',r:80},{n:'Cenk Gönen',pos:'GK',r:68},
+    {n:'İbrahim Toraman',pos:'RB',r:76},{n:'Serdar Topraktepe',pos:'RB',r:68},
+    {n:'İbrahim Toraman',pos:'CB',r:76},{n:'Tomas Sivok',pos:'CB',r:72},{n:'Gökhan Zan',pos:'CB',r:72},
+    {n:'Gökhan Zan',pos:'LB',r:72},{n:'Tomas Sivok',pos:'LWB',r:72},
+    {n:'Tomas Sivok',pos:'CDM',r:72},{n:'Mehmet Aurelio',pos:'CDM',r:70},
+    {n:'Mehmet Aurelio',pos:'CM',r:70},{n:'Bobo',pos:'CM',r:72},
+    {n:'Ricardo Quaresma',pos:'CAM',r:82},{n:'Matias Fernandez',pos:'RAM',r:74},
+    {n:'Ricardo Quaresma',pos:'RW',r:82},{n:'Bobo',pos:'LW',r:72},
+    {n:'Bobo',pos:'ST',r:74},{n:'Ricardo Quaresma',pos:'ST',r:76},{n:'Matias Fernandez',pos:'ST',r:70}
+  ]},
+  {id:'besik1213',name:'Beşiktaş',season:'2012/13',decade:'2010s',tier:'good',col:'#1a1a1a',strength:74,predicted:4,players:[
+    {n:'Tolga Zengin',pos:'GK',r:76},{n:'Cenk Gönen',pos:'GK',r:66},
+    {n:'İbrahim Toraman',pos:'RB',r:72},{n:'Tomas Sivok',pos:'RB',r:70},
+    {n:'İbrahim Toraman',pos:'CB',r:72},{n:'Manuel Montoya',pos:'CB',r:70},{n:'Tomas Sivok',pos:'CB',r:72},
+    {n:'Gökhan Zan',pos:'LB',r:70},{n:'Egemen Korkmaz',pos:'LWB',r:68},
+    {n:'Pedro Franco',pos:'CDM',r:68},{n:'Ernst Öcan',pos:'CDM',r:68},
+    {n:'Olcay Şahan',pos:'CM',r:72},{n:'Ernst Öcan',pos:'CM',r:68},
+    {n:'Ricardo Quaresma',pos:'CAM',r:76},{n:'Mustafa Pektemek',pos:'RAM',r:70},
+    {n:'Ricardo Quaresma',pos:'RW',r:76},{n:'Mustafa Pektemek',pos:'LW',r:70},
+    {n:'Mustafa Pektemek',pos:'ST',r:72},{n:'Hugo Almeida',pos:'ST',r:74},{n:'Olcay Şahan',pos:'ST',r:70}
+  ]},
+  {id:'besik1516',name:'Beşiktaş',season:'2015/16',decade:'2010s',tier:'elite',col:'#1a1a1a',strength:87,predicted:1,players:[
+    {n:'Tolga Zengin',pos:'GK',r:78},{n:'Cenk Gönen',pos:'GK',r:68},
+    {n:'Gökhan Gönül',pos:'RB',r:80},{n:'Rhodolfo',pos:'RB',r:70},
+    {n:'Rhodolfo',pos:'CB',r:72},{n:'Andreas Beck',pos:'CB',r:70},{n:'Duško Tošić',pos:'CB',r:72},
+    {n:'Adriano',pos:'LB',r:76},{n:'Veli Kavlak',pos:'LWB',r:72},
+    {n:'Atiba Hutchinson',pos:'CDM',r:82},{n:'Veli Kavlak',pos:'CDM',r:72},
+    {n:'Oguzhan Özyakup',pos:'CM',r:78},{n:'Olcay Şahan',pos:'CM',r:74},
+    {n:'Mario Gomez',pos:'CAM',r:80},{n:'Oguzhan Özyakup',pos:'RAM',r:78},
+    {n:'Cenk Tosun',pos:'RW',r:76},{n:'Olcay Şahan',pos:'LW',r:74},
+    {n:'Mario Gomez',pos:'ST',r:82},{n:'Cenk Tosun',pos:'ST',r:76},{n:'Demba Ba',pos:'ST',r:78}
+  ]},
+  {id:'besik1617',name:'Beşiktaş',season:'2016/17',decade:'2010s',tier:'elite',col:'#1a1a1a',strength:89,predicted:1,players:[
+    {n:'Fabri',pos:'GK',r:78},{n:'Tolga Zengin',pos:'GK',r:76},
+    {n:'Gökhan Gönül',pos:'RB',r:78},{n:'Adriano',pos:'RB',r:72},
+    {n:'Marcelo',pos:'CB',r:72},{n:'Domagoj Vida',pos:'CB',r:76},{n:'Andreas Beck',pos:'CB',r:70},
+    {n:'Adriano',pos:'LB',r:76},{n:'Ryan Babel',pos:'LWB',r:76},
+    {n:'Atiba Hutchinson',pos:'CDM',r:82},{n:'Tolgay Arslan',pos:'CDM',r:76},
+    {n:'Oguzhan Özyakup',pos:'CM',r:78},{n:'Anderson Talisca',pos:'CM',r:82},
+    {n:'Anderson Talisca',pos:'CAM',r:82},{n:'Ryan Babel',pos:'RAM',r:76},
+    {n:'Ryan Babel',pos:'RW',r:76},{n:'Cenk Tosun',pos:'LW',r:76},
+    {n:'Cenk Tosun',pos:'ST',r:80},{n:'Vincent Aboubakar',pos:'ST',r:78},{n:'Demba Ba',pos:'ST',r:74}
+  ]},
+  {id:'besik2021',name:'Beşiktaş',season:'2020/21',decade:'2020s',tier:'elite',col:'#1a1a1a',strength:88,predicted:1,players:[
+    {n:'Ersin Destanoğlu',pos:'GK',r:76},{n:'Utku Yuvakuran',pos:'GK',r:60},
+    {n:'Valentin Rosier',pos:'RB',r:72},{n:'Welinton',pos:'RB',r:70},
+    {n:'Domagoj Vida',pos:'CB',r:78},{n:'Welinton',pos:'CB',r:72},{n:'Francisco Montero',pos:'CB',r:70},
+    {n:'Ridvan Yılmaz',pos:'LB',r:70},{n:'Bernard',pos:'LWB',r:68},
+    {n:'Atiba Hutchinson',pos:'CDM',r:78},{n:'Necip Uysal',pos:'CDM',r:72},
+    {n:'Oguzhan Özyakup',pos:'CM',r:76},{n:'Georges-Kévin Nkoudou',pos:'CM',r:72},
+    {n:'Rachid Ghezzal',pos:'CAM',r:74},{n:'Cyle Larin',pos:'RAM',r:74},
+    {n:'Cyle Larin',pos:'RW',r:74},{n:'Georges-Kévin Nkoudou',pos:'LW',r:72},
+    {n:'Burak Yılmaz',pos:'ST',r:80},{n:'Cyle Larin',pos:'ST',r:74},{n:'Vincent Aboubakar',pos:'ST',r:74}
+  ]},
+  {id:'besik2324',name:'Beşiktaş',season:'2023/24',decade:'2020s',tier:'good',col:'#1a1a1a',strength:76,predicted:4,players:[
+    {n:'Ersin Destanoğlu',pos:'GK',r:78},{n:'Mert Günok',pos:'GK',r:74},
+    {n:'Valentin Rosier',pos:'RB',r:72},{n:'Can Bozdoğan',pos:'RB',r:64},
+    {n:'Domagoj Vida',pos:'CB',r:74},{n:'Gabriel Paulista',pos:'CB',r:74},{n:'Serdar Saatçı',pos:'CB',r:68},
+    {n:'Ridvan Yılmaz',pos:'LB',r:72},{n:'Bernard',pos:'LWB',r:66},
+    {n:'Salih Uçan',pos:'CDM',r:70},{n:'Al-Musrati',pos:'CDM',r:72},
+    {n:'Tayfur Bingöl',pos:'CM',r:68},{n:'Al-Musrati',pos:'CM',r:72},
+    {n:'Rafa Silva',pos:'CAM',r:76},{n:'Cyle Larin',pos:'RAM',r:72},
+    {n:'Rafa Silva',pos:'RW',r:76},{n:'João Mário',pos:'LW',r:72},
+    {n:'Cenk Tosun',pos:'ST',r:72},{n:'Cyle Larin',pos:'ST',r:72},{n:'Vincent Aboubakar',pos:'ST',r:74}
+  ]},
+  {id:'trabzon9091',name:'Trabzonspor',season:'1990/91',decade:'1990s',tier:'good',col:'#cc6600',strength:76,predicted:3,players:[
+    {n:'Sinan Engin',pos:'GK',r:74},{n:'Cevahir',pos:'GK',r:62},
+    {n:'Hami Mandıralı',pos:'RB',r:80},{n:'Cengiz Çimen',pos:'RB',r:66},
+    {n:'Recep Yıldırım',pos:'CB',r:68},{n:'Şaban Yıldırım',pos:'CB',r:66},{n:'Cengiz Çimen',pos:'CB',r:66},
+    {n:'Orhan Çıkrıkçı',pos:'LB',r:70},{n:'Cengiz Çimen',pos:'LWB',r:66},
+    {n:'Hami Mandıralı',pos:'CDM',r:78},{n:'Orhan Çıkrıkçı',pos:'CDM',r:68},
+    {n:'Göksel Güneş',pos:'CM',r:72},{n:'Hami Mandıralı',pos:'CM',r:78},
+    {n:'Orhan Çıkrıkçı',pos:'CAM',r:70},{n:'Hami Mandıralı',pos:'RAM',r:80},
+    {n:'Hami Mandıralı',pos:'RW',r:80},{n:'Şükrü Erkol',pos:'LW',r:70},
+    {n:'Şükrü Erkol',pos:'ST',r:72},{n:'Cengiz Topçu',pos:'ST',r:70},{n:'Hami Mandıralı',pos:'ST',r:78}
+  ]},
+  {id:'trabzon9192',name:'Trabzonspor',season:'1991/92',decade:'1990s',tier:'good',col:'#cc6600',strength:74,predicted:3,players:[
+    {n:'Sinan Engin',pos:'GK',r:72},{n:'Hayrettin Demir',pos:'GK',r:60},
+    {n:'Hami Mandıralı',pos:'RB',r:80},{n:'Fatih Akyel',pos:'RB',r:68},
+    {n:'Recep Yıldırım',pos:'CB',r:68},{n:'Şaban Yıldırım',pos:'CB',r:66},{n:'Cengiz Çimen',pos:'CB',r:66},
+    {n:'Orhan Çıkrıkçı',pos:'LB',r:68},{n:'Cengiz Çimen',pos:'LWB',r:66},
+    {n:'Hami Mandıralı',pos:'CDM',r:80},{n:'Göksel Güneş',pos:'CDM',r:68},
+    {n:'Göksel Güneş',pos:'CM',r:68},{n:'Hami Mandıralı',pos:'CM',r:80},
+    {n:'Orhan Çıkrıkçı',pos:'CAM',r:70},{n:'Hami Mandıralı',pos:'RAM',r:80},
+    {n:'Hami Mandıralı',pos:'RW',r:80},{n:'Şükrü Erkol',pos:'LW',r:68},
+    {n:'Şükrü Erkol',pos:'ST',r:70},{n:'Cengiz Topçu',pos:'ST',r:68},{n:'Tolga Özkalay',pos:'ST',r:64}
+  ]},
+  {id:'trabzon9596',name:'Trabzonspor',season:'1995/96',decade:'1990s',tier:'good',col:'#cc6600',strength:78,predicted:2,players:[
+    {n:'Sinan Engin',pos:'GK',r:74},{n:'Cevahir',pos:'GK',r:62},
+    {n:'Hami Mandıralı',pos:'RB',r:82},{n:'Fatih Akyel',pos:'RB',r:70},
+    {n:'Fatih Akyel',pos:'CB',r:70},{n:'Recep Yıldırım',pos:'CB',r:72},{n:'Şaban Yıldırım',pos:'CB',r:68},
+    {n:'Cengiz Çimen',pos:'LB',r:68},{n:'Cengiz Çimen',pos:'LWB',r:68},
+    {n:'Hami Mandıralı',pos:'CDM',r:82},{n:'Göksel Güneş',pos:'CDM',r:72},
+    {n:'Göksel Güneş',pos:'CM',r:72},{n:'Hami Mandıralı',pos:'CM',r:82},
+    {n:'Orhan Çıkrıkçı',pos:'CAM',r:72},{n:'Hami Mandıralı',pos:'RAM',r:82},
+    {n:'Hami Mandıralı',pos:'RW',r:82},{n:'Şükrü Erkol',pos:'LW',r:72},
+    {n:'Şükrü Erkol',pos:'ST',r:74},{n:'Cengiz Topçu',pos:'ST',r:72},{n:'Tolga Özkalay',pos:'ST',r:68}
+  ]},
+  {id:'trabzon0203',name:'Trabzonspor',season:'2002/03',decade:'2000s',tier:'good',col:'#cc6600',strength:72,predicted:3,players:[
+    {n:'Sinan Engin',pos:'GK',r:72},{n:'Zafer Biryol',pos:'GK',r:60},
+    {n:'Hami Mandıralı',pos:'RB',r:76},{n:'Fatih Akyel',pos:'RB',r:68},
+    {n:'Fatih Akyel',pos:'CB',r:68},{n:'Aykut Demir',pos:'CB',r:64},{n:'İsa Ayas',pos:'CB',r:64},
+    {n:'İsa Ayas',pos:'LB',r:64},{n:'Hami Mandıralı',pos:'LWB',r:76},
+    {n:'Hami Mandıralı',pos:'CDM',r:76},{n:'Göksel Güneş',pos:'CDM',r:70},
+    {n:'Göksel Güneş',pos:'CM',r:70},{n:'Hami Mandıralı',pos:'CM',r:76},
+    {n:'Orhan Çıkrıkçı',pos:'CAM',r:68},{n:'Hami Mandıralı',pos:'RAM',r:76},
+    {n:'Hami Mandıralı',pos:'RW',r:76},{n:'Şükrü Erkol',pos:'LW',r:68},
+    {n:'Şükrü Erkol',pos:'ST',r:70},{n:'Fatih Tekke',pos:'ST',r:74},{n:'Hami Mandıralı',pos:'ST',r:74}
+  ]},
+  {id:'trabzon0708',name:'Trabzonspor',season:'2007/08',decade:'2000s',tier:'good',col:'#cc6600',strength:72,predicted:4,players:[
+    {n:'Onur Kıvrak',pos:'GK',r:74},{n:'Zafer Biryol',pos:'GK',r:60},
+    {n:'Egemen Korkmaz',pos:'RB',r:70},{n:'Güven Yalçın',pos:'RB',r:64},
+    {n:'Egemen Korkmaz',pos:'CB',r:70},{n:'Aykut Demir',pos:'CB',r:66},{n:'Ceyhun Eriş',pos:'CB',r:62},
+    {n:'Ceyhun Eriş',pos:'LB',r:62},{n:'Egemen Korkmaz',pos:'LWB',r:70},
+    {n:'Salih Dursun',pos:'CDM',r:66},{n:'Mehmet Ekici',pos:'CDM',r:68},
+    {n:'Salih Dursun',pos:'CM',r:66},{n:'Mehmet Ekici',pos:'CM',r:68},
+    {n:'Mehmet Ekici',pos:'CAM',r:70},{n:'Šokota',pos:'RAM',r:68},
+    {n:'Šokota',pos:'RW',r:68},{n:'Fatih Tekke',pos:'LW',r:72},
+    {n:'Fatih Tekke',pos:'ST',r:74},{n:'Šokota',pos:'ST',r:68},{n:'Gustavo',pos:'ST',r:66}
+  ]},
+  {id:'trabzon1011',name:'Trabzonspor',season:'2010/11',decade:'2010s',tier:'good',col:'#cc6600',strength:79,predicted:2,players:[
+    {n:'Onur Kıvrak',pos:'GK',r:78},{n:'Fatih Öztürk',pos:'GK',r:62},
+    {n:'Remzi Giray Kaçar',pos:'RB',r:68},{n:'Ceyhun Eriş',pos:'RB',r:62},
+    {n:'Serdar Aziz',pos:'CB',r:70},{n:'Aykut Demir',pos:'CB',r:66},{n:'Egemen Korkmaz',pos:'CB',r:70},
+    {n:'Egemen Korkmaz',pos:'LB',r:70},{n:'Remzi Giray Kaçar',pos:'LWB',r:68},
+    {n:'Halil İbrahim Dinçdag',pos:'CDM',r:68},{n:'Salih Dursun',pos:'CDM',r:66},
+    {n:'Salih Dursun',pos:'CM',r:66},{n:'Halil İbrahim Dinçdag',pos:'CM',r:68},
+    {n:'Burak Yılmaz',pos:'CAM',r:82},{n:'Colman',pos:'RAM',r:70},
+    {n:'Colman',pos:'RW',r:70},{n:'Šokota',pos:'LW',r:70},
+    {n:'Burak Yılmaz',pos:'ST',r:82},{n:'Šokota',pos:'ST',r:70},{n:'Gustavo',pos:'ST',r:68}
+  ]},
+  {id:'trabzon1516',name:'Trabzonspor',season:'2015/16',decade:'2010s',tier:'good',col:'#cc6600',strength:74,predicted:4,players:[
+    {n:'Uğurcan Çakır',pos:'GK',r:72},{n:'Fatih Öztürk',pos:'GK',r:62},
+    {n:'Zeki Yavru',pos:'RB',r:68},{n:'Yusuf Yazıcı',pos:'RB',r:72},
+    {n:'Aykut Demir',pos:'CB',r:66},{n:'Serdar Kurtuluş',pos:'CB',r:64},{n:'Kıvanç Kalınkoca',pos:'CB',r:64},
+    {n:'Kıvanç Kalınkoca',pos:'LB',r:64},{n:'Yusuf Yazıcı',pos:'LWB',r:72},
+    {n:'Mehmet Ekici',pos:'CDM',r:74},{n:'Rodallega',pos:'CDM',r:70},
+    {n:'Mehmet Ekici',pos:'CM',r:74},{n:'Yusuf Yazıcı',pos:'CM',r:72},
+    {n:'Yusuf Yazıcı',pos:'CAM',r:74},{n:'Rodallega',pos:'RAM',r:70},
+    {n:'Yusuf Yazıcı',pos:'RW',r:74},{n:'Abdülkadir Parmak',pos:'LW',r:68},
+    {n:'Rodallega',pos:'ST',r:74},{n:'Mustafa Yumlu',pos:'ST',r:62},{n:'Mehmet Ekici',pos:'ST',r:70}
+  ]},
+  {id:'trabzon2122',name:'Trabzonspor',season:'2021/22',decade:'2020s',tier:'elite',col:'#cc6600',strength:88,predicted:1,players:[
+    {n:'Uğurcan Çakır',pos:'GK',r:82},{n:'Saveljich',pos:'GK',r:62},
+    {n:'Vitor Hugo',pos:'RB',r:74},{n:'Anastasios Bakasetas',pos:'RB',r:72},
+    {n:'Marc Bartra',pos:'CB',r:78},{n:'Vitor Hugo',pos:'CB',r:74},{n:'Stefano Denswil',pos:'CB',r:72},
+    {n:'Yusuf Sarı',pos:'LB',r:70},{n:'Savenkov',pos:'LWB',r:66},
+    {n:'Dorukhan Toköz',pos:'CDM',r:74},{n:'Okay Yokuşlu',pos:'CDM',r:78},
+    {n:'Anastasios Bakasetas',pos:'CM',r:78},{n:'Edin Visca',pos:'CM',r:78},
+    {n:'Edin Visca',pos:'CAM',r:78},{n:'Majeed Ashimeru',pos:'RAM',r:72},
+    {n:'Edin Visca',pos:'RW',r:78},{n:'Djaniny',pos:'LW',r:72},
+    {n:'Alexander Sørloth',pos:'ST',r:82},{n:'Djaniny',pos:'ST',r:72},{n:'Anastasios Bakasetas',pos:'ST',r:76}
+  ]},
+  {id:'trabzon2526',name:'Trabzonspor',season:'2025/26',decade:'2020s',tier:'good',col:'#cc6600',strength:78,predicted:3,players:[
+    {n:'Uğurcan Çakır',pos:'GK',r:80},{n:'Saveljich',pos:'GK',r:62},
+    {n:'Vitor Hugo',pos:'RB',r:72},{n:'Anastasios Bakasetas',pos:'RB',r:74},
+    {n:'Marc Bartra',pos:'CB',r:76},{n:'Vitor Hugo',pos:'CB',r:72},{n:'Stefano Denswil',pos:'CB',r:70},
+    {n:'Yusuf Sarı',pos:'LB',r:68},{n:'Anastasios Bakasetas',pos:'LWB',r:74},
+    {n:'Dorukhan Toköz',pos:'CDM',r:72},{n:'Okay Yokuşlu',pos:'CDM',r:78},
+    {n:'Anastasios Bakasetas',pos:'CM',r:78},{n:'Edin Visca',pos:'CM',r:76},
+    {n:'Edin Visca',pos:'CAM',r:76},{n:'Majeed Ashimeru',pos:'RAM',r:72},
+    {n:'Edin Visca',pos:'RW',r:76},{n:'Djaniny',pos:'LW',r:70},
+    {n:'Paul Onuachu',pos:'ST',r:76},{n:'Djaniny',pos:'ST',r:70},{n:'Anastasios Bakasetas',pos:'ST',r:74}
+  ]},
+  {id:'bursa0910',name:'Bursaspor',season:'2009/10',decade:'2010s',tier:'elite',col:'#006400',strength:82,predicted:1,players:[
+    {n:'Şenol Can',pos:'GK',r:72},{n:'Zafer Biryol',pos:'GK',r:66},
+    {n:'Ömer Erdoğan',pos:'RB',r:72},{n:'Volkan Şen',pos:'RB',r:70},
+    {n:'Serkan Balcı',pos:'CB',r:70},{n:'Pablo Batalla',pos:'CB',r:72},{n:'Kaya Tarakçı',pos:'CB',r:68},
+    {n:'Kaya Tarakçı',pos:'LB',r:68},{n:'İsmail Köybaşı',pos:'LWB',r:66},
+    {n:'Şener Özbayraklı',pos:'CDM',r:68},{n:'Antonio',pos:'CDM',r:72},
+    {n:'Antonio',pos:'CM',r:72},{n:'Volkan Şen',pos:'CM',r:70},
+    {n:'Volkan Şen',pos:'CAM',r:70},{n:'Adrian Mierzejewski',pos:'RAM',r:74},
+    {n:'Adrian Mierzejewski',pos:'RW',r:74},{n:'Tomas Polak',pos:'LW',r:68},
+    {n:'Tomas Polak',pos:'ST',r:70},{n:'Ivan Ergić',pos:'ST',r:68},{n:'Sertan Vardar',pos:'ST',r:66}
+  ]},
+  {id:'basak1718',name:'İst. Başakşehir',season:'2017/18',decade:'2010s',tier:'good',col:'#ff8c00',strength:74,predicted:2,players:[
+    {n:'Volkan Babacan',pos:'GK',r:72},{n:'İrfan Can Eğribayat',pos:'GK',r:64},
+    {n:'Rafael',pos:'RB',r:74},{n:'Mossoró',pos:'RB',r:64},
+    {n:'Mossoró',pos:'CB',r:64},{n:'Léo Duarte',pos:'CB',r:68},{n:'Gaël Clichy',pos:'CB',r:68},
+    {n:'Gaël Clichy',pos:'LB',r:68},{n:'Mossoró',pos:'LWB',r:64},
+    {n:'Mahmut Tekdemir',pos:'CDM',r:68},{n:'Salih Uçan',pos:'CDM',r:68},
+    {n:'İrfan Can Kahveci',pos:'CM',r:74},{n:'Salih Uçan',pos:'CM',r:68},
+    {n:'Edin Visca',pos:'CAM',r:76},{n:'İrfan Can Kahveci',pos:'RAM',r:74},
+    {n:'Edin Visca',pos:'RW',r:76},{n:'Robinho',pos:'LW',r:70},
+    {n:'Demba Ba',pos:'ST',r:74},{n:'Robinho',pos:'ST',r:70},{n:'Enzo Crivelli',pos:'ST',r:62}
+  ]},
+  {id:'basak1920',name:'İst. Başakşehir',season:'2019/20',decade:'2020s',tier:'elite',col:'#ff8c00',strength:84,predicted:1,players:[
+    {n:'Mert Günok',pos:'GK',r:78},{n:'İrfan Can Eğribayat',pos:'GK',r:68},
+    {n:'Rafael',pos:'RB',r:76},{n:'Ridvan Yılmaz',pos:'RB',r:68},
+    {n:'Wielaard',pos:'CB',r:70},{n:'Léo Duarte',pos:'CB',r:72},{n:'Gaël Clichy',pos:'CB',r:70},
+    {n:'Gaël Clichy',pos:'LB',r:70},{n:'Ridvan Yılmaz',pos:'LWB',r:68},
+    {n:'Mahmut Tekdemir',pos:'CDM',r:72},{n:'Salih Uçan',pos:'CDM',r:72},
+    {n:'İrfan Can Kahveci',pos:'CM',r:78},{n:'Salih Uçan',pos:'CM',r:72},
+    {n:'Edin Visca',pos:'CAM',r:78},{n:'İrfan Can Kahveci',pos:'RAM',r:78},
+    {n:'Edin Visca',pos:'RW',r:78},{n:'Robinho',pos:'LW',r:72},
+    {n:'Demba Ba',pos:'ST',r:76},{n:'Robinho',pos:'ST',r:72},{n:'Enzo Crivelli',pos:'ST',r:66}
+  ]},
+  {id:'sivas0809',name:'Sivasspor',season:'2008/09',decade:'2000s',tier:'good',col:'#cc0000',strength:74,predicted:2,players:[
+    {n:'Hakan Arıkan',pos:'GK',r:72},{n:'Ahmet Şahin',pos:'GK',r:60},
+    {n:'Mehmet Yıldız',pos:'RB',r:70},{n:'Korhan Beşen',pos:'RB',r:66},
+    {n:'Fatih Şen',pos:'CB',r:66},{n:'Korhan Beşen',pos:'CB',r:66},{n:'Servet Çetin',pos:'CB',r:72},
+    {n:'Fatih Şen',pos:'LB',r:66},{n:'Mehmet Yıldız',pos:'LWB',r:70},
+    {n:'Muzaffer Bilazer',pos:'CDM',r:68},{n:'Tümer Metin',pos:'CDM',r:72},
+    {n:'Tümer Metin',pos:'CM',r:72},{n:'Muzaffer Bilazer',pos:'CM',r:68},
+    {n:'Tümer Metin',pos:'CAM',r:74},{n:'Hasan Şaş',pos:'RAM',r:72},
+    {n:'Hasan Şaş',pos:'RW',r:72},{n:'Halil Altıntop',pos:'LW',r:72},
+    {n:'Mehmet Yıldız',pos:'ST',r:70},{n:'Halil Altıntop',pos:'ST',r:72},{n:'Tümer Metin',pos:'ST',r:72}
+  ]},
+  {id:'sivas2021',name:'Sivasspor',season:'2020/21',decade:'2020s',tier:'mid',col:'#cc0000',strength:63,predicted:6,players:[
+    {n:'Muammer Yıldırım',pos:'GK',r:70},{n:'Rafał Gikiewicz',pos:'GK',r:64},
+    {n:'Caner Oskay',pos:'RB',r:62},{n:'Ahmet Oğuz',pos:'RB',r:62},
+    {n:'Uğur Çiftçi',pos:'CB',r:64},{n:'Caner Oskay',pos:'CB',r:62},{n:'Yasin Öztekin',pos:'CB',r:62},
+    {n:'Yasin Öztekin',pos:'LB',r:62},{n:'Caner Oskay',pos:'LWB',r:62},
+    {n:'Mert Hakan Yandaş',pos:'CDM',r:68},{n:'Emre Kılınç',pos:'CDM',r:66},
+    {n:'Emre Kılınç',pos:'CM',r:66},{n:'Mert Hakan Yandaş',pos:'CM',r:68},
+    {n:'Emre Kılınç',pos:'CAM',r:68},{n:'Mustapha Yatabaré',pos:'RAM',r:64},
+    {n:'Mustapha Yatabaré',pos:'RW',r:64},{n:'Yasin Öztekin',pos:'LW',r:62},
+    {n:'Mustapha Yatabaré',pos:'ST',r:68},{n:'Emre Kılınç',pos:'ST',r:66},{n:'Erdoğan Yeşilyurt',pos:'ST',r:60}
+  ]},
+  {id:'kasim1314',name:'Kasımpaşa',season:'2013/14',decade:'2010s',tier:'mid',col:'#cc0000',strength:64,predicted:7,players:[
+    {n:'Sinan Bolat',pos:'GK',r:70},{n:'Ahmet Şahin',pos:'GK',r:58},
+    {n:'Emre Çolak',pos:'RB',r:68},{n:'Lamine',pos:'RB',r:62},
+    {n:'Lucas',pos:'CB',r:66},{n:'Zuiverloon',pos:'CB',r:64},{n:'Lamine',pos:'CB',r:62},
+    {n:'Kévin Bérigaud',pos:'LB',r:62},{n:'Emre Çolak',pos:'LWB',r:68},
+    {n:'Hasan Kabze',pos:'CDM',r:64},{n:'Emre Çolak',pos:'CDM',r:68},
+    {n:'Emre Çolak',pos:'CM',r:68},{n:'Emrah Başsan',pos:'CM',r:62},
+    {n:"Samuel Eto'o",pos:'CAM',r:82},{n:"Samuel Eto'o",pos:'RAM',r:82},
+    {n:"Samuel Eto'o",pos:'RW',r:82},{n:'Juan Arango',pos:'LW',r:70},
+    {n:"Samuel Eto'o",pos:'ST',r:84},{n:'Juan Arango',pos:'ST',r:70},{n:'Emre Çolak',pos:'ST',r:68}
+  ]},
+  {id:'konyaspor1617',name:'Konyaspor',season:'2016/17',decade:'2010s',tier:'mid',col:'#006400',strength:63,predicted:6,players:[
+    {n:'Serkan Kırıntılı',pos:'GK',r:70},{n:'Yusuf Erdoğan',pos:'GK',r:60},
+    {n:'Lamine',pos:'RB',r:66},{n:'Ömer Bayram',pos:'RB',r:64},
+    {n:'Ömer Bayram',pos:'CB',r:64},{n:'Lucas',pos:'CB',r:66},{n:'Ali Turan',pos:'CB',r:62},
+    {n:'Ali Turan',pos:'LB',r:62},{n:'Lamine',pos:'LWB',r:66},
+    {n:'Nejc Skubic',pos:'CDM',r:68},{n:'Mehmet Ali Acar',pos:'CDM',r:64},
+    {n:'Nejc Skubic',pos:'CM',r:68},{n:'Mehmet Ali Acar',pos:'CM',r:64},
+    {n:'Bajic',pos:'CAM',r:70},{n:'Adis Jahovic',pos:'RAM',r:68},
+    {n:'Adis Jahovic',pos:'RW',r:68},{n:'Musa Çağıran',pos:'LW',r:64},
+    {n:'Bajic',pos:'ST',r:72},{n:'Adis Jahovic',pos:'ST',r:68},{n:'Musa Çağıran',pos:'ST',r:64}
+  ]},
+  {id:'adana2122',name:'Adana Demirspor',season:'2021/22',decade:'2020s',tier:'mid',col:'#003399',strength:66,predicted:6,players:[
+    {n:'Ahmet Şahin',pos:'GK',r:70},{n:'Utku Yuvakuran',pos:'GK',r:60},
+    {n:'Yassine Benzia',pos:'RB',r:66},{n:'Mert Çelik',pos:'RB',r:64},
+    {n:'Mert Çelik',pos:'CB',r:64},{n:'Gençay',pos:'CB',r:62},{n:'Rodrigues',pos:'CB',r:64},
+    {n:'Rodrigues',pos:'LB',r:64},{n:'Yassine Benzia',pos:'LWB',r:66},
+    {n:'Tarik Tissoudali',pos:'CDM',r:66},{n:'Emrah Başsan',pos:'CDM',r:62},
+    {n:'Emrah Başsan',pos:'CM',r:62},{n:'Tarik Tissoudali',pos:'CM',r:66},
+    {n:'Mario Balotelli',pos:'CAM',r:72},{n:'Yassine Benzia',pos:'RAM',r:66},
+    {n:'Yassine Benzia',pos:'RW',r:66},{n:'Gökdeniz Karadeniz',pos:'LW',r:60},
+    {n:'Mario Balotelli',pos:'ST',r:76},{n:'Gökdeniz Karadeniz',pos:'ST',r:62},{n:'Tarik Tissoudali',pos:'ST',r:66}
+  ]},
+  {id:'alanya1819',name:'Alanyaspor',season:'2018/19',decade:'2010s',tier:'mid',col:'#ff6600',strength:60,predicted:9,players:[
+    {n:'Fatih Öztürk',pos:'GK',r:70},{n:'Kamil Ahmet Çörekçi',pos:'GK',r:58},
+    {n:'Ahmet Çalık',pos:'RB',r:66},{n:'Efecan Karaca',pos:'RB',r:62},
+    {n:'Efecan Karaca',pos:'CB',r:62},{n:'Baiano',pos:'CB',r:64},{n:'Ahmet Çalık',pos:'CB',r:66},
+    {n:'Kévin Bérigaud',pos:'LB',r:62},{n:'Kévin Bérigaud',pos:'LWB',r:62},
+    {n:'Hakan Çinemre',pos:'CDM',r:64},{n:'Emirhan Topçu',pos:'CDM',r:62},
+    {n:'Emirhan Topçu',pos:'CM',r:62},{n:'Hakan Çinemre',pos:'CM',r:64},
+    {n:'Papiss Cissé',pos:'CAM',r:72},{n:'Efecan Karaca',pos:'RAM',r:62},
+    {n:'Efecan Karaca',pos:'RW',r:62},{n:'Çağlar Söyüncü',pos:'LW',r:66},
+    {n:'Papiss Cissé',pos:'ST',r:72},{n:'Hamza Çalışkan',pos:'ST',r:62},{n:'Efecan Karaca',pos:'ST',r:62}
+  ]},
+  {id:'eskisehir0910',name:'Eskişehirspor',season:'2009/10',decade:'2010s',tier:'mid',col:'#cc3300',strength:58,predicted:9,players:[
+    {n:'Ramazan Civelek',pos:'GK',r:70},{n:'Orhan Doğan',pos:'GK',r:58},
+    {n:'Musa Aydın',pos:'RB',r:62},{n:'Cengiz Çelik',pos:'RB',r:60},
+    {n:'Serkan Çelik',pos:'CB',r:62},{n:'Ahmet Arslan',pos:'CB',r:60},{n:'Cengiz Çelik',pos:'CB',r:60},
+    {n:'Ahmet Arslan',pos:'LB',r:60},{n:'Musa Aydın',pos:'LWB',r:62},
+    {n:'Batuhan Karadeniz',pos:'CDM',r:64},{n:'Musa Aydın',pos:'CDM',r:62},
+    {n:'Batuhan Karadeniz',pos:'CM',r:64},{n:'Cengiz Çelik',pos:'CM',r:60},
+    {n:'Ümit Karan',pos:'CAM',r:74},{n:'Batuhan Karadeniz',pos:'RAM',r:64},
+    {n:'Ümit Karan',pos:'RW',r:74},{n:'Serhan Gülşan',pos:'LW',r:62},
+    {n:'Ümit Karan',pos:'ST',r:76},{n:'Serhan Gülşan',pos:'ST',r:62},{n:'Batuhan Karadeniz',pos:'ST',r:64}
+  ]},
+  {id:'gencler0001',name:'Gençlerbirliği',season:'2000/01',decade:'2000s',tier:'mid',col:'#cc0000',strength:58,predicted:9,players:[
+    {n:'Mehmet Özdilek',pos:'GK',r:66},{n:'Hüseyin Demir',pos:'GK',r:56},
+    {n:'Mustafa Yumlu',pos:'RB',r:62},{n:'Salih Kurt',pos:'RB',r:58},
+    {n:'Salih Kurt',pos:'CB',r:58},{n:'Ahmet Yıldırım',pos:'CB',r:60},{n:'Hüseyin Atalay',pos:'CB',r:58},
+    {n:'Hüseyin Atalay',pos:'LB',r:58},{n:'Mustafa Yumlu',pos:'LWB',r:62},
+    {n:'Ahmet Yıldırım',pos:'CDM',r:60},{n:'Salih Kurt',pos:'CDM',r:58},
+    {n:'Salih Kurt',pos:'CM',r:58},{n:'Mehmet Kurnaz',pos:'CM',r:60},
+    {n:'Mehmet Kurnaz',pos:'CAM',r:62},{n:'Ümit Karan',pos:'RAM',r:68},
+    {n:'Ümit Karan',pos:'RW',r:68},{n:'Ali Tandoğan',pos:'LW',r:60},
+    {n:'Ümit Karan',pos:'ST',r:70},{n:'Ali Tandoğan',pos:'ST',r:60},{n:'Mehmet Kurnaz',pos:'ST',r:60}
+  ]},
+  {id:'kayserispor0607',name:'Kayserispor',season:'2006/07',decade:'2000s',tier:'mid',col:'#cc0000',strength:61,predicted:7,players:[
+    {n:'Serkan Kırıntılı',pos:'GK',r:68},{n:'Mert Nobre',pos:'GK',r:56},
+    {n:'Mehmet Akgün',pos:'RB',r:62},{n:'Ahmet Arslan',pos:'RB',r:60},
+    {n:'Ahmet Arslan',pos:'CB',r:60},{n:'Yılmaz Dündar',pos:'CB',r:60},{n:'Mehmet Akgün',pos:'CB',r:62},
+    {n:'Yılmaz Dündar',pos:'LB',r:60},{n:'Mehmet Akgün',pos:'LWB',r:62},
+    {n:'Gürhan Gürsoy',pos:'CDM',r:62},{n:'Ömer Çatkıç',pos:'CDM',r:60},
+    {n:'Gürhan Gürsoy',pos:'CM',r:62},{n:'Ömer Çatkıç',pos:'CM',r:60},
+    {n:'Hasan Şaş',pos:'CAM',r:72},{n:'Hasan Şaş',pos:'RAM',r:72},
+    {n:'Hasan Şaş',pos:'RW',r:72},{n:'Mert Nobre',pos:'LW',r:60},
+    {n:'Hasan Kabze',pos:'ST',r:66},{n:'Mert Nobre',pos:'ST',r:62},{n:'Hasan Şaş',pos:'ST',r:70}
+  ]},
+  {id:'antalya2021',name:'Antalyaspor',season:'2020/21',decade:'2020s',tier:'mid',col:'#cc0000',strength:62,predicted:8,players:[
+    {n:'Radu',pos:'GK',r:72},{n:'Doğukan Sinik',pos:'GK',r:58},
+    {n:'Hasan Hüseyin Acar',pos:'RB',r:60},{n:'Luiz Adriano',pos:'RB',r:62},
+    {n:'Hasan Hüseyin Acar',pos:'CB',r:60},{n:'Mbaye Diagne',pos:'CB',r:64},{n:'Kévin Bérigaud',pos:'CB',r:62},
+    {n:'Kévin Bérigaud',pos:'LB',r:62},{n:'Luiz Adriano',pos:'LWB',r:62},
+    {n:'Franck Signorino',pos:'CDM',r:64},{n:'Hasan Hüseyin Acar',pos:'CDM',r:60},
+    {n:'Franck Signorino',pos:'CM',r:64},{n:'Doğukan Sinik',pos:'CM',r:62},
+    {n:'Mbaye Diagne',pos:'CAM',r:68},{n:'Doğukan Sinik',pos:'RAM',r:62},
+    {n:'Doğukan Sinik',pos:'RW',r:62},{n:'Gökhan Töre',pos:'LW',r:66},
+    {n:'Mbaye Diagne',pos:'ST',r:72},{n:'Luiz Adriano',pos:'ST',r:64},{n:'Gökhan Töre',pos:'ST',r:66}
+  ]},
+  {id:'giresun2122',name:'Giresunspor',season:'2021/22',decade:'2020s',tier:'lower',col:'#cc0000',strength:51,predicted:18,players:[
+    {n:'Dario Krešić',pos:'GK',r:68},{n:'Recep Nane',pos:'GK',r:56},
+    {n:'Anderson Işık',pos:'RB',r:60},{n:'Recep Nane',pos:'RB',r:58},
+    {n:'Recep Nane',pos:'CB',r:58},{n:'Bojan Marjanović',pos:'CB',r:60},{n:'Anderson Işık',pos:'CB',r:60},
+    {n:'Anderson Işık',pos:'LB',r:60},{n:'Bojan Marjanović',pos:'LWB',r:60},
+    {n:'Nicolás Freire',pos:'CDM',r:60},{n:'Bojan Marjanović',pos:'CDM',r:60},
+    {n:'Nicolás Freire',pos:'CM',r:60},{n:'Bojan Marjanović',pos:'CM',r:60},
+    {n:'Mahir Emreli',pos:'CAM',r:66},{n:'Mahir Emreli',pos:'RAM',r:66},
+    {n:'Mahir Emreli',pos:'RW',r:66},{n:'Recep Nane',pos:'LW',r:58},
+    {n:'Mahir Emreli',pos:'ST',r:68},{n:'Bojan Marjanović',pos:'ST',r:62},{n:'Nicolás Freire',pos:'ST',r:60}
+  ]},
+  {id:'rizespor2223',name:'Çaykur Rizespor',season:'2022/23',decade:'2020s',tier:'lower',col:'#006400',strength:52,predicted:16,players:[
+    {n:'Gökhan Akkan',pos:'GK',r:68},{n:'Taylan Antalyalı',pos:'GK',r:58},
+    {n:'Emirhan Topçu',pos:'RB',r:62},{n:'Tarık Çamdallı',pos:'RB',r:58},
+    {n:'Tarık Çamdallı',pos:'CB',r:58},{n:'Jem Karacan',pos:'CB',r:62},{n:'Jonathan Akpoborie',pos:'CB',r:60},
+    {n:'Jonathan Akpoborie',pos:'LB',r:60},{n:'Emirhan Topçu',pos:'LWB',r:62},
+    {n:'Jem Karacan',pos:'CDM',r:62},{n:'Amir Hadziahmetovic',pos:'CDM',r:62},
+    {n:'Amir Hadziahmetovic',pos:'CM',r:62},{n:'Jem Karacan',pos:'CM',r:62},
+    {n:'Kouassi',pos:'CAM',r:64},{n:'Doğukan Sinik',pos:'RAM',r:62},
+    {n:'Doğukan Sinik',pos:'RW',r:62},{n:'Mert Müldür',pos:'LW',r:64},
+    {n:'Kouassi',pos:'ST',r:64},{n:'Gökdeniz Karadeniz',pos:'ST',r:58},{n:'Doğukan Sinik',pos:'ST',r:62}
+  ]},
+  {id:'orduspor9192',name:'Orduspor',season:'1991/92',decade:'1990s',tier:'lower',col:'#006400',strength:48,predicted:16,players:[
+    {n:'Kemal Öz',pos:'GK',r:62},{n:'Hasan Yıldız',pos:'GK',r:54},
+    {n:'Mehmet Ateş',pos:'RB',r:56},{n:'İbrahim Güler',pos:'RB',r:54},
+    {n:'İbrahim Güler',pos:'CB',r:54},{n:'Osman Taş',pos:'CB',r:54},{n:'Mehmet Ateş',pos:'CB',r:56},
+    {n:'Osman Taş',pos:'LB',r:54},{n:'Mehmet Ateş',pos:'LWB',r:56},
+    {n:'Hasan Yüce',pos:'CDM',r:56},{n:'Ahmet Demirci',pos:'CDM',r:54},
+    {n:'Hasan Yüce',pos:'CM',r:56},{n:'Ahmet Demirci',pos:'CM',r:54},
+    {n:'Ahmet Demirci',pos:'CAM',r:56},{n:'Mustafa Kılıç',pos:'RAM',r:56},
+    {n:'Mustafa Kılıç',pos:'RW',r:56},{n:'Ali Çelik',pos:'LW',r:54},
+    {n:'Mustafa Kılıç',pos:'ST',r:58},{n:'Ali Çelik',pos:'ST',r:54},{n:'Hasan Yüce',pos:'ST',r:56}
+  ]},
+  {id:'samsun9596',name:'Samsunspor',season:'1995/96',decade:'1990s',tier:'mid',col:'#cc0000',strength:58,predicted:8,players:[
+    {n:'Murat Kurnaz',pos:'GK',r:66},{n:'Sezgin Fındıklı',pos:'GK',r:56},
+    {n:'Cemal Bodur',pos:'RB',r:60},{n:'Ahmet Kaya',pos:'RB',r:58},
+    {n:'Ahmet Kaya',pos:'CB',r:58},{n:'Yavuz Yıldırım',pos:'CB',r:60},{n:'Cemal Bodur',pos:'CB',r:60},
+    {n:'Yavuz Yıldırım',pos:'LB',r:60},{n:'Cemal Bodur',pos:'LWB',r:60},
+    {n:'Yavuz Yıldırım',pos:'CDM',r:60},{n:'İsmail Bakır',pos:'CDM',r:58},
+    {n:'İsmail Bakır',pos:'CM',r:58},{n:'Yavuz Yıldırım',pos:'CM',r:60},
+    {n:'Taner Yalçın',pos:'CAM',r:62},{n:'Hasan Oktay',pos:'RAM',r:60},
+    {n:'Hasan Oktay',pos:'RW',r:60},{n:'Davut Özkan',pos:'LW',r:58},
+    {n:'Davut Özkan',pos:'ST',r:60},{n:'Hasan Oktay',pos:'ST',r:62},{n:'Taner Yalçın',pos:'ST',r:60}
+  ]},
+  {id:'kocaeli9899',name:'Kocaelispor',season:'1998/99',decade:'1990s',tier:'mid',col:'#003399',strength:57,predicted:8,players:[
+    {n:'Erdinç Tokatlı',pos:'GK',r:66},{n:'Murat Yıldız',pos:'GK',r:58},
+    {n:'Ömer Barutçu',pos:'RB',r:60},{n:'Tuncay Çakır',pos:'RB',r:58},
+    {n:'Tuncay Çakır',pos:'CB',r:58},{n:'Erhan Elden',pos:'CB',r:60},{n:'Ömer Barutçu',pos:'CB',r:60},
+    {n:'Erhan Elden',pos:'LB',r:60},{n:'Ömer Barutçu',pos:'LWB',r:60},
+    {n:'Murat Ölmez',pos:'CDM',r:60},{n:'Ömer Barutçu',pos:'CDM',r:60},
+    {n:'Murat Ölmez',pos:'CM',r:60},{n:'Tuncay Çakır',pos:'CM',r:58},
+    {n:'Tuncay Çakır',pos:'CAM',r:60},{n:'Sedat Balcı',pos:'RAM',r:62},
+    {n:'Sedat Balcı',pos:'RW',r:62},{n:'Okan Yılmaz',pos:'LW',r:58},
+    {n:'Sedat Balcı',pos:'ST',r:64},{n:'Okan Yılmaz',pos:'ST',r:60},{n:'Murat Ölmez',pos:'ST',r:60}
+  ]},
+  {id:'yenimalatya1718',name:'Yeni Malatyaspor',season:'2017/18',decade:'2010s',tier:'lower',col:'#cc6600',strength:54,predicted:13,players:[
+    {n:'Ahmet Şahin',pos:'GK',r:68},{n:'Batuhan Karadeniz',pos:'GK',r:56},
+    {n:'Uğur Demirok',pos:'RB',r:60},{n:'Sedat Şahintürk',pos:'RB',r:58},
+    {n:'Sedat Şahintürk',pos:'CB',r:58},{n:'Adem Büyük',pos:'CB',r:62},{n:'Uğur Demirok',pos:'CB',r:60},
+    {n:'Uğur Demirok',pos:'LB',r:60},{n:'Sedat Şahintürk',pos:'LWB',r:58},
+    {n:'Adem Büyük',pos:'CDM',r:62},{n:'Soner Aydoğdu',pos:'CDM',r:58},
+    {n:'Soner Aydoğdu',pos:'CM',r:58},{n:'Adem Büyük',pos:'CM',r:62},
+    {n:'Adem Büyük',pos:'CAM',r:64},{n:'Soner Aydoğdu',pos:'RAM',r:58},
+    {n:'Soner Aydoğdu',pos:'RW',r:58},{n:'Gökhan Töre',pos:'LW',r:64},
+    {n:'Gökhan Töre',pos:'ST',r:66},{n:'Adem Büyük',pos:'ST',r:64},{n:'Batuhan Karadeniz',pos:'ST',r:58}
+  ]}
+];
+
+const OTHER_CLUBS=['Galatasaray','Fenerbahçe','Beşiktaş','Trabzonspor','Bursaspor','İst. Başakşehir','Sivasspor','Kayserispor','Konyaspor','Gençlerbirliği','Alanyaspor','Kasımpaşa','Adana Demirspor','Eskişehirspor','Samsunspor','Antalyaspor','Çaykur Rizespor','Gaziantep FK'];
+const MY_TEAM='Süper XI';
+const TIER_STYLES={
+  elite:{label:'Elite',bg:'#1a4a2e',color:'#fff'},
+  good:{label:'Strong',bg:'#2a6a42',color:'#fff'},
+  mid:{label:'Mid Table',bg:'#8a7030',color:'#fff'},
+  lower:{label:'Lower Half',bg:'#8a3030',color:'#fff'}
+};
+let G={
+  mode:'position',formation:'4-3-3',slots:[],filled:{},
+  showRatings:true,selectedTeam:null,
+  currentSlot:null,chosenPlayer:null,slotOptions:null,
+  spinning:false,respinsLeft:3,recentTeams:[],
+  table:[],schedule:[],matchIdx:0,simRunning:false,simTimer:null,
+  goalscorers:{},predictedPos:null
+};
+const $=id=>document.getElementById(id);
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active')}
+function short(n,len=10){const p=n.split(' ');return p.length===1?n.slice(0,len):p[p.length-1].slice(0,len)}
+function calcOverall(){
+  const players=Object.values(G.filled);
+  if(!players.length)return{overall:'—',att:'—',mid:'—',def:'—',gk:'—',attPct:0,midPct:0,defPct:0,gkPct:0};
+  const avg=arr=>arr.length?Math.round(arr.reduce((a,b)=>a+b,0)/arr.length):null;
+  const bySlot={att:[],mid:[],def:[],gk:[]};
+  Object.entries(G.filled).forEach(([i,p])=>{
+    const pos=G.slots[i].pos;
+    if(pos==='GK')bySlot.gk.push(p.r);
+    else if(ATT_POS.has(pos))bySlot.att.push(p.r);
+    else if(MID_POS.has(pos))bySlot.mid.push(p.r);
+    else bySlot.def.push(p.r);
+  });
+  const all=players.map(p=>p.r);
+  const ov=avg(all)||0,a=avg(bySlot.att),m=avg(bySlot.mid),d=avg(bySlot.def),g=avg(bySlot.gk);
+  const pct=v=>v?Math.round((v-50)/50*100):0;
+  return{overall:ov,att:a||'—',mid:m||'—',def:d||'—',gk:g||'—',attPct:pct(a),midPct:pct(m),defPct:pct(d),gkPct:pct(g)};
+}
+function updateOverallBox(){
+  const{overall,att,mid,def,gk,attPct,midPct,defPct,gkPct}=calcOverall();
+  $('ob-rating').textContent=overall;
+  $('ob-att').style.width=Math.max(0,attPct)+'%';$('ob-att-v').textContent=att;
+  $('ob-mid').style.width=Math.max(0,midPct)+'%';$('ob-mid-v').textContent=mid;
+  $('ob-def').style.width=Math.max(0,defPct)+'%';$('ob-def-v').textContent=def;
+  $('ob-gk').style.width=Math.max(0,gkPct)+'%';$('ob-gk-v').textContent=gk;
+  const n=Object.keys(G.filled).length;
+  $('ob-count').textContent=`${n} of ${G.slots.length} players selected`;
+}
+function pitchBase(){
+  let s='';
+  for(let i=0;i<7;i++){const y=20+i*(500/7),h=500/7;s+=`<rect x="22" y="${y}" width="336" height="${h}" fill="${i%2?'#1f6040':'#1e5c38'}"/>`}
+  return s+`<rect x="22" y="20" width="336" height="500" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+  <line x1="22" y1="260" x2="358" y2="260" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+  <circle cx="190" cy="260" r="52" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+  <circle cx="190" cy="260" r="2.5" fill="rgba(255,255,255,0.3)"/>
+  <rect x="112" y="20" width="156" height="58" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+  <rect x="112" y="462" width="156" height="58" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+  <rect x="148" y="20" width="84" height="24" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+  <rect x="148" y="496" width="84" height="24" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+  <circle cx="190" cy="70" r="2.5" fill="rgba(255,255,255,0.3)"/>
+  <circle cx="190" cy="472" r="2.5" fill="rgba(255,255,255,0.3)"/>`;
+}
+function drawPitch(svgId){
+  const svg=$(svgId);
+  let h=`<rect width="380" height="540" fill="#1e5c38"/>`;
+  h+=pitchBase();
+  G.slots.forEach((sl,i)=>{
+    const f=G.filled[i],isCur=G.currentSlot===i;
+    if(f){
+      h+=`<g>
+        <circle cx="${sl.x}" cy="${sl.y}" r="24" fill="rgba(255,255,255,0.93)" stroke="white" stroke-width="1.5"/>
+        <text x="${sl.x}" y="${sl.y-7}" text-anchor="middle" fill="#1a4a2e" font-size="7.5" font-weight="700" font-family="Oswald" letter-spacing=".8">${sl.pos}</text>
+        <text x="${sl.x}" y="${sl.y+3}" text-anchor="middle" fill="#111" font-size="8" font-family="Oswald" font-weight="500">${short(f.n,9)}</text>
+        ${G.showRatings?`<text x="${sl.x}" y="${sl.y+13}" text-anchor="middle" fill="#c8922a" font-size="7.5" font-family="Oswald" font-weight="700">${f.r}</text>`:''}
+      </g>`;
+    } else if(isCur){
+      h+=`<g>
+        <circle cx="${sl.x}" cy="${sl.y}" r="24" fill="rgba(200,146,42,0.22)" stroke="#c8922a" stroke-width="2.5"/>
+        <circle cx="${sl.x}" cy="${sl.y}" r="4" fill="#c8922a"/>
+        <text x="${sl.x}" y="${sl.y+33}" text-anchor="middle" fill="#c8922a" font-size="8.5" font-family="Oswald" letter-spacing="1" font-weight="600">${sl.pos}</text>
+      </g>`;
+    } else {
+      h+=`<circle cx="${sl.x}" cy="${sl.y}" r="18" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.22)" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="${sl.x}" y="${sl.y+4}" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="8.5" font-family="Oswald" letter-spacing=".8">${sl.pos}</text>`;
+    }
+  });
+  svg.innerHTML=h;
+}
+const ITEM_H=40;
+function buildSlotItems(list){
+  const track=$('slot-track');
+  track.innerHTML='';
+  list.forEach(t=>{
+    const d=document.createElement('div');
+    d.className='slot-item';
+    d.innerHTML=`<div class="slot-dot" style="background:${t.col}"></div>
+      <div class="slot-name">${t.name}</div>
+      <div class="slot-year">${t.season}</div>`;
+    track.appendChild(d);
+  });
+  track.style.transform=`translateY(${ITEM_H}px)`;
+}
+function initSlot(){buildSlotItems(TEAMS);setSlotActive(0);}
+function setSlotActive(idx){
+  const items=$('slot-track').querySelectorAll('.slot-item');
+  items.forEach((el,i)=>el.classList.toggle('active',i===idx));
+}
+$('btn-spin').addEventListener('click',()=>{
+  if(G.spinning)return;
+  G.spinning=true;G.chosenPlayer=null;G.currentSlot=null;
+  $('btn-spin').disabled=true;
+  $('btn-lock').classList.remove('on');
+  $('btn-respin').classList.remove('on');
+  const openPosSet=new Set(G.slots.filter((_,i)=>!G.filled[i]).map(s=>s.pos));
+  function teamCanFillAny(team){
+    const usedNames=new Set(Object.values(G.filled).map(p=>p.n));
+    const seen=new Set();
+    const pool=team.players.filter(p=>{if(seen.has(p.n))return false;seen.add(p.n);return true;})
+      .filter(p=>!usedNames.has(p.n));
+    return pool.some(p=>{const compat=POS_COMPAT[p.pos]||[p.pos];return[...openPosSet].some(op=>compat.includes(op));});
+  }
+  const WEIGHTS={elite:2,good:3,mid:3,lower:2};
+  const recentSet=new Set(G.recentTeams.slice(-4));
+  let weightedPool=[];
+  TEAMS.forEach((t,i)=>{
+    if(recentSet.has(t.id))return;
+    if(!teamCanFillAny(t))return;
+    const w=WEIGHTS[t.tier]||2;
+    for(let j=0;j<w;j++)weightedPool.push(i);
+  });
+  if(!weightedPool.length)TEAMS.forEach((t,i)=>{if(teamCanFillAny(t))weightedPool.push(i);});
+  if(!weightedPool.length)TEAMS.forEach((_,i)=>weightedPool.push(i));
+  const targetIdx=weightedPool[Math.floor(Math.random()*weightedPool.length)];
+  G.recentTeams.push(TEAMS[targetIdx].id);
+  if(G.recentTeams.length>6)G.recentTeams.shift();
+  const n=TEAMS.length;
+  const loops=3+Math.floor(Math.random()*2);
+  const totalItems=loops*n+targetIdx;
+  const track=$('slot-track');
+  track.innerHTML='';
+  const extList=[];
+  for(let i=0;i<loops+1;i++)extList.push(...TEAMS);
+  extList.forEach(t=>{
+    const d=document.createElement('div');
+    d.className='slot-item';
+    d.innerHTML=`<div class="slot-dot" style="background:${t.col}"></div>
+      <div class="slot-name">${t.name}</div>
+      <div class="slot-year">${t.season}</div>`;
+    track.appendChild(d);
+  });
+  const startY=ITEM_H;
+  const endY=startY-totalItems*ITEM_H;
+  track.style.transform=`translateY(${startY}px)`;
+  const duration=2800;
+  const t0=performance.now();
+  let lastIdx=-1;
+  function easeOut(t){return 1-Math.pow(1-t,3);}
+  function step(now){
+    const elapsed=now-t0;
+    const progress=Math.min(elapsed/duration,1);
+    const eased=easeOut(progress);
+    const currentY=startY+(endY-startY)*eased;
+    track.style.transform=`translateY(${currentY}px)`;
+    const centreOffset=ITEM_H-currentY;
+    const centreIdx=Math.round(centreOffset/ITEM_H)%n;
+    const wrappedIdx=((centreIdx%n)+n)%n;
+    if(wrappedIdx!==lastIdx){
+      lastIdx=wrappedIdx;
+      const items=track.querySelectorAll('.slot-item');
+      const centreItemIdx=Math.round((ITEM_H-currentY)/ITEM_H);
+      items.forEach((el,i)=>el.classList.toggle('active',i===centreItemIdx));
+    }
+    if(progress<1){requestAnimationFrame(step);}
+    else{
+      track.style.transform=`translateY(${endY}px)`;
+      const items=track.querySelectorAll('.slot-item');
+      items.forEach((el,i)=>el.classList.toggle('active',i===totalItems));
+      G.spinning=false;
+      G.selectedTeam=TEAMS[targetIdx];
+      G.predictedPos=G.selectedTeam.predicted;
+      setRightHeader();
+      revealTeam(G.selectedTeam);
+      setTimeout(()=>{
+        renderPlayerTable();drawPitch('pitch-svg');
+        const hasValid=$('player-table').querySelector('.pt-row:not(.used)');
+        if(!hasValid&&G.respinsLeft>0)$('rc-eyebrow').textContent='NO VALID PICKS — RE-SPIN?';
+        showPlayers();
+      },600);
+      const rLabel=G.respinsLeft>0?` (${G.respinsLeft})`:'';
+      $('btn-respin').textContent=`↻ RE-SPIN${rLabel}`;
+      if(G.respinsLeft>0)$('btn-respin').classList.add('on');
+    }
+  }
+  requestAnimationFrame(step);
+});
+$('btn-respin').addEventListener('click',()=>{
+  if(G.respinsLeft<=0)return;
+  G.respinsLeft--;
+  $('btn-respin').textContent=G.respinsLeft>0?`↻ RE-SPIN (${G.respinsLeft})`:'↻ RE-SPIN';
+  if(G.respinsLeft===0)$('btn-respin').classList.remove('on');
+  G.chosenPlayer=null;G.currentSlot=null;
+  $('btn-lock').classList.remove('on');
+  document.querySelector('.slot-picker')?.remove();
+  if(G.mode==='position'){
+    const WEIGHTS2={elite:2,good:3,mid:3,lower:2};
+    const recentSet2=new Set(G.recentTeams.slice(-4));
+    const openPosSet2=new Set(G.slots.filter((_,i)=>!G.filled[i]).map(s=>s.pos));
+    function teamCanFill2(team){
+      const usedNames=new Set(Object.values(G.filled).map(p=>p.n));
+      const seen=new Set();
+      return team.players.filter(p=>{if(seen.has(p.n))return false;seen.add(p.n);return true;})
+        .filter(p=>!usedNames.has(p.n))
+        .some(p=>{const c=POS_COMPAT[p.pos]||[p.pos];return[...openPosSet2].some(op=>c.includes(op));});
+    }
+    let wp2=[];
+    TEAMS.forEach((t,i)=>{
+      if(t.id===G.selectedTeam?.id||recentSet2.has(t.id))return;
+      if(!teamCanFill2(t))return;
+      const w=WEIGHTS2[t.tier]||2;for(let j=0;j<w;j++)wp2.push(i);
+    });
+    if(!wp2.length)TEAMS.forEach((t,i)=>{if(t.id!==G.selectedTeam?.id&&teamCanFill2(t))wp2.push(i);});
+    if(!wp2.length)TEAMS.forEach((t,i)=>{if(t.id!==G.selectedTeam?.id)wp2.push(i);});
+    let pick=wp2[Math.floor(Math.random()*wp2.length)];
+    if(pick===undefined)pick=0;
+    G.recentTeams.push(TEAMS[pick].id);
+    if(G.recentTeams.length>6)G.recentTeams.shift();
+    const track=$('slot-track');
+    track.innerHTML='';
+    const extList=[];
+    for(let i=0;i<3;i++)extList.push(...TEAMS);
+    extList.forEach(t=>{
+      const d=document.createElement('div');
+      d.className='slot-item';
+      d.innerHTML=`<div class="slot-dot" style="background:${t.col}"></div>
+        <div class="slot-name">${t.name}</div>
+        <div class="slot-year">${t.season}</div>`;
+      track.appendChild(d);
+    });
+    track.style.transform=`translateY(${ITEM_H}px)`;
+    const totalItems=TEAMS.length+pick;
+    const endYFinal=ITEM_H-totalItems*ITEM_H;
+    const dur=1200;
+    const t0=performance.now();
+    G.spinning=true;
+    (function step(now){
+      const p=Math.min((now-t0)/dur,1);
+      const ease=1-Math.pow(1-p,3);
+      const y=ITEM_H+(endYFinal-ITEM_H)*ease;
+      track.style.transform=`translateY(${y}px)`;
+      if(p<1){requestAnimationFrame(step);}
+      else{
+        track.style.transform=`translateY(${endYFinal}px)`;
+        const items=track.querySelectorAll('.slot-item');
+        items.forEach((el,i)=>el.classList.toggle('active',i===totalItems));
+        G.spinning=false;
+        G.selectedTeam=TEAMS[pick];
+        G.predictedPos=G.selectedTeam.predicted;
+        setRightHeader();revealTeam(G.selectedTeam);
+        setTimeout(()=>{
+          renderPlayerTable();drawPitch('pitch-svg');
+          const hasValid=$('player-table').querySelector('.pt-row:not(.used)');
+          if(!hasValid&&G.respinsLeft>0)$('rc-eyebrow').textContent='NO VALID PICKS — RE-SPIN?';
+          showPlayers();
+        },600);
+        const rLabel2=G.respinsLeft>0?` (${G.respinsLeft})`:'';
+        $('btn-respin').textContent=`↻ RE-SPIN${rLabel2}`;
+        if(G.respinsLeft>0)$('btn-respin').classList.add('on');
+        else $('btn-respin').classList.remove('on');
+      }
+    })(performance.now());
+  } else {renderPlayerTable();drawPitch('pitch-svg');}
+});
+function setupTog(id,cb){
+  const el=$(id);
+  el.parentElement.addEventListener('click',()=>{const on=el.classList.toggle('on');cb(on);});
+}
+setupTog('rat-tog',on=>{G.showRatings=on;});
+setupTog('rat-tog-d',on=>{G.showRatings=on;drawPitch('pitch-svg');renderPlayerTable();document.querySelectorAll('.pt-rat-num').forEach(el=>{el.classList.toggle('hidden',!on);});});
+function showSpinner(){
+  $('spinner-panel').classList.remove('hidden');
+  $('player-panel').classList.add('hidden');
+  const tr=$('team-revealed');if(tr)tr.classList.add('hidden');
+}
+function showPlayers(){
+  $('spinner-panel').classList.add('hidden');
+  $('player-panel').classList.remove('hidden');
+}
+function revealTeam(team){
+  const tr=$('team-revealed');
+  if(!tr||!team)return;
+  $('tr-dot').style.background=team.col;
+  $('tr-name').textContent=team.name;
+  $('tr-season').textContent=' · '+team.season;
+  const ts=TIER_STYLES[team.tier]||{label:'',bg:'#666',color:'#fff'};
+  const tier=$('tr-tier');
+  tier.textContent=ts.label;tier.style.background=ts.bg;tier.style.color=ts.color;
+  tr.classList.remove('hidden');
+}
+$('mode-grid').addEventListener('click',e=>{
+  const c=e.target.closest('.mode-card');if(!c)return;
+  document.querySelectorAll('.mode-card').forEach(x=>x.classList.remove('sel'));
+  c.classList.add('sel');G.mode=c.dataset.m;checkStart();
+});
+$('formations').addEventListener('click',e=>{
+  const b=e.target.closest('.f-btn');if(!b)return;
+  document.querySelectorAll('.f-btn').forEach(x=>x.classList.remove('sel'));
+  b.classList.add('sel');G.formation=b.dataset.f;checkStart();
+});
+function checkStart(){$('btn-start').classList.toggle('on',!!(G.mode&&G.formation));}
+$('btn-start').addEventListener('click',()=>{
+  G.slots=JSON.parse(JSON.stringify(FORMATIONS[G.formation].slots));
+  G.filled={};G.currentSlot=null;G.chosenPlayer=null;G.respinsLeft=3;G.slotOptions=null;
+  G.goalscorers={};G.predictedPos=null;G.selectedTeam=null;
+  $('rat-tog-d').className='tog'+(G.showRatings?' on':'');
+  updateDraftProg();drawPitch('pitch-svg');updateOverallBox();
+  $('player-table').innerHTML='';
+  $('btn-lock').classList.remove('on');$('btn-respin').classList.remove('on');
+  if(G.mode==='position'){
+    $('wheel-zone').style.display='';
+    $('team-zone').style.cssText='display:none';
+    $('btn-spin').disabled=false;
+    initSlot();setRightHeader();showSpinner();
+  } else {
+    $('wheel-zone').style.display='none';
+    const tz=$('team-zone');tz.style.cssText='display:flex;flex:1;flex-direction:column;overflow:hidden';
+    buildTeamList('');setRightHeader();showSpinner();
+  }
+  show('s-draft');
+});
+$('era-filter').addEventListener('change',e=>buildTeamList(e.target.value));
+function buildTeamList(dec){
+  const list=$('team-list');list.innerHTML='';
+  (dec?TEAMS.filter(t=>t.decade===dec):TEAMS).forEach(t=>{
+    const ts=TIER_STYLES[t.tier];
+    const d=document.createElement('div');d.className='team-card'+(G.selectedTeam&&G.selectedTeam.id===t.id?' sel':'');
+    d.innerHTML=`<div class="tc-badge" style="background:${t.col}">${t.name.slice(0,3).toUpperCase()}</div>
+      <div class="tc-info"><div class="tc-name">${t.name}</div><div class="tc-season">${t.season}</div></div>
+      <div class="tc-tier" style="background:${ts.bg};color:${ts.color}">${ts.label}</div>`;
+    d.addEventListener('click',()=>{
+      document.querySelectorAll('.team-card').forEach(c=>c.classList.remove('sel'));
+      d.classList.add('sel');
+      G.selectedTeam=t;G.predictedPos=t.predicted;
+      setRightHeader();renderPlayerTable();showPlayers();
+    });
+    list.appendChild(d);
+  });
+}
+function ordinal(n){const s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
+function setRightHeader(){
+  const t=G.selectedTeam;
+  if(!t){$('rc-eyebrow').textContent='SELECT A TEAM TO BEGIN';$('rc-team-label').textContent='';$('rc-season-label').textContent='';return;}
+  $('rc-eyebrow').textContent='SQUAD SPUN';
+  $('rc-team-label').textContent=t.name;
+  $('rc-season-label').textContent=t.season+' · Predicted: '+ordinal(t.predicted)+' place';
+}
+const POS_COMPAT={
+  GK:['GK'],
+  RB:['RB','RWB'],RWB:['RB','RWB'],
+  LB:['LB','LWB'],LWB:['LB','LWB'],
+  CB:['CB','RWB','LWB'],
+  CM:['CM','CDM','CAM','RAM','LAM','RM','LM'],
+  CDM:['CDM','CM','CB'],
+  CAM:['CAM','RAM','LAM','CM','RW','LW'],
+  RAM:['RAM','CAM','RW','RM','CM'],LAM:['LAM','CAM','LW','LM','CM'],
+  RM:['RM','RW','RAM','CM'],LM:['LM','LW','LAM','CM'],
+  RW:['RW','RAM','RM','ST','CAM'],LW:['LW','LAM','LM','ST','CAM'],
+  ST:['ST','RW','LW','CAM','RAM','LAM']
+};
+function compatibleSlots(playerPos){
+  const compat=POS_COMPAT[playerPos]||[playerPos];
+  return G.slots.map((_,i)=>i).filter(i=>!G.filled[i]&&compat.includes(G.slots[i].pos));
+}
+function renderPlayerTable(){
+  const table=$('player-table');table.innerHTML='';
+  if(!G.selectedTeam){
+    table.innerHTML=`<div style="padding:24px;font-family:var(--serif);font-style:italic;color:var(--text3);font-size:14px;text-align:center">Pick a team to see their squad</div>`;
+    return;
+  }
+  const usedNames=new Set(Object.values(G.filled).map(p=>p.n));
+  const seen=new Set();
+  const pool=G.selectedTeam.players
+    .filter(p=>{if(seen.has(p.n))return false;seen.add(p.n);return true;})
+    .sort((a,b)=>b.r-a.r);
+  pool.forEach(p=>{
+    const alreadyUsed=usedNames.has(p.n);
+    const openSlots=compatibleSlots(p.pos);
+    const canPlace=!alreadyUsed&&openSlots.length>0;
+    const isSel=G.chosenPlayer&&G.chosenPlayer.n===p.n;
+    const row=document.createElement('div');
+    row.className='pt-row'+(alreadyUsed?' used':canPlace?'':' used')+(isSel?' sel':'');
+    const posGroup=(pos)=>{
+      if(pos==='GK')return 'gk';
+      if(['CB','RB','LB','RWB','LWB'].includes(pos))return 'def';
+      if(['CM','CDM','RM','LM'].includes(pos))return 'mid';
+      return 'att';
+    };
+    const posColClass='pos-col-'+posGroup(p.pos);
+    let badgeHtml='';
+    if(!alreadyUsed){
+      const openSlotPositions=[...new Set(openSlots.map(i=>G.slots[i].pos))];
+      badgeHtml=openSlotPositions.map(pos=>`<span class="pos-badge ${posColClass}">${pos}</span>`).join('');
+    } else {
+      badgeHtml=`<span class="pos-badge used-badge">✓</span>`;
+    }
+    row.innerHTML=`
+      <div class="pt-rat-badge ${posColClass}">
+        <span class="pt-rat-num${G.showRatings?'':' hidden'}">${p.r}</span>
+      </div>
+      <div class="pt-player-info">
+        <div class="pt-name">${p.n}</div>
+        <div class="pt-club">${p.pos}</div>
+      </div>
+      <div class="pt-badges">${badgeHtml}</div>`;
+    if(canPlace){
+      row.style.cursor='pointer';
+      row.addEventListener('click',()=>{
+        if(G.chosenPlayer&&G.chosenPlayer.n===p.n){
+          G.chosenPlayer=null;G.currentSlot=null;
+          $('btn-lock').classList.remove('on');
+          document.querySelectorAll('.pt-row').forEach(r=>r.classList.remove('sel'));
+          clearSlotHighlight();return;
+        }
+        document.querySelectorAll('.pt-row').forEach(r=>r.classList.remove('sel'));
+        row.classList.add('sel');
+        G.chosenPlayer=p;
+        if(openSlots.length===1){
+          G.currentSlot=openSlots[0];
+          $('btn-lock').classList.add('on');
+          highlightSlot(openSlots[0]);
+        } else {
+          G.currentSlot=null;$('btn-lock').classList.remove('on');
+          highlightSlotOptions(openSlots);
+          showSlotPicker(openSlots);
+        }
+        drawPitch('pitch-svg');
+      });
+    }
+    table.appendChild(row);
+  });
+}
+function highlightSlot(idx){G.currentSlot=idx;drawPitch('pitch-svg');}
+function clearSlotHighlight(){G.currentSlot=null;drawPitch('pitch-svg');}
+function highlightSlotOptions(slots){G.slotOptions=slots;drawPitch('pitch-svg');}
+function showSlotPicker(openSlots){
+  const old=document.querySelector('.slot-picker');if(old)old.remove();
+  const sel=document.querySelector('.pt-row.sel');if(!sel)return;
+  const picker=document.createElement('div');picker.className='slot-picker';
+  picker.innerHTML='<div class="slot-picker-label">Place into which position?</div>'+
+    openSlots.map(i=>`<button class="slot-pick-btn" data-slot="${i}">${G.slots[i].pos}</button>`).join('');
+  sel.after(picker);
+  picker.querySelectorAll('.slot-pick-btn').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      e.stopPropagation();
+      G.currentSlot=parseInt(btn.dataset.slot);
+      $('btn-lock').classList.add('on');
+      highlightSlot(G.currentSlot);
+      picker.querySelectorAll('.slot-pick-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+}
+$('btn-lock').addEventListener('click',()=>{
+  if(!G.chosenPlayer||G.currentSlot===null)return;
+  document.querySelector('.slot-picker')?.remove();
+  G.filled[G.currentSlot]=G.chosenPlayer;
+  G.currentSlot=null;G.chosenPlayer=null;G.slotOptions=null;
+  $('btn-lock').classList.remove('on');
+  drawPitch('pitch-svg');updateDraftProg();updateOverallBox();
+  if(Object.keys(G.filled).length===G.slots.length){setTimeout(goToSquad,400);return;}
+  if(G.mode==='position'){
+    const rLabel=G.respinsLeft>0?` (${G.respinsLeft})`:'';
+    $('btn-respin').textContent=`↻ RE-SPIN${rLabel}`;
+    if(G.respinsLeft>0)$('btn-respin').classList.add('on');
+    else $('btn-respin').classList.remove('on');
+    $('btn-spin').disabled=false;
+    G.selectedTeam=null;setRightHeader();showSpinner();initSlot();
+  } else {showPlayers();}
+  renderPlayerTable();
+});
+function updateDraftProg(){const el=$('draft-prog');if(el)el.textContent=`${Object.keys(G.filled).length} / ${G.slots.length}`;}
+function goToSquad(){
+  const{overall,att,mid,def,gk}=calcOverall();
+  $('squad-sub').textContent=G.formation+(G.selectedTeam?` · Based on ${G.selectedTeam.name} ${G.selectedTeam.season}`:'');
+  $('squad-overall-box').innerHTML=`
+    <div style="font-size:9px;letter-spacing:4px;color:var(--text3);margin-bottom:8px;font-weight:600">SQUAD RATING</div>
+    <div style="display:flex;align-items:center;gap:16px">
+      <div style="font-size:40px;font-weight:700;color:var(--green)">${overall}</div>
+      <div style="flex:1">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:2px"><span>ATT</span><span style="color:var(--text2);font-weight:700">${att}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:2px"><span>MID</span><span style="color:var(--text2);font-weight:700">${mid}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:2px"><span>DEF</span><span style="color:var(--text2);font-weight:700">${def}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3)"><span>GK</span><span style="color:var(--text2);font-weight:700">${gk}</span></div>
+      </div>
+    </div>
+    ${G.predictedPos?`<div style="margin-top:8px;font-size:10px;letter-spacing:2px;color:var(--text3)">PREDICTED FINISH: <span style="color:var(--gold);font-weight:700">${ordinal(G.predictedPos)}</span></div>`:''}`;
+  drawPitch('squad-svg');
+  const roster=$('squad-roster');roster.innerHTML='';
+  G.slots.forEach((sl,i)=>{
+    const p=G.filled[i];if(!p)return;
+    const d=document.createElement('div');d.className='r-item';
+    d.innerHTML=`<div class="r-pos">${sl.pos}</div>
+      <div style="flex:1;min-width:0"><div class="r-name">${p.n}</div></div>
+      <div class="r-rat">${G.showRatings?p.r:''}</div>`;
+    roster.appendChild(d);
+  });
+  show('s-squad');
+}
+$('btn-simulate').addEventListener('click',startSeason);
+$('btn-reset-squad').addEventListener('click',resetAll);
+function myStrength(){
+  const vals=Object.values(G.filled).map(p=>p.r);
+  const a=vals.reduce((x,y)=>x+y,0)/vals.length;
+  if(a>=90)return Math.round(88+(a-90)*1.4);
+  if(a>=80)return Math.round(74+(a-80)*1.4);
+  if(a>=70)return Math.round(60+(a-70)*1.4);
+  return Math.round(50+(a-65)*2.0);
+}
+function clubStr(name){
+  const m={
+    'Galatasaray':84,'Fenerbahçe':83,'Beşiktaş':82,'Trabzonspor':76,
+    'Bursaspor':68,'İst. Başakşehir':72,'Sivasspor':64,'Kayserispor':60,
+    'Konyaspor':60,'Gençlerbirliği':58,'Alanyaspor':60,'Kasımpaşa':58,
+    'Adana Demirspor':62,'Eskişehirspor':56,'Samsunspor':58,'Antalyaspor':57,
+    'Çaykur Rizespor':55,'Gaziantep FK':56
+  };
+  return m[name]||57;
+}
+function poisson(l){let L=Math.exp(-Math.max(0,l)),k=0,p=1;do{k++;p*=Math.random();}while(p>L);return k-1;}
+function buildTable(){
+  G.table=[{name:MY_TEAM,w:0,d:0,l:0,gf:0,ga:0,pts:0,isUs:true}];
+  OTHER_CLUBS.forEach(c=>G.table.push({name:c,w:0,d:0,l:0,gf:0,ga:0,pts:0,isUs:false}));
+  const allPairs=[];
+  for(let i=0;i<OTHER_CLUBS.length;i++)
+    for(let j=0;j<OTHER_CLUBS.length;j++)
+      if(i!==j)allPairs.push([OTHER_CLUBS[i],OTHER_CLUBS[j]]);
+  allPairs.sort(()=>Math.random()-.5);
+  const perGW=Math.floor(allPairs.length/34);
+  G.otherMatchdays=[];
+  for(let gw=0;gw<34;gw++)
+    G.otherMatchdays.push(allPairs.slice(gw*perGW,(gw+1)*perGW));
+}
+function buildSchedule(){
+  const s=[];
+  const a=[...OTHER_CLUBS].sort(()=>Math.random()-.5);
+  const b=[...OTHER_CLUBS].sort(()=>Math.random()-.5);
+  for(let i=0;i<17;i++)s.push({gw:i+1,home:true,opp:a[i],scored:null,conceded:null,result:null,ourScorers:[],theirScorers:[]});
+  for(let i=0;i<17;i++)s.push({gw:i+18,home:false,opp:b[i],scored:null,conceded:null,result:null,ourScorers:[],theirScorers:[]});
+  G.schedule=s;
+}
+function getAttackers(){
+  const att=[];
+  Object.entries(G.filled).forEach(([i,p])=>{
+    const pos=G.slots[i].pos;
+    if(ATT_POS.has(pos)||pos==='ST')att.push({...p,weight:ATT_POS.has(pos)?3:1});
+    else if(MID_POS.has(pos))att.push({...p,weight:1});
+  });
+  return att.length?att:Object.values(G.filled).map(p=>({...p,weight:1}));
+}
+function pickScorer(){
+  const pool=getAttackers();
+  const total=pool.reduce((a,p)=>a+p.weight,0);
+  let r=Math.random()*total;
+  for(const p of pool){r-=p.weight;if(r<=0)return p.n;}
+  return pool[pool.length-1].n;
+}
+function simGW(idx){
+  const gw=G.schedule[idx];
+  const ms=myStrength(),cs=clubStr(gw.opp);
+  const e1=Math.pow(ms,2.2)*(gw.home?1.10:0.93);
+  const e2=Math.pow(cs,2.2)*(gw.home?0.93:1.10);
+  const t=e1+e2;
+  const ours=poisson(e1/t*4.2),theirs=poisson(e2/t*3.6);
+  gw.scored=ours;gw.conceded=theirs;
+  gw.result=ours>theirs?'W':ours<theirs?'L':'D';
+  for(let i=0;i<ours;i++){const s=pickScorer();gw.ourScorers.push(s);G.goalscorers[s]=(G.goalscorers[s]||0)+1;}
+  const us=G.table.find(t=>t.isUs);
+  if(gw.result==='W'){us.w++;us.pts+=3;}else if(gw.result==='D'){us.d++;us.pts++;}else us.l++;
+  us.gf+=ours;us.ga+=theirs;
+  const them=G.table.find(t=>t.name===gw.opp);
+  if(them){const tr=gw.result==='W'?'L':gw.result==='L'?'W':'D';
+    if(tr==='W'){them.w++;them.pts+=3;}else if(tr==='D'){them.d++;them.pts++;}else them.l++;
+    them.gf+=theirs;them.ga+=ours;}
+  simOther(idx);sortTable();
+}
+function simOther(idx){
+  (G.otherMatchdays&&G.otherMatchdays[idx]||[]).forEach(([hc,ac])=>{
+    const hs=clubStr(hc),as=clubStr(ac);
+    const e1=Math.pow(hs,2.2)*1.10,e2=Math.pow(as,2.2)*0.93,t=e1+e2;
+    const hg=poisson(e1/t*4.2),ag=poisson(e2/t*3.6);
+    const ht=G.table.find(r=>r.name===hc),at=G.table.find(r=>r.name===ac);
+    if(!ht||!at)return;
+    ht.gf+=hg;ht.ga+=ag;at.gf+=ag;at.ga+=hg;
+    if(hg>ag){ht.w++;ht.pts+=3;at.l++;}
+    else if(hg===ag){ht.d++;ht.pts++;at.d++;at.pts++;}
+    else{at.w++;at.pts+=3;ht.l++;}
+  });
+}
+function sortTable(){G.table.sort((a,b)=>b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga)||b.gf-a.gf);}
+function startSeason(){
+  buildTable();buildSchedule();G.matchIdx=0;G.simRunning=true;G.goalscorers={};
+  $('season-year').textContent='2025/26';
+  $('matches-col').innerHTML='';renderTable();
+  for(let gw=1;gw<=34;gw++){
+    const b=document.createElement('div');b.className='gw-block';b.id=`gw-${gw}`;
+    b.innerHTML=`<div class="gw-label">MATCHDAY ${gw}</div>`;
+    $('matches-col').appendChild(b);
+  }
+  show('s-season');schedNext();
+}
+function getSpeed(){return parseInt($('speed-sel').value)||420;}
+function updateMobSimBar(){
+  const pct=Math.round(G.matchIdx/34*100);
+  const fill=$('mob-sim-fill');if(fill)fill.style.width=pct+'%';
+  const lbl=$('mob-sim-label');if(lbl)lbl.textContent=`Matchday ${G.matchIdx} of 34`;
+}
+function schedNext(){
+  if(!G.simRunning)return;
+  if(G.matchIdx>=34){setTimeout(showResult,700);return;}
+  G.simTimer=setTimeout(()=>{simGW(G.matchIdx);renderMatchRow(G.matchIdx);renderTable();G.matchIdx++;updateMobSimBar();schedNext();},getSpeed());
+}
+function skipToEnd(){
+  if(G.simTimer)clearTimeout(G.simTimer);G.simRunning=false;
+  for(let i=G.matchIdx;i<34;i++){simGW(i);renderMatchRow(i);}
+  renderTable();updateMobSimBar();setTimeout(showResult,600);
+}
+$('btn-skip').addEventListener('click',skipToEnd);
+$('btn-skip-mob').addEventListener('click',skipToEnd);
+document.getElementById('btn-restart').addEventListener('click',resetAll);
+function renderMatchRow(idx){
+  const gw=G.schedule[idx];
+  const block=$(`gw-${gw.gw}`);if(!block)return;
+  const ht=gw.home?MY_TEAM:gw.opp,at=gw.home?gw.opp:MY_TEAM;
+  const cls=gw.result==='W'?'win':gw.result==='L'?'loss':'draw';
+  const score=gw.home?`${gw.scored}–${gw.conceded}`:`${gw.conceded}–${gw.scored}`;
+  const scorerLine=gw.ourScorers.length?gw.ourScorers.map(s=>short(s,12)).join(', '):'';
+  const row=document.createElement('div');row.className='match-row';
+  row.innerHTML=`<div class="match-home${ht===MY_TEAM?' us':''}">${ht}</div>
+    <div class="match-score ${cls}">
+      <div>${score}</div>
+      ${scorerLine?`<div class="match-scorers">${scorerLine}</div>`:''}
+    </div>
+    <div class="match-away${at===MY_TEAM?' us':''}">${at}</div>`;
+  block.appendChild(row);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>row.classList.add('shown')));
+  row.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function renderTable(){
+  const body=$('lt-body');body.innerHTML='';
+  G.table.forEach((t,i)=>{
+    const d=document.createElement('div');
+    d.className='lt-row'+(t.isUs?' us':'')+(i===0?' champion':'');
+    d.innerHTML=`<div class="lt-pos">${i+1}</div><div class="lt-name${t.isUs?' us':''}">${t.name}</div>
+      <div class="lt-num">${t.w}</div><div class="lt-num">${t.d}</div><div class="lt-num">${t.l}</div>
+      <div class="lt-pts">${t.pts}</div>`;
+    body.appendChild(d);
+  });
+}
+function showResult(){
+  const us=G.table.find(t=>t.isUs);
+  const pos=G.table.findIndex(t=>t.isUs)+1;
+  const{w:W,d:D,l:L,pts,gf,ga}=us;
+  let trophy,record,tagline,msg;
+  if(L===0&&D===0){trophy='🏆';record=`${W}-${D}-${L}`;tagline='Mükemmel sezon. Tarihe geçtiniz!';
+    msg='Otuz dört maç, otuz dört galibiyet. Tek bir puan dahi kaybedilmedi. Bu, Türk futbol tarihinin en büyük sezonu.';}
+  else if(pos===1&&L===0){trophy='🏆';record=`${W}-${D}-${L}`;tagline='Yenilmez şampiyon — olağanüstü!';
+    msg=`Süper Lig şampiyonluğu tek bir yenilgi olmaksızın kazanıldı. ${D} beraberlik oldu ama kimse bu takımı yenemedi.`;}
+  else if(pos===1&&L<=3){trophy='🏆';record=`${W}-${D}-${L}`;tagline='Şampiyon! Süper Lig Şampiyonu.';
+    msg=`${pts} puanla şampiyonluk. Birkaç tümsek oldu ama bu kadronun kalitesi başından beri belliydi.`;}
+  else if(pos===1){trophy='🥇';record=`${W}-${D}-${L}`;tagline='Şampiyon — ama zor oldu.';
+    msg=`Şampiyonluk sizin. ${L} yenilgi gerginlik yarattı ama ${pts} puan yeterliydi.`;}
+  else if(pos===2){trophy='🥈';record=`${W}-${D}-${L}`;tagline='İkinci sıra. Çok yakındı.';
+    msg=`${pts} puanla ikinci sıra. Şampiyonluk elden kaçtı ama Şampiyonlar Ligi garantilendi.`;}
+  else if(pos<=4){trophy='🥉';record=`${W}-${D}-${L}`;tagline=`${ordinal(pos)} sıra. Şampiyonlar Ligi.`;
+    msg=`${ordinal(pos)} sıra ve ${pts} puan, Şampiyonlar Ligi'ne bilet kazandırdı.`;}
+  else if(pos<=7){trophy='😤';record=`${W}-${D}-${L}`;tagline=`${ordinal(pos)} sıra. Avrupa Ligi.`;
+    msg=`${pts} puan ve ${ordinal(pos)} sıra bitişi. Avrupa Ligi'ne gidilecek ama daha fazlası bekleniyordu.`;}
+  else if(pos<=12){trophy='😔';record=`${W}-${D}-${L}`;tagline=`${ordinal(pos)} sıra. Hayal kırıklığı.`;
+    msg=`${ordinal(pos)} sıra ve ${pts} puan. Bu kadro için büyük bir düş kırıklığı.`;}
+  else{trophy='😬';record=`${W}-${D}-${L}`;tagline=`${ordinal(pos)} sıra. Felaket.`;
+    msg=`${ordinal(pos)} sıra ve sadece ${pts} puan. Bu kadrodan beklenenlerin çok altında kalan bir sezon.`;}
+  $('res-trophy').textContent=trophy;
+  $('res-record').textContent=record;
+  $('res-tagline').textContent=tagline;
+  $('res-stats').innerHTML=`
+    <div class="res-stat"><div class="res-stat-n">${pts}</div><div class="res-stat-l">POINTS</div></div>
+    <div class="res-stat"><div class="res-stat-n">${W}</div><div class="res-stat-l">WINS</div></div>
+    <div class="res-stat"><div class="res-stat-n">${D}</div><div class="res-stat-l">DRAWS</div></div>
+    <div class="res-stat"><div class="res-stat-n">${L}</div><div class="res-stat-l">LOSSES</div></div>
+    <div class="res-stat"><div class="res-stat-n">${gf}</div><div class="res-stat-l">GOALS FOR</div></div>`;
+  const predPos=G.predictedPos;
+  let posCard=`<div class="res-card"><div class="res-card-title">FINAL POSITION</div>`;
+  if(predPos){
+    const diff=predPos-pos;
+    const arrow=diff>0?'▲':diff<0?'▼':'=';
+    const arrowCol=diff>0?'#2e7d32':diff<0?'#c62828':'#5a5040';
+    posCard+=`<div class="pos-compare">
+      <div class="pos-block"><div class="pos-num" style="color:var(--green)">${pos}</div><div class="pos-lbl">ACTUAL</div></div>
+      <div class="pos-arrow" style="color:${arrowCol}">${arrow}</div>
+      <div class="pos-block"><div class="pos-num" style="color:var(--text3)">${predPos}</div><div class="pos-lbl">PREDICTED</div></div>
+    </div>
+    <div style="font-size:11px;font-family:var(--serif);font-style:italic;color:var(--text2);text-align:center">${diff>0?`Finished ${diff} place${diff!==1?'s':''} higher than predicted.`:diff<0?`Finished ${Math.abs(diff)} place${Math.abs(diff)!==1?'s':''} below prediction.`:'Finished exactly as predicted.'}</div>`;
+  } else {
+    posCard+=`<div class="pos-compare"><div class="pos-block"><div class="pos-num" style="color:var(--green)">${pos}</div><div class="pos-lbl">FINAL POSITION</div></div></div>`;
+  }
+  posCard+=`</div>`;
+  const scorers=Object.entries(G.goalscorers).sort((a,b)=>b[1]-a[1]).slice(0,7);
+  let scorerCard=`<div class="res-card"><div class="res-card-title">TOP SCORERS</div>`;
+  if(scorers.length){
+    scorers.forEach(([name,goals])=>{
+      scorerCard+=`<div class="scorer-row"><div class="scorer-goals">${goals}</div><div class="scorer-name">${name}</div></div>`;
+    });
+  } else scorerCard+=`<div style="font-family:var(--serif);font-style:italic;color:var(--text3);font-size:13px">No goals scored</div>`;
+  scorerCard+=`</div>`;
+  let squadCard=`<div class="res-card"><div class="res-card-title">YOUR SÜPER XI</div>`;
+  G.slots.forEach((sl,i)=>{
+    const p=G.filled[i];if(!p)return;
+    squadCard+=`<div class="res-player"><div class="res-player-pos">${sl.pos}</div><div class="res-player-name">${p.n}</div>${G.showRatings?`<div class="res-player-rat">${p.r}</div>`:''}</div>`;
+  });
+  squadCard+=`</div>`;
+  $('res-body').innerHTML=posCard+scorerCard+squadCard;
+  $('res-msg').textContent=msg;
+  show('s-result');
+  if(L===0&&D===0)confetti();
+}
+function confetti(){
+  const cv=$('confetti-canvas');cv.width=innerWidth;cv.height=innerHeight;
+  const cx=cv.getContext('2d');
+  const cols=['#c8922a','#f5d97a','#fff8dc','#1a4a2e','#ffffff','#e8c96d','#cc0000','#003399','#1a1a1a'];
+  const ps=Array.from({length:230},()=>({x:Math.random()*cv.width,y:-30-Math.random()*200,w:5+Math.random()*9,h:3+Math.random()*5,rot:Math.random()*360,rv:(Math.random()-.5)*8,vx:(Math.random()-.5)*3,vy:2.5+Math.random()*4,col:cols[Math.floor(Math.random()*cols.length)],a:1}));
+  let f=0;(function tick(){cx.clearRect(0,0,cv.width,cv.height);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.rot+=p.rv;if(f>160)p.a=Math.max(0,p.a-.012);cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot*Math.PI/180);cx.globalAlpha=p.a;cx.fillStyle=p.col;cx.fillRect(-p.w/2,-p.h/2,p.w,p.h);cx.restore();});f++;if(f<320)requestAnimationFrame(tick);else cx.clearRect(0,0,cv.width,cv.height);})();
+}
+let darkMode=false;
+function toggleDark(){
+  darkMode=!darkMode;
+  document.documentElement.setAttribute('data-theme',darkMode?'dark':'');
+  const icon=darkMode?'☀️':'🌙';
+  document.querySelectorAll('.dm-btn').forEach(b=>b.textContent=icon);
+}
+document.querySelectorAll('.dm-btn').forEach(b=>b.addEventListener('click',toggleDark));
+function buildShareCanvas(cb){
+  const dark=darkMode;
+  const bg=dark?'#0f1117':'#f2efe8';
+  const card=dark?'#1c2030':'#ffffff';
+  const green=dark?'#3a9a58':'#1a4a2e';
+  const text=dark?'#e8e4dc':'#1a1714';
+  const text2=dark?'#9a9488':'#5a5040';
+  const text3=dark?'#5a5a6a':'#9a9080';
+  const gold='#c8922a';
+  const border=dark?'#242836':'#d8d2c6';
+  const us=G.table.find(t=>t.isUs);
+  const pos=G.table.findIndex(t=>t.isUs)+1;
+  const{w:W,d:D,l:L,pts}=us;
+  const scorers=Object.entries(G.goalscorers).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const record=`${W}-${D}-${L}`;
+  const W_PX=600,H_PX=700;
+  const cv=$('share-canvas');
+  cv.width=W_PX;cv.height=H_PX;
+  const cx=cv.getContext('2d');
+  cx.fillStyle=bg;cx.fillRect(0,0,W_PX,H_PX);
+  cx.fillStyle=green;cx.fillRect(0,0,W_PX,6);
+  cx.fillStyle=gold;cx.font='bold 11px Oswald, sans-serif';cx.letterSpacing='6px';
+  cx.fillText('SÜPER XI',40,50);
+  cx.fillStyle=text;cx.font='bold 52px Oswald, sans-serif';cx.letterSpacing='0px';
+  cx.fillText(record,40,115);
+  cx.fillStyle=text2;cx.font='italic 18px Georgia, serif';
+  const tagline=pos===1&&L===0&&D===0?'Perfect season — utterly invincible':pos===1?'Şampiyonluk! Süper Lig':pos<=4?`${ordinal(pos)} — Şampiyonlar Ligi`:pos<=7?`${ordinal(pos)} — Avrupa`:`${ordinal(pos)} place`;
+  cx.fillText(tagline,40,150);
+  cx.fillStyle=gold;cx.fillRect(40,168,520,2);
+  const stats=[{l:'POINTS',v:pts},{l:'WINS',v:W},{l:'DRAWS',v:D},{l:'LOSSES',v:L}];
+  stats.forEach((s,i)=>{
+    const x=40+i*130;
+    cx.fillStyle=green;cx.font='bold 34px Oswald, sans-serif';cx.fillText(s.v,x,215);
+    cx.fillStyle=text3;cx.font='10px Oswald, sans-serif';cx.letterSpacing='2px';
+    cx.fillText(s.l,x,232);cx.letterSpacing='0px';
+  });
+  cx.fillStyle=text3;cx.font='9px Oswald, sans-serif';cx.letterSpacing='3px';
+  cx.fillText('YOUR SÜPER XI',40,268);cx.fillText('TOP SCORERS',320,268);cx.letterSpacing='0px';
+  cx.fillStyle=border;cx.fillRect(40,274,520,1);
+  let y=296;
+  G.slots.forEach((sl,i)=>{
+    const p=G.filled[i];if(!p)return;
+    cx.fillStyle=gold;cx.font='bold 9px Oswald, sans-serif';cx.letterSpacing='1px';
+    cx.fillText(sl.pos,40,y);cx.letterSpacing='0px';
+    cx.fillStyle=text;cx.font='13px Oswald, sans-serif';
+    cx.fillText(p.n.length>22?p.n.slice(0,21)+'…':p.n,74,y);
+    if(G.showRatings){cx.fillStyle=green;cx.font='bold 12px Oswald, sans-serif';cx.fillText(p.r,256,y);}
+    cx.fillStyle=border;cx.fillRect(40,y+4,240,1);y+=20;
+  });
+  let sy=296;
+  scorers.forEach(([name,goals])=>{
+    cx.fillStyle=green;cx.font='bold 18px Oswald, sans-serif';cx.fillText(goals,320,sy);
+    cx.fillStyle=text;cx.font='13px Oswald, sans-serif';
+    cx.fillText(name.length>20?name.slice(0,19)+'…':name,348,sy);
+    cx.fillStyle=border;cx.fillRect(320,sy+4,240,1);sy+=28;
+  });
+  cx.fillStyle=text3;cx.font='10px Oswald, sans-serif';cx.letterSpacing='2px';
+  cx.fillText('super-xi.app',40,H_PX-28);cx.letterSpacing='0px';
+  cx.fillStyle=green;cx.fillRect(0,H_PX-6,W_PX,6);
+  if(cb)cb(cv);
+}
+$('btn-save').addEventListener('click',()=>{
+  buildShareCanvas(cv=>{
+    const a=document.createElement('a');
+    a.download='super-xi-result.png';
+    a.href=cv.toDataURL('image/png');
+    a.click();
+  });
+});
+$('btn-share').addEventListener('click',()=>{
+  buildShareCanvas(async cv=>{
+    cv.toBlob(async blob=>{
+      const text=`My Süper XI season: ${G.table.find(t=>t.isUs).pts} pts, ${ordinal(G.table.findIndex(t=>t.isUs)+1)} place! #SüperXI`;
+      if(navigator.share&&navigator.canShare&&navigator.canShare({files:[new File([blob],'super-xi.png',{type:'image/png'})]})){
+        try{await navigator.share({files:[new File([blob],'super-xi.png',{type:'image/png'})],title:'Süper XI',text});return;}catch(e){}
+      }
+      try{
+        await navigator.clipboard.writeText(text);
+        $('btn-share').textContent='✓ COPIED!';
+        setTimeout(()=>{$('btn-share').innerHTML='📤 SHARE RESULT';},2000);
+      }catch(e){
+        const a=document.createElement('a');
+        a.download='super-xi-result.png';
+        a.href=cv.toDataURL('image/png');
+        a.click();
+      }
+    },'image/png');
+  });
+});
+function resetAll(){
+  if(G.simTimer)clearTimeout(G.simTimer);
+  G={mode:'position',formation:'4-3-3',slots:[],filled:{},showRatings:true,selectedTeam:null,currentSlot:null,chosenPlayer:null,slotOptions:null,spinning:false,respinsLeft:3,recentTeams:[],table:[],schedule:[],matchIdx:0,simRunning:false,simTimer:null,goalscorers:{},predictedPos:null};
+  document.querySelectorAll('.f-btn,.mode-card').forEach(b=>b.classList.remove('sel'));
+  $('btn-start').classList.remove('on');
+  $('rat-tog').classList.add('on');
+  initSlot();show('s-intro');
+}
+$('btn-again').addEventListener('click',resetAll);
+</script>
+</body>
+</html>
