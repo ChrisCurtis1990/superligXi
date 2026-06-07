@@ -316,21 +316,9 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var
 <div id="s-intro" class="screen active">
   <div class="intro-badge">Süper Lig · All Eras · 1990–2026</div>
   <div class="intro-logo">SÜPER XI</div>
-  <div class="intro-tagline">Spin the slot, draft a legendary Süper Lig squad, and conquer a perfect season.</div>
+  <div class="intro-tagline">Pick your position, spin for a team, build a legendary Süper Lig XI.</div>
   <div class="intro-divider"></div>
-  <div style="width:100%;max-width:540px">
-    <div class="section-label">Choose your draft style</div>
-    <div class="mode-grid" id="mode-grid">
-      <div class="mode-card" data-m="position">
-        <div class="mode-card-title">SPIN &amp; PICK</div>
-        <div class="mode-card-desc">Spin to get a random team — then pick any player from their squad, choosing which open position to fill.</div>
-      </div>
-      <div class="mode-card" data-m="squad">
-        <div class="mode-card-title">SQUAD FIRST</div>
-        <div class="mode-card-desc">Choose a real Süper Lig team and season, then fill each position from that squad's roster.</div>
-      </div>
-    </div>
-  </div>
+
   <div style="width:100%;max-width:540px">
     <div class="section-label">Choose your formation</div>
     <div class="formations" id="formations">
@@ -342,9 +330,28 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var
       <button class="f-btn" data-f="3-4-3">3-4-3</button>
     </div>
   </div>
+  <div style="width:100%;max-width:540px">
+    <div class="section-label">Rating mode</div>
+    <div class="mode-grid" id="rating-mode-grid">
+      <div class="mode-card sel" data-rm="season">
+        <div class="mode-card-title">SEASON RATING</div>
+        <div class="mode-card-desc">Players rated for the specific season they played in. Realistic and era-accurate.</div>
+      </div>
+      <div class="mode-card" data-rm="peak">
+        <div class="mode-card-title">ALL-TIME PEAK</div>
+        <div class="mode-card-desc">Players rated at their career peak regardless of season. Best for star-chasing.</div>
+      </div>
+    </div>
+  </div>
   <div class="options-row">
-    <label class="toggle-wrap"><div class="tog on" id="rat-tog"></div>SHOW RATINGS</label>
+    <label class="toggle-wrap" id="promode-wrap" title="Hide ratings for the ultimate challenge">
+      <div class="tog" id="rat-tog"></div>
+      <span>HIDE RATINGS <span style="font-size:9px;letter-spacing:1px;color:var(--gold);margin-left:4px">PRO MODE</span></span>
+    </label>
     <button class="dm-btn" id="dm-tog-intro" title="Toggle dark mode">🌙</button>
+  </div>
+  <div id="promode-tip" style="font-family:var(--serif);font-style:italic;font-size:13px;color:var(--text3);max-width:440px;text-align:center;display:none">
+    Hide ratings before the game for the best experience — for players who want the ultimate challenge.
   </div>
   <button class="cta" id="btn-start">HADI BAŞLAYALIM →</button>
 </div>
@@ -355,7 +362,6 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var
       <div class="topbar-title">SÜPER XI</div>
     </div>
     <div class="topbar-right">
-      <label class="toggle-wrap" style="font-size:10px;color:var(--text3)"><div class="tog on" id="rat-tog-d"></div>RATINGS</label>
       <button class="dm-btn" id="dm-tog-draft" title="Toggle dark mode">🌙</button>
     </div>
   </div>
@@ -391,8 +397,13 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var
       </div>
       <div class="spinner-panel" id="spinner-panel">
         <div id="wheel-zone">
+          <div id="pos-selector-zone" class="spin-zone" style="display:none">
+            <div class="spin-eyebrow">1. PICK A POSITION</div>
+            <div id="pos-btn-grid" style="display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:4px"></div>
+            
+          </div>
           <div class="spin-zone">
-            <div class="spin-eyebrow">SPIN TO GET A TEAM</div>
+            <div class="spin-eyebrow" id="spin-eyebrow-txt">2. THEN SPIN FOR A TEAM ↑</div>
             <div class="slot-machine">
               <div class="slot-highlight"></div>
               <div class="slot-track" id="slot-track"></div>
@@ -407,17 +418,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var
           </div>
           <div class="tr-tier" id="tr-tier"></div>
         </div>
-        <div id="team-zone" style="display:none;flex:1;flex-direction:column;overflow:hidden">
-          <div class="lc-eyebrow">PICK A TEAM &amp; SEASON</div>
-          <select class="era-select" id="era-filter">
-            <option value="">All Seasons (1990–2026)</option>
-            <option value="1990s">1990s</option>
-            <option value="2000s">2000s</option>
-            <option value="2010s">2010s</option>
-            <option value="2020s">2020s</option>
-          </select>
-          <div class="team-scroll" id="team-list"></div>
-        </div>
+
       </div>
       <div class="player-panel hidden" id="player-panel">
         <div class="rc-head">
@@ -849,8 +850,8 @@ const TEAMS=[
     {n:'Çağlar Söyüncü',pos:'CB',r:80},{n:'Alexander Djiku',pos:'CB',r:76},{n:'Jayden Oosterwolde',pos:'CB',r:74},
     {n:'Jayden Oosterwolde',pos:'LB',r:74},{n:'İsmail Yüksek',pos:'LWB',r:70},
     {n:'Fred',pos:'CDM',r:78},{n:'Sebastian Szymanski',pos:'CDM',r:80},
-    {n:'İrfan Can Kahveci',pos:'CM',r:80},{n:"N'Golo Kanté",pos:'CM',r:84},
-    {n:"N'Golo Kanté",pos:'CAM',r:84},{n:'Marco Asensio',pos:'RAM',r:80},
+    {n:'İrfan Can Kahveci',pos:'CM',r:80},{n:'N\u2019Golo Kanté',pos:'CM',r:84},
+    {n:'N\u2019Golo Kanté',pos:'CAM',r:84},{n:'Marco Asensio',pos:'RAM',r:80},
     {n:'Marco Asensio',pos:'RW',r:80},{n:'İrfan Can Kahveci',pos:'LW',r:80},
     {n:'Edin Džeko',pos:'ST',r:76},{n:'Michy Batshuayi',pos:'ST',r:72},{n:'Vedat Muriqi',pos:'ST',r:74}
   ]},
@@ -1293,11 +1294,362 @@ const TEAMS=[
     {n:'Adem Büyük',pos:'CAM',r:64},{n:'Soner Aydoğdu',pos:'RAM',r:58},
     {n:'Soner Aydoğdu',pos:'RW',r:58},{n:'Gökhan Töre',pos:'LW',r:64},
     {n:'Gökhan Töre',pos:'ST',r:66},{n:'Adem Büyük',pos:'ST',r:64},{n:'Batuhan Karadeniz',pos:'ST',r:58}
+  ]},
+
+  // ── EXTRA TEAMS: filling gaps ──────────────────────────────────────────
+  // More Fenerbahçe eras
+  {id:'fener9293',name:'Fenerbahçe',season:'1992/93',decade:'1990s',tier:'good',col:'#003399',strength:80,predicted:2,players:[
+    {n:'Şenol Güneş',pos:'GK',r:82},{n:'Hayrettin Demirbaş',pos:'GK',r:66},
+    {n:'Rıdvan Dilmen',pos:'RB',r:76},{n:'Aykut Kocaman',pos:'RB',r:74},
+    {n:'Uğur Tütüneker',pos:'CB',r:72},{n:'Kemal Aslan',pos:'CB',r:70},{n:'Bülent Uygun',pos:'CB',r:70},
+    {n:'Bülent Uygun',pos:'LB',r:70},{n:'Rıdvan Dilmen',pos:'LWB',r:74},
+    {n:'Aykut Kocaman',pos:'CDM',r:74},{n:'Uğur Tütüneker',pos:'CDM',r:72},
+    {n:'Saffet Sancaklı',pos:'CM',r:72},{n:'Aykut Kocaman',pos:'CM',r:74},
+    {n:'Tanju Çolak',pos:'CAM',r:82},{n:'Rıdvan Dilmen',pos:'RAM',r:76},
+    {n:'Rıdvan Dilmen',pos:'RW',r:76},{n:'Yılmaz Vural',pos:'LW',r:70},
+    {n:'Tanju Çolak',pos:'ST',r:84},{n:'İsmet Tosyalı',pos:'ST',r:70},{n:'Saffet Sancaklı',pos:'ST',r:72}
+  ]},
+  {id:'fener9495',name:'Fenerbahçe',season:'1994/95',decade:'1990s',tier:'good',col:'#003399',strength:82,predicted:2,players:[
+    {n:'Rustu Reçber',pos:'GK',r:82},{n:'Cüneyt Tanman',pos:'GK',r:62},
+    {n:'Oğuz Çetin',pos:'RB',r:72},{n:'Tolunay Kafkas',pos:'RB',r:70},
+    {n:'Bülent Uygun',pos:'CB',r:74},{n:'Kemal Aslan',pos:'CB',r:70},{n:'Müslüm Özbekli',pos:'CB',r:70},
+    {n:'Müslüm Özbekli',pos:'LB',r:70},{n:'Tolunay Kafkas',pos:'LWB',r:70},
+    {n:'Oğuz Çetin',pos:'CDM',r:72},{n:'Saffet Sancaklı',pos:'CDM',r:70},
+    {n:'Saffet Sancaklı',pos:'CM',r:70},{n:'Oğuz Çetin',pos:'CM',r:72},
+    {n:'Jay-Jay Okocha',pos:'CAM',r:86},{n:'Elvir Balić',pos:'RAM',r:78},
+    {n:'Elvir Balić',pos:'RW',r:78},{n:'Cordon',pos:'LW',r:70},
+    {n:'Hakan Şükür',pos:'ST',r:80},{n:'Elvir Balić',pos:'ST',r:76},{n:'Saffet Sancaklı',pos:'ST',r:70}
+  ]},
+  {id:'fener0304',name:'Fenerbahçe',season:'2003/04',decade:'2000s',tier:'good',col:'#003399',strength:80,predicted:2,players:[
+    {n:'Rustu Reçber',pos:'GK',r:86},{n:'Cüneyt Tanman',pos:'GK',r:62},
+    {n:'Oğuz Çetin',pos:'RB',r:74},{n:'Tolunay Kafkas',pos:'RB',r:70},
+    {n:'Bülent Uygun',pos:'CB',r:74},{n:'Servet Çetin',pos:'CB',r:72},{n:'Müslüm Özbekli',pos:'CB',r:70},
+    {n:'Müslüm Özbekli',pos:'LB',r:70},{n:'Tolunay Kafkas',pos:'LWB',r:70},
+    {n:'Stephen Appiah',pos:'CDM',r:80},{n:'Anatoliy Tymoshchuk',pos:'CDM',r:74},
+    {n:'Anatoliy Tymoshchuk',pos:'CM',r:74},{n:'Stephen Appiah',pos:'CM',r:80},
+    {n:'Tuncay Şanlı',pos:'CAM',r:78},{n:'Stéphane Dalmat',pos:'RAM',r:72},
+    {n:'Stéphane Dalmat',pos:'RW',r:72},{n:'Elvir Balić',pos:'LW',r:74},
+    {n:'Pierre van Hooijdonk',pos:'ST',r:80},{n:'Elvir Balić',pos:'ST',r:74},{n:'Tuncay Şanlı',pos:'ST',r:76}
+  ]},
+  {id:'fener0809',name:'Fenerbahçe',season:'2008/09',decade:'2000s',tier:'good',col:'#003399',strength:84,predicted:2,players:[
+    {n:'Volkan Demirel',pos:'GK',r:84},{n:'Serkan Kırıntılı',pos:'GK',r:60},
+    {n:'Gökhan Gönül',pos:'RB',r:78},{n:'Emmanuel de Souza',pos:'RB',r:68},
+    {n:'Lugano',pos:'CB',r:80},{n:'Edu Dracena',pos:'CB',r:76},{n:'Servet Çetin',pos:'CB',r:74},
+    {n:'Roberto Carlos',pos:'LB',r:78},{n:'Emmanuel de Souza',pos:'LWB',r:68},
+    {n:'Mehmet Topuz',pos:'CDM',r:74},{n:'Diego Ribas',pos:'CDM',r:76},
+    {n:'Diego Ribas',pos:'CM',r:76},{n:'Tuncay Şanlı',pos:'CM',r:78},
+    {n:'Alex de Souza',pos:'CAM',r:88},{n:'Tuncay Şanlı',pos:'RAM',r:78},
+    {n:'Alex de Souza',pos:'RW',r:88},{n:'Deivid',pos:'LW',r:70},
+    {n:'Deivid',pos:'ST',r:72},{n:'Semih Şentürk',pos:'ST',r:70},{n:'Tuncay Şanlı',pos:'ST',r:78}
+  ]},
+  {id:'fener1213',name:'Fenerbahçe',season:'2012/13',decade:'2010s',tier:'good',col:'#003399',strength:82,predicted:2,players:[
+    {n:'Volkan Demirel',pos:'GK',r:82},{n:'Harun Tekin',pos:'GK',r:66},
+    {n:'Gökhan Gönül',pos:'RB',r:80},{n:'Hasan Ali Kaldırım',pos:'RB',r:72},
+    {n:'Egemen Korkmaz',pos:'CB',r:72},{n:'Bekir İrtegün',pos:'CB',r:70},{n:'Sarp Levendoğlu',pos:'CB',r:68},
+    {n:'Hasan Ali Kaldırım',pos:'LB',r:72},{n:'Caner Erkin',pos:'LWB',r:74},
+    {n:'Mehmet Topal',pos:'CDM',r:78},{n:'Raul Meireles',pos:'CDM',r:78},
+    {n:'Emre Belözoğlu',pos:'CM',r:80},{n:'Raul Meireles',pos:'CM',r:78},
+    {n:'Moussa Sow',pos:'CAM',r:74},{n:'Nani',pos:'RAM',r:78},
+    {n:'Nani',pos:'RW',r:78},{n:'Miroslav Stoch',pos:'LW',r:68},
+    {n:'Pierre-Alain Frau',pos:'ST',r:72},{n:'Moussa Sow',pos:'ST',r:74},{n:'Miroslav Stoch',pos:'ST',r:66}
+  ]},
+  // More Beşiktaş eras
+  {id:'besik0102',name:'Beşiktaş',season:'2001/02',decade:'2000s',tier:'good',col:'#1a1a1a',strength:74,predicted:3,players:[
+    {n:'Rüştü Reçber',pos:'GK',r:82},{n:'Hayrettin',pos:'GK',r:62},
+    {n:'İbrahim Toraman',pos:'RB',r:68},{n:'Talat Dumankaya',pos:'RB',r:64},
+    {n:'Gökhan Zan',pos:'CB',r:70},{n:'İbrahim Toraman',pos:'CB',r:68},{n:'Umit Ozturk',pos:'CB',r:66},
+    {n:'Gökhan Zan',pos:'LB',r:70},{n:'Talat Dumankaya',pos:'LWB',r:64},
+    {n:'Sergen Yalçın',pos:'CDM',r:80},{n:'Mehmet Aurelio',pos:'CDM',r:70},
+    {n:'Sergen Yalçın',pos:'CM',r:80},{n:'Mehmet Aurelio',pos:'CM',r:70},
+    {n:'Sergen Yalçın',pos:'CAM',r:82},{n:'Tayfur Havutçu',pos:'RAM',r:66},
+    {n:'Paulo Sérgio',pos:'RW',r:72},{n:'Tayfur Havutçu',pos:'LW',r:66},
+    {n:'Paulo Sérgio',pos:'ST',r:72},{n:'İlhan Mansız',pos:'ST',r:70},{n:'Sergen Yalçın',pos:'ST',r:78}
+  ]},
+  {id:'besik0910',name:'Beşiktaş',season:'2009/10',decade:'2010s',tier:'good',col:'#1a1a1a',strength:76,predicted:3,players:[
+    {n:'Rüştü Reçber',pos:'GK',r:78},{n:'Cenk Gönen',pos:'GK',r:66},
+    {n:'İbrahim Toraman',pos:'RB',r:74},{n:'Serdar Topraktepe',pos:'RB',r:66},
+    {n:'İbrahim Toraman',pos:'CB',r:74},{n:'Tomas Sivok',pos:'CB',r:72},{n:'Gökhan Zan',pos:'CB',r:70},
+    {n:'Gökhan Zan',pos:'LB',r:70},{n:'Tomas Sivok',pos:'LWB',r:70},
+    {n:'Tomas Sivok',pos:'CDM',r:72},{n:'Mehmet Aurelio',pos:'CDM',r:68},
+    {n:'Mehmet Aurelio',pos:'CM',r:68},{n:'Olcay Şahan',pos:'CM',r:70},
+    {n:'Ricardo Quaresma',pos:'CAM',r:80},{n:'Matias Fernandez',pos:'RAM',r:72},
+    {n:'Ricardo Quaresma',pos:'RW',r:80},{n:'Bobo',pos:'LW',r:72},
+    {n:'Bobo',pos:'ST',r:74},{n:'Hugo Almeida',pos:'ST',r:72},{n:'Olcay Şahan',pos:'ST',r:68}
+  ]},
+  {id:'besik1415',name:'Beşiktaş',season:'2014/15',decade:'2010s',tier:'good',col:'#1a1a1a',strength:80,predicted:3,players:[
+    {n:'Tolga Zengin',pos:'GK',r:78},{n:'Cenk Gönen',pos:'GK',r:66},
+    {n:'Gökhan Gönül',pos:'RB',r:78},{n:'İsmail Köybaşı',pos:'RB',r:68},
+    {n:'Marcelo',pos:'CB',r:70},{n:'Duško Tošić',pos:'CB',r:72},{n:'Andreas Beck',pos:'CB',r:68},
+    {n:'Veli Kavlak',pos:'LB',r:70},{n:'İsmail Köybaşı',pos:'LWB',r:68},
+    {n:'Atiba Hutchinson',pos:'CDM',r:80},{n:'Veli Kavlak',pos:'CDM',r:70},
+    {n:'Oguzhan Özyakup',pos:'CM',r:76},{n:'Olcay Şahan',pos:'CM',r:72},
+    {n:'Guti',pos:'CAM',r:72},{n:'Olcay Şahan',pos:'RAM',r:72},
+    {n:'Cenk Tosun',pos:'RW',r:72},{n:'Guti',pos:'LW',r:72},
+    {n:'Mario Gomez',pos:'ST',r:80},{n:'Cenk Tosun',pos:'ST',r:72},{n:'Demba Ba',pos:'ST',r:76}
+  ]},
+  {id:'besik1819',name:'Beşiktaş',season:'2018/19',decade:'2010s',tier:'good',col:'#1a1a1a',strength:78,predicted:3,players:[
+    {n:'Fabri',pos:'GK',r:76},{n:'Tolga Zengin',pos:'GK',r:74},
+    {n:'Adriano',pos:'RB',r:74},{n:'Domagoj Vida',pos:'RB',r:74},
+    {n:'Domagoj Vida',pos:'CB',r:76},{n:'Duško Tošić',pos:'CB',r:72},{n:'Marcelo',pos:'CB',r:68},
+    {n:'Adriano',pos:'LB',r:74},{n:'Ryan Babel',pos:'LWB',r:74},
+    {n:'Atiba Hutchinson',pos:'CDM',r:80},{n:'Tolgay Arslan',pos:'CDM',r:74},
+    {n:'Oguzhan Özyakup',pos:'CM',r:76},{n:'Anderson Talisca',pos:'CM',r:80},
+    {n:'Anderson Talisca',pos:'CAM',r:80},{n:'Ryan Babel',pos:'RAM',r:74},
+    {n:'Ryan Babel',pos:'RW',r:74},{n:'Cenk Tosun',pos:'LW',r:74},
+    {n:'Cenk Tosun',pos:'ST',r:76},{n:'Alvaro Negredo',pos:'ST',r:74},{n:'Vagner Love',pos:'ST',r:70}
+  ]},
+  // More Galatasaray eras
+  {id:'gala9192',name:'Galatasaray',season:'1991/92',decade:'1990s',tier:'good',col:'#cc0000',strength:82,predicted:2,players:[
+    {n:'Claudio Taffarel',pos:'GK',r:80},{n:'Hakan Arıkan',pos:'GK',r:64},
+    {n:'Bülent Korkmaz',pos:'RB',r:76},{n:'Capone',pos:'RB',r:66},
+    {n:'Bülent Korkmaz',pos:'CB',r:78},{n:'Alpay Özalan',pos:'CB',r:72},{n:'Gökhan Keskin',pos:'CB',r:66},
+    {n:'Ümit Davala',pos:'LB',r:72},{n:'Ergün Penbe',pos:'LWB',r:68},
+    {n:'Okan Buruk',pos:'CDM',r:74},{n:'Suat Kaya',pos:'CDM',r:68},
+    {n:'Hakan Ünsal',pos:'CM',r:74},{n:'Hakan Şükür',pos:'CM',r:76},
+    {n:'Gheorghe Hagi',pos:'CAM',r:88},{n:'Arif Erdem',pos:'RAM',r:72},
+    {n:'Arif Erdem',pos:'RW',r:72},{n:'Hasan Şaş',pos:'LW',r:72},
+    {n:'Hakan Şükür',pos:'ST',r:78},{n:'Arif Erdem',pos:'ST',r:72},{n:'Kubilay Turkyilmaz',pos:'ST',r:72}
+  ]},
+  {id:'gala9798',name:'Galatasaray',season:'1997/98',decade:'1990s',tier:'elite',col:'#cc0000',strength:89,predicted:1,players:[
+    {n:'Claudio Taffarel',pos:'GK',r:84},{n:'Hakan Arıkan',pos:'GK',r:66},
+    {n:'Bülent Korkmaz',pos:'RB',r:80},{n:'Ergün Penbe',pos:'RB',r:72},
+    {n:'Bülent Korkmaz',pos:'CB',r:82},{n:'Alpay Özalan',pos:'CB',r:78},{n:'Gökhan Keskin',pos:'CB',r:68},
+    {n:'Ümit Davala',pos:'LB',r:76},{n:'Ergün Penbe',pos:'LWB',r:72},
+    {n:'Okan Buruk',pos:'CDM',r:80},{n:'Suat Kaya',pos:'CDM',r:70},
+    {n:'Hakan Ünsal',pos:'CM',r:78},{n:'Hakan Şükür',pos:'CM',r:82},
+    {n:'Gheorghe Hagi',pos:'CAM',r:91},{n:'Arif Erdem',pos:'RAM',r:76},
+    {n:'Hasan Şaş',pos:'RW',r:78},{n:'Arif Erdem',pos:'LW',r:76},
+    {n:'Hakan Şükür',pos:'ST',r:84},{n:'Mário Jardel',pos:'ST',r:86},{n:'Arif Erdem',pos:'ST',r:74}
+  ]},
+  {id:'gala0405',name:'Galatasaray',season:'2004/05',decade:'2000s',tier:'good',col:'#cc0000',strength:78,predicted:2,players:[
+    {n:'Faryd Mondragón',pos:'GK',r:76},{n:'Hakan Arıkan',pos:'GK',r:64},
+    {n:'Sabri Sarıoğlu',pos:'RB',r:70},{n:'Servet Çetin',pos:'RB',r:70},
+    {n:'Servet Çetin',pos:'CB',r:72},{n:'Emre Aşık',pos:'CB',r:70},{n:'Gökhan Zan',pos:'CB',r:68},
+    {n:'Hakan Balta',pos:'LB',r:68},{n:'Ümit Davala',pos:'LWB',r:70},
+    {n:'Arda Turan',pos:'CDM',r:70},{n:'Okan Buruk',pos:'CDM',r:74},
+    {n:'Okan Buruk',pos:'CM',r:74},{n:'Hakan Ünsal',pos:'CM',r:72},
+    {n:'Hakan Şükür',pos:'CAM',r:74},{n:'Arif Erdem',pos:'RAM',r:72},
+    {n:'Hasan Şaş',pos:'RW',r:74},{n:'Arif Erdem',pos:'LW',r:72},
+    {n:'Hakan Şükür',pos:'ST',r:76},{n:'Ümit Karan',pos:'ST',r:72},{n:'Arif Erdem',pos:'ST',r:72}
+  ]},
+  {id:'gala1011',name:'Galatasaray',season:'2010/11',decade:'2010s',tier:'good',col:'#cc0000',strength:82,predicted:2,players:[
+    {n:'Fernando Muslera',pos:'GK',r:80},{n:'Ufuk Ceylan',pos:'GK',r:62},
+    {n:'Sabri Sarıoğlu',pos:'RB',r:74},{n:'Hakan Balta',pos:'RB',r:72},
+    {n:'Servet Çetin',pos:'CB',r:74},{n:'Emre Aşık',pos:'CB',r:70},{n:'Felipe Melo',pos:'CB',r:74},
+    {n:'Hakan Balta',pos:'LB',r:72},{n:'Elano',pos:'LWB',r:74},
+    {n:'Selçuk İnan',pos:'CDM',r:80},{n:'Felipe Melo',pos:'CDM',r:76},
+    {n:'Elano',pos:'CM',r:74},{n:'Selçuk İnan',pos:'CM',r:80},
+    {n:'Arda Turan',pos:'CAM',r:82},{n:'Hamit Altıntop',pos:'RAM',r:76},
+    {n:'Hamit Altıntop',pos:'RW',r:76},{n:'Arda Turan',pos:'LW',r:82},
+    {n:'Burak Yılmaz',pos:'ST',r:84},{n:'Semih Şentürk',pos:'ST',r:68},{n:'Johan Elmander',pos:'ST',r:72}
+  ]},
+  {id:'gala1415',name:'Galatasaray',season:'2014/15',decade:'2010s',tier:'elite',col:'#cc0000',strength:86,predicted:1,players:[
+    {n:'Fernando Muslera',pos:'GK',r:82},{n:'Sinan Bolat',pos:'GK',r:66},
+    {n:'Sabri Sarıoğlu',pos:'RB',r:76},{n:'Hakan Balta',pos:'RB',r:74},
+    {n:'Felipe Melo',pos:'CB',r:76},{n:'Servet Çetin',pos:'CB',r:72},{n:'Semih Kaya',pos:'CB',r:72},
+    {n:'Hakan Balta',pos:'LB',r:74},{n:'Sabri Sarıoğlu',pos:'LWB',r:74},
+    {n:'Selçuk İnan',pos:'CDM',r:82},{n:'Felipe Melo',pos:'CDM',r:76},
+    {n:'Wesley Sneijder',pos:'CM',r:84},{n:'Selçuk İnan',pos:'CM',r:82},
+    {n:'Wesley Sneijder',pos:'CAM',r:84},{n:'Yasin Öztekin',pos:'RAM',r:70},
+    {n:'Burak Yılmaz',pos:'RW',r:80},{n:'Umut Bulut',pos:'LW',r:70},
+    {n:'Burak Yılmaz',pos:'ST',r:80},{n:'Lukas Podolski',pos:'ST',r:78},{n:'Umut Bulut',pos:'ST',r:70}
+  ]},
+  {id:'gala1718',name:'Galatasaray',season:'2017/18',decade:'2010s',tier:'good',col:'#cc0000',strength:82,predicted:2,players:[
+    {n:'Fernando Muslera',pos:'GK',r:82},{n:'Sinan Bolat',pos:'GK',r:68},
+    {n:'Serdar Aziz',pos:'RB',r:70},{n:'Hakan Balta',pos:'RB',r:72},
+    {n:'Hakan Balta',pos:'CB',r:72},{n:'Marcao',pos:'CB',r:76},{n:'Yuto Nagatomo',pos:'CB',r:68},
+    {n:'Yuto Nagatomo',pos:'LB',r:68},{n:'Bengü',pos:'LWB',r:62},
+    {n:'Badou Ndiaye',pos:'CDM',r:74},{n:'Belhanda',pos:'CDM',r:74},
+    {n:'Selçuk İnan',pos:'CM',r:80},{n:'Belhanda',pos:'CM',r:74},
+    {n:'Bafétimbi Gomis',pos:'CAM',r:76},{n:'Saracchi',pos:'RAM',r:66},
+    {n:'Feghouli',pos:'RW',r:72},{n:'Nagatomo',pos:'LW',r:68},
+    {n:'Bafétimbi Gomis',pos:'ST',r:78},{n:'Feghouli',pos:'ST',r:72},{n:'Selçuk İnan',pos:'ST',r:76}
+  ]},
+  {id:'gala2021',name:'Galatasaray',season:'2020/21',decade:'2020s',tier:'good',col:'#cc0000',strength:80,predicted:2,players:[
+    {n:'Fernando Muslera',pos:'GK',r:80},{n:'Sinan Bolat',pos:'GK',r:68},
+    {n:'Sacha Boey',pos:'RB',r:72},{n:'Serdar Aziz',pos:'RB',r:68},
+    {n:'Marcao',pos:'CB',r:78},{n:'Victor Nelsson',pos:'CB',r:74},{n:'Serdar Aziz',pos:'CB',r:68},
+    {n:'Patrick van Aanholt',pos:'LB',r:70},{n:'Bengü',pos:'LWB',r:62},
+    {n:'Taylan Antalyalı',pos:'CDM',r:72},{n:'Oghenekaro Etebo',pos:'CDM',r:70},
+    {n:'Emre Akbaba',pos:'CM',r:70},{n:'Taylan Antalyalı',pos:'CM',r:72},
+    {n:'Ryan Babel',pos:'CAM',r:72},{n:'Feghouli',pos:'RAM',r:70},
+    {n:'Feghouli',pos:'RW',r:70},{n:'Emre Akbaba',pos:'LW',r:70},
+    {n:'Radamel Falcao',pos:'ST',r:78},{n:'Mbaye Diagne',pos:'ST',r:70},{n:'Emre Akbaba',pos:'ST',r:68}
+  ]},
+  // More Trabzonspor
+  {id:'trabzon9394',name:'Trabzonspor',season:'1993/94',decade:'1990s',tier:'mid',col:'#cc6600',strength:68,predicted:5,players:[
+    {n:'Sinan Engin',pos:'GK',r:72},{n:'Cevahir',pos:'GK',r:60},
+    {n:'Hami Mandıralı',pos:'RB',r:80},{n:'Fatih Akyel',pos:'RB',r:68},
+    {n:'Recep Yıldırım',pos:'CB',r:68},{n:'Şaban Yıldırım',pos:'CB',r:66},{n:'Cengiz Çimen',pos:'CB',r:64},
+    {n:'Cengiz Çimen',pos:'LB',r:64},{n:'Orhan Çıkrıkçı',pos:'LWB',r:66},
+    {n:'Hami Mandıralı',pos:'CDM',r:78},{n:'Göksel Güneş',pos:'CDM',r:68},
+    {n:'Göksel Güneş',pos:'CM',r:68},{n:'Hami Mandıralı',pos:'CM',r:78},
+    {n:'Orhan Çıkrıkçı',pos:'CAM',r:68},{n:'Hami Mandıralı',pos:'RAM',r:80},
+    {n:'Hami Mandıralı',pos:'RW',r:80},{n:'Şükrü Erkol',pos:'LW',r:68},
+    {n:'Fatih Tekke',pos:'ST',r:68},{n:'Şükrü Erkol',pos:'ST',r:68},{n:'Cengiz Topçu',pos:'ST',r:66}
+  ]},
+  {id:'trabzon9899',name:'Trabzonspor',season:'1998/99',decade:'1990s',tier:'good',col:'#cc6600',strength:74,predicted:3,players:[
+    {n:'Sinan Engin',pos:'GK',r:72},{n:'Zafer Biryol',pos:'GK',r:60},
+    {n:'Hami Mandıralı',pos:'RB',r:80},{n:'Fatih Akyel',pos:'RB',r:68},
+    {n:'Fatih Akyel',pos:'CB',r:68},{n:'Recep Yıldırım',pos:'CB',r:70},{n:'Şaban Yıldırım',pos:'CB',r:66},
+    {n:'Orhan Çıkrıkçı',pos:'LB',r:66},{n:'Cengiz Çimen',pos:'LWB',r:64},
+    {n:'Hami Mandıralı',pos:'CDM',r:80},{n:'Göksel Güneş',pos:'CDM',r:68},
+    {n:'Göksel Güneş',pos:'CM',r:68},{n:'Hami Mandıralı',pos:'CM',r:80},
+    {n:'Orhan Çıkrıkçı',pos:'CAM',r:68},{n:'Hami Mandıralı',pos:'RAM',r:80},
+    {n:'Hami Mandıralı',pos:'RW',r:80},{n:'Şükrü Erkol',pos:'LW',r:68},
+    {n:'Fatih Tekke',pos:'ST',r:72},{n:'Şükrü Erkol',pos:'ST',r:68},{n:'Gökdeniz Karadeniz',pos:'ST',r:68}
+  ]},
+  {id:'trabzon0405',name:'Trabzonspor',season:'2004/05',decade:'2000s',tier:'mid',col:'#cc6600',strength:66,predicted:6,players:[
+    {n:'Sinan Engin',pos:'GK',r:70},{n:'Zafer Biryol',pos:'GK',r:58},
+    {n:'Egemen Korkmaz',pos:'RB',r:68},{n:'Fatih Akyel',pos:'RB',r:64},
+    {n:'Aykut Demir',pos:'CB',r:64},{n:'Serdar Kurtuluş',pos:'CB',r:62},{n:'Cengiz Çimen',pos:'CB',r:62},
+    {n:'Cengiz Çimen',pos:'LB',r:62},{n:'Egemen Korkmaz',pos:'LWB',r:68},
+    {n:'Gökdeniz Karadeniz',pos:'CDM',r:72},{n:'Mehmet Ekici',pos:'CDM',r:64},
+    {n:'Gökdeniz Karadeniz',pos:'CM',r:72},{n:'Mehmet Ekici',pos:'CM',r:64},
+    {n:'Gökdeniz Karadeniz',pos:'CAM',r:74},{n:'Gökdeniz Karadeniz',pos:'RAM',r:74},
+    {n:'Gökdeniz Karadeniz',pos:'RW',r:74},{n:'Fatih Tekke',pos:'LW',r:70},
+    {n:'Fatih Tekke',pos:'ST',r:72},{n:'Gustavo',pos:'ST',r:64},{n:'Ceyhun Eriş',pos:'ST',r:60}
+  ]},
+  {id:'trabzon1920',name:'Trabzonspor',season:'2019/20',decade:'2020s',tier:'good',col:'#cc6600',strength:76,predicted:2,players:[
+    {n:'Uğurcan Çakır',pos:'GK',r:80},{n:'Cüneyt Çakır',pos:'GK',r:58},
+    {n:'Vitor Hugo',pos:'RB',r:72},{n:'Zeki Yavru',pos:'RB',r:66},
+    {n:'Marc Bartra',pos:'CB',r:76},{n:'Vitor Hugo',pos:'CB',r:72},{n:'Serdar Aziz',pos:'CB',r:68},
+    {n:'Yusuf Sarı',pos:'LB',r:66},{n:'Anastasios Bakasetas',pos:'LWB',r:72},
+    {n:'Dorukhan Toköz',pos:'CDM',r:72},{n:'Okay Yokuşlu',pos:'CDM',r:76},
+    {n:'Anastasios Bakasetas',pos:'CM',r:74},{n:'Edin Visca',pos:'CM',r:76},
+    {n:'Edin Visca',pos:'CAM',r:76},{n:'Andreas Cornelius',pos:'RAM',r:72},
+    {n:'Edin Visca',pos:'RW',r:76},{n:'Djaniny',pos:'LW',r:70},
+    {n:'Alexander Sørloth',pos:'ST',r:80},{n:'Djaniny',pos:'ST',r:70},{n:'Andreas Cornelius',pos:'ST',r:72}
+  ]},
+  // More mid-table variety
+  {id:'malatyaspor2021',name:'Yeni Malatyaspor',season:'2020/21',decade:'2020s',tier:'mid',col:'#cc6600',strength:56,predicted:11,players:[
+    {n:'Ahmet Şahin',pos:'GK',r:68},{n:'Recep Nane',pos:'GK',r:56},
+    {n:'Uğur Demirok',pos:'RB',r:60},{n:'Sedat Şahintürk',pos:'RB',r:58},
+    {n:'Sedat Şahintürk',pos:'CB',r:58},{n:'Lucas',pos:'CB',r:62},{n:'Uğur Demirok',pos:'CB',r:60},
+    {n:'Uğur Demirok',pos:'LB',r:60},{n:'Sedat Şahintürk',pos:'LWB',r:58},
+    {n:'Adem Büyük',pos:'CDM',r:62},{n:'Soner Aydoğdu',pos:'CDM',r:58},
+    {n:'Soner Aydoğdu',pos:'CM',r:58},{n:'Adem Büyük',pos:'CM',r:62},
+    {n:'Adem Büyük',pos:'CAM',r:64},{n:'Guilherme',pos:'RAM',r:62},
+    {n:'Guilherme',pos:'RW',r:62},{n:'Gökhan Töre',pos:'LW',r:64},
+    {n:'Gökhan Töre',pos:'ST',r:66},{n:'Adem Büyük',pos:'ST',r:64},{n:'Guilherme',pos:'ST',r:62}
+  ]},
+  {id:'ankaragucu1920',name:'Ankaragücü',season:'2019/20',decade:'2020s',tier:'lower',col:'#003399',strength:54,predicted:14,players:[
+    {n:'Serkan Kırıntılı',pos:'GK',r:68},{n:'Batuhan Karadeniz',pos:'GK',r:56},
+    {n:'Musa Aydın',pos:'RB',r:60},{n:'Palsson',pos:'RB',r:60},
+    {n:'Palsson',pos:'CB',r:60},{n:'Stef Peeters',pos:'CB',r:62},{n:'Musa Aydın',pos:'CB',r:60},
+    {n:'Stef Peeters',pos:'LB',r:62},{n:'Musa Aydın',pos:'LWB',r:60},
+    {n:'Stef Peeters',pos:'CDM',r:62},{n:'Emre Güral',pos:'CDM',r:60},
+    {n:'Emre Güral',pos:'CM',r:60},{n:'Stef Peeters',pos:'CM',r:62},
+    {n:'Youness Mokhtar',pos:'CAM',r:64},{n:'Emre Güral',pos:'RAM',r:60},
+    {n:'Youness Mokhtar',pos:'RW',r:64},{n:'İlhan Parlak',pos:'LW',r:62},
+    {n:'İlhan Parlak',pos:'ST',r:64},{n:'Youness Mokhtar',pos:'ST',r:64},{n:'Emre Güral',pos:'ST',r:60}
+  ]},
+  {id:'kayserispor1213',name:'Kayserispor',season:'2012/13',decade:'2010s',tier:'mid',col:'#cc0000',strength:60,predicted:8,players:[
+    {n:'Serkan Kırıntılı',pos:'GK',r:68},{n:'Batuhan Karadeniz',pos:'GK',r:56},
+    {n:'Mehmet Akgün',pos:'RB',r:62},{n:'Aydın Yılmaz',pos:'RB',r:60},
+    {n:'Aydın Yılmaz',pos:'CB',r:60},{n:'Hasan Kabze',pos:'CB',r:64},{n:'Mehmet Akgün',pos:'CB',r:62},
+    {n:'Hasan Kabze',pos:'LB',r:64},{n:'Mehmet Akgün',pos:'LWB',r:62},
+    {n:'Erkan Zengin',pos:'CDM',r:66},{n:'Mert Nobre',pos:'CDM',r:62},
+    {n:'Erkan Zengin',pos:'CM',r:66},{n:'Mert Nobre',pos:'CM',r:62},
+    {n:'Erkan Zengin',pos:'CAM',r:68},{n:'Erkan Zengin',pos:'RAM',r:68},
+    {n:'Erkan Zengin',pos:'RW',r:68},{n:'Mert Nobre',pos:'LW',r:62},
+    {n:'Hasan Kabze',pos:'ST',r:66},{n:'Mert Nobre',pos:'ST',r:64},{n:'Erkan Zengin',pos:'ST',r:68}
+  ]},
+  {id:'sivasspor1617',name:'Sivasspor',season:'2016/17',decade:'2010s',tier:'mid',col:'#cc0000',strength:60,predicted:8,players:[
+    {n:'Muammer Yıldırım',pos:'GK',r:68},{n:'Hakan Arıkan',pos:'GK',r:58},
+    {n:'Caner Oskay',pos:'RB',r:60},{n:'Ahmet Oğuz',pos:'RB',r:58},
+    {n:'Uğur Çiftçi',pos:'CB',r:62},{n:'Caner Oskay',pos:'CB',r:60},{n:'Mehmet Yıldız',pos:'CB',r:60},
+    {n:'Mehmet Yıldız',pos:'LB',r:60},{n:'Caner Oskay',pos:'LWB',r:60},
+    {n:'Mert Hakan Yandaş',pos:'CDM',r:66},{n:'Emre Kılınç',pos:'CDM',r:62},
+    {n:'Emre Kılınç',pos:'CM',r:62},{n:'Mert Hakan Yandaş',pos:'CM',r:66},
+    {n:'Emre Kılınç',pos:'CAM',r:64},{n:'Mustapha Yatabaré',pos:'RAM',r:62},
+    {n:'Mustapha Yatabaré',pos:'RW',r:62},{n:'Yasin Öztekin',pos:'LW',r:60},
+    {n:'Mustapha Yatabaré',pos:'ST',r:66},{n:'Emre Kılınç',pos:'ST',r:64},{n:'Erdoğan Yeşilyurt',pos:'ST',r:58}
+  ]},
+  {id:'gaziantep9293',name:'Gaziantepspor',season:'1992/93',decade:'1990s',tier:'lower',col:'#cc0000',strength:50,predicted:15,players:[
+    {n:'Hüseyin Özkan',pos:'GK',r:62},{n:'Kemal Özgüler',pos:'GK',r:54},
+    {n:'Ahmet Çelik',pos:'RB',r:56},{n:'Mehmet Kara',pos:'RB',r:54},
+    {n:'Ahmet Çelik',pos:'CB',r:56},{n:'Kemal Can',pos:'CB',r:54},{n:'Mehmet Kara',pos:'CB',r:54},
+    {n:'Kemal Can',pos:'LB',r:54},{n:'Ahmet Çelik',pos:'LWB',r:56},
+    {n:'İbrahim Yılmaz',pos:'CDM',r:56},{n:'Özkan Demir',pos:'CDM',r:54},
+    {n:'İbrahim Yılmaz',pos:'CM',r:56},{n:'Özkan Demir',pos:'CM',r:54},
+    {n:'Özkan Demir',pos:'CAM',r:56},{n:'Murat Arslan',pos:'RAM',r:56},
+    {n:'Murat Arslan',pos:'RW',r:56},{n:'Ali Yıldız',pos:'LW',r:54},
+    {n:'Murat Arslan',pos:'ST',r:58},{n:'Ali Yıldız',pos:'ST',r:54},{n:'Hüseyin Tunca',pos:'ST',r:56}
+  ]},
+  {id:'denizlispor0102',name:'Denizlispor',season:'2001/02',decade:'2000s',tier:'mid',col:'#cc3300',strength:58,predicted:9,players:[
+    {n:'Çetin Köse',pos:'GK',r:66},{n:'Ercan Boyraz',pos:'GK',r:56},
+    {n:'Hüseyin Yücel',pos:'RB',r:60},{n:'Ercan Boyraz',pos:'RB',r:58},
+    {n:'Hüseyin Yücel',pos:'CB',r:60},{n:'Ünal Karaman',pos:'CB',r:62},{n:'Sercan Yıldırım',pos:'CB',r:58},
+    {n:'Sercan Yıldırım',pos:'LB',r:58},{n:'Hüseyin Yücel',pos:'LWB',r:60},
+    {n:'Ünal Karaman',pos:'CDM',r:62},{n:'Mert Korkmaz',pos:'CDM',r:58},
+    {n:'Ünal Karaman',pos:'CM',r:62},{n:'Mert Korkmaz',pos:'CM',r:58},
+    {n:'Metin Aktaş',pos:'CAM',r:64},{n:'Arif Erdem',pos:'RAM',r:68},
+    {n:'Arif Erdem',pos:'RW',r:68},{n:'Metin Aktaş',pos:'LW',r:64},
+    {n:'Arif Erdem',pos:'ST',r:70},{n:'Metin Aktaş',pos:'ST',r:64},{n:'Ünal Karaman',pos:'ST',r:60}
+  ]},
+  {id:'gencler1112',name:'Gençlerbirliği',season:'2011/12',decade:'2010s',tier:'mid',col:'#cc0000',strength:58,predicted:10,players:[
+    {n:'Serkan Kırıntılı',pos:'GK',r:68},{n:'Ahmet Şahin',pos:'GK',r:56},
+    {n:'Mustafa Yumlu',pos:'RB',r:62},{n:'Bülent Uygun',pos:'RB',r:58},
+    {n:'Bülent Uygun',pos:'CB',r:58},{n:'İsmail Köybaşı',pos:'CB',r:62},{n:'Ali Turan',pos:'CB',r:60},
+    {n:'Ali Turan',pos:'LB',r:60},{n:'Mustafa Yumlu',pos:'LWB',r:62},
+    {n:'Mert Hakan Yandaş',pos:'CDM',r:62},{n:'Emre Güral',pos:'CDM',r:60},
+    {n:'Emre Güral',pos:'CM',r:60},{n:'Mert Hakan Yandaş',pos:'CM',r:62},
+    {n:'Youness Mokhtar',pos:'CAM',r:64},{n:'Emre Güral',pos:'RAM',r:60},
+    {n:'Youness Mokhtar',pos:'RW',r:64},{n:'İlhan Parlak',pos:'LW',r:60},
+    {n:'İlhan Parlak',pos:'ST',r:62},{n:'Youness Mokhtar',pos:'ST',r:64},{n:'Emre Güral',pos:'ST',r:60}
+  ]},
+  {id:'basak2324',name:'İst. Başakşehir',season:'2023/24',decade:'2020s',tier:'mid',col:'#ff8c00',strength:66,predicted:5,players:[
+    {n:'Mert Günok',pos:'GK',r:76},{n:'İrfan Can Eğribayat',pos:'GK',r:68},
+    {n:'Rafael',pos:'RB',r:72},{n:'Ridvan Yılmaz',pos:'RB',r:68},
+    {n:'Wielaard',pos:'CB',r:68},{n:'Léo Duarte',pos:'CB',r:70},{n:'Gaël Clichy',pos:'CB',r:66},
+    {n:'Gaël Clichy',pos:'LB',r:66},{n:'Ridvan Yılmaz',pos:'LWB',r:68},
+    {n:'Mahmut Tekdemir',pos:'CDM',r:70},{n:'Salih Uçan',pos:'CDM',r:68},
+    {n:'İrfan Can Kahveci',pos:'CM',r:76},{n:'Salih Uçan',pos:'CM',r:68},
+    {n:'Edin Visca',pos:'CAM',r:74},{n:'İrfan Can Kahveci',pos:'RAM',r:76},
+    {n:'Edin Visca',pos:'RW',r:74},{n:'Robinho',pos:'LW',r:66},
+    {n:'Demba Ba',pos:'ST',r:68},{n:'Robinho',pos:'ST',r:66},{n:'Mehmet Yıldız',pos:'ST',r:62}
+  ]},
+  {id:'hatayspor2223',name:'Hatayspor',season:'2022/23',decade:'2020s',tier:'mid',col:'#cc3300',strength:62,predicted:7,players:[
+    {n:'Muammer Yıldırım',pos:'GK',r:70},{n:'Rafał Gikiewicz',pos:'GK',r:64},
+    {n:'Mert Çelik',pos:'RB',r:64},{n:'Tarik Tissoudali',pos:'RB',r:62},
+    {n:'Mert Çelik',pos:'CB',r:64},{n:'Lucas',pos:'CB',r:66},{n:'Ali Turan',pos:'CB',r:62},
+    {n:'Ali Turan',pos:'LB',r:62},{n:'Mert Çelik',pos:'LWB',r:64},
+    {n:'Mert Hakan Yandaş',pos:'CDM',r:68},{n:'Emre Kılınç',pos:'CDM',r:64},
+    {n:'Emre Kılınç',pos:'CM',r:64},{n:'Mert Hakan Yandaş',pos:'CM',r:68},
+    {n:'Frederic Ananou',pos:'CAM',r:68},{n:'Tarik Tissoudali',pos:'RAM',r:64},
+    {n:'Tarik Tissoudali',pos:'RW',r:64},{n:'Frederic Ananou',pos:'LW',r:68},
+    {n:'Florent Ogier',pos:'ST',r:68},{n:'Frederic Ananou',pos:'ST',r:68},{n:'Emre Kılınç',pos:'ST',r:64}
+  ]},
+  {id:'eyupspor2425',name:'Eyüpspor',season:'2024/25',decade:'2020s',tier:'mid',col:'#cc3300',strength:60,predicted:9,players:[
+    {n:'Dario Krešić',pos:'GK',r:68},{n:'Recep Nane',pos:'GK',r:56},
+    {n:'Onyekuru',pos:'RB',r:66},{n:'Mert Müldür',pos:'RB',r:64},
+    {n:'Mert Müldür',pos:'CB',r:64},{n:'Bojan Marjanović',pos:'CB',r:62},{n:'Onyekuru',pos:'CB',r:64},
+    {n:'Onyekuru',pos:'LB',r:66},{n:'Mert Müldür',pos:'LWB',r:64},
+    {n:'Nicolás Freire',pos:'CDM',r:62},{n:'Bojan Marjanović',pos:'CDM',r:60},
+    {n:'Nicolás Freire',pos:'CM',r:62},{n:'Bojan Marjanović',pos:'CM',r:60},
+    {n:'Henry Onyekuru',pos:'CAM',r:68},{n:'Henry Onyekuru',pos:'RAM',r:68},
+    {n:'Henry Onyekuru',pos:'RW',r:68},{n:'Onyekuru',pos:'LW',r:66},
+    {n:'Mahir Emreli',pos:'ST',r:70},{n:'Onyekuru',pos:'ST',r:66},{n:'Nicolás Freire',pos:'ST',r:62}
   ]}
 ];
-
 const OTHER_CLUBS=['Galatasaray','Fenerbahçe','Beşiktaş','Trabzonspor','Bursaspor','İst. Başakşehir','Sivasspor','Kayserispor','Konyaspor','Gençlerbirliği','Alanyaspor','Kasımpaşa','Adana Demirspor','Eskişehirspor','Samsunspor','Antalyaspor','Çaykur Rizespor','Gaziantep FK'];
 const MY_TEAM='Süper XI';
+
+// All-time peak ratings (auto-computed from TEAMS data)
+const PEAK_RATINGS = {};
+TEAMS.forEach(team => {
+  team.players.forEach(p => {
+    if (!PEAK_RATINGS[p.n] || p.r > PEAK_RATINGS[p.n]) {
+      PEAK_RATINGS[p.n] = p.r;
+    }
+  });
+});
+function getPlayerRating(p) {
+  if (G.ratingMode === 'peak') return PEAK_RATINGS[p.n] || p.r;
+  return p.r;
+}
+
 const TIER_STYLES={
   elite:{label:'Elite',bg:'#1a4a2e',color:'#fff'},
   good:{label:'Strong',bg:'#2a6a42',color:'#fff'},
@@ -1306,7 +1658,7 @@ const TIER_STYLES={
 };
 let G={
   mode:'position',formation:'4-3-3',slots:[],filled:{},
-  showRatings:true,selectedTeam:null,
+  showRatings:true,ratingMode:'season',selectedTeam:null,
   currentSlot:null,chosenPlayer:null,slotOptions:null,
   spinning:false,respinsLeft:3,recentTeams:[],
   table:[],schedule:[],matchIdx:0,simRunning:false,simTimer:null,
@@ -1322,12 +1674,13 @@ function calcOverall(){
   const bySlot={att:[],mid:[],def:[],gk:[]};
   Object.entries(G.filled).forEach(([i,p])=>{
     const pos=G.slots[i].pos;
-    if(pos==='GK')bySlot.gk.push(p.r);
-    else if(ATT_POS.has(pos))bySlot.att.push(p.r);
-    else if(MID_POS.has(pos))bySlot.mid.push(p.r);
-    else bySlot.def.push(p.r);
+    const r=p._displayR||p.r;
+    if(pos==='GK')bySlot.gk.push(r);
+    else if(ATT_POS.has(pos))bySlot.att.push(r);
+    else if(MID_POS.has(pos))bySlot.mid.push(r);
+    else bySlot.def.push(r);
   });
-  const all=players.map(p=>p.r);
+  const all=players.map(p=>p._displayR||p.r);
   const ov=avg(all)||0,a=avg(bySlot.att),m=avg(bySlot.mid),d=avg(bySlot.def),g=avg(bySlot.gk);
   const pct=v=>v?Math.round((v-50)/50*100):0;
   return{overall:ov,att:a||'—',mid:m||'—',def:d||'—',gk:g||'—',attPct:pct(a),midPct:pct(m),defPct:pct(d),gkPct:pct(g)};
@@ -1367,7 +1720,7 @@ function drawPitch(svgId){
         <circle cx="${sl.x}" cy="${sl.y}" r="24" fill="rgba(255,255,255,0.93)" stroke="white" stroke-width="1.5"/>
         <text x="${sl.x}" y="${sl.y-7}" text-anchor="middle" fill="#1a4a2e" font-size="7.5" font-weight="700" font-family="Oswald" letter-spacing=".8">${sl.pos}</text>
         <text x="${sl.x}" y="${sl.y+3}" text-anchor="middle" fill="#111" font-size="8" font-family="Oswald" font-weight="500">${short(f.n,9)}</text>
-        ${G.showRatings?`<text x="${sl.x}" y="${sl.y+13}" text-anchor="middle" fill="#c8922a" font-size="7.5" font-family="Oswald" font-weight="700">${f.r}</text>`:''}
+        ${G.showRatings?`<text x="${sl.x}" y="${sl.y+13}" text-anchor="middle" fill="#c8922a" font-size="7.5" font-family="Oswald" font-weight="700">${f._displayR||f.r}</text>`:''}
       </g>`;
     } else if(isCur){
       h+=`<g>
@@ -1407,12 +1760,18 @@ $('btn-spin').addEventListener('click',()=>{
   $('btn-spin').disabled=true;
   $('btn-lock').classList.remove('on');
   $('btn-respin').classList.remove('on');
+  // If position mode and a pos is selected, filter to teams that can fill that pos
+  const targetPos = (G.mode==='position' && G.currentPickPos) ? G.currentPickPos : null;
   const openPosSet=new Set(G.slots.filter((_,i)=>!G.filled[i]).map(s=>s.pos));
   function teamCanFillAny(team){
     const usedNames=new Set(Object.values(G.filled).map(p=>p.n));
     const seen=new Set();
     const pool=team.players.filter(p=>{if(seen.has(p.n))return false;seen.add(p.n);return true;})
       .filter(p=>!usedNames.has(p.n));
+    if(targetPos){
+      const compat=POS_COMPAT[targetPos]||[targetPos];
+      return pool.some(p=>{const pc=POS_COMPAT[p.pos]||[p.pos];return compat.some(tp=>pc.includes(tp));});
+    }
     return pool.some(p=>{const compat=POS_COMPAT[p.pos]||[p.pos];return[...openPosSet].some(op=>compat.includes(op));});
   }
   const WEIGHTS={elite:2,good:3,mid:3,lower:2};
@@ -1564,14 +1923,17 @@ $('btn-respin').addEventListener('click',()=>{
         else $('btn-respin').classList.remove('on');
       }
     })(performance.now());
-  } else {renderPlayerTable();drawPitch('pitch-svg');}
+  }
 });
 function setupTog(id,cb){
   const el=$(id);
   el.parentElement.addEventListener('click',()=>{const on=el.classList.toggle('on');cb(on);});
 }
-setupTog('rat-tog',on=>{G.showRatings=on;});
-setupTog('rat-tog-d',on=>{G.showRatings=on;drawPitch('pitch-svg');renderPlayerTable();document.querySelectorAll('.pt-rat-num').forEach(el=>{el.classList.toggle('hidden',!on);});});
+setupTog('rat-tog',on=>{ /* pro mode toggle — actual G.showRatings set at game start */
+  const tip=document.getElementById('promode-tip');
+  if(tip)tip.style.display=on?'block':'none';
+});
+// mid-game rating toggle removed — set at start screen only
 function showSpinner(){
   $('spinner-panel').classList.remove('hidden');
   $('player-panel').classList.add('hidden');
@@ -1592,55 +1954,95 @@ function revealTeam(team){
   tier.textContent=ts.label;tier.style.background=ts.bg;tier.style.color=ts.color;
   tr.classList.remove('hidden');
 }
-$('mode-grid').addEventListener('click',e=>{
-  const c=e.target.closest('.mode-card');if(!c)return;
-  document.querySelectorAll('.mode-card').forEach(x=>x.classList.remove('sel'));
-  c.classList.add('sel');G.mode=c.dataset.m;checkStart();
+$('rating-mode-grid').addEventListener('click',e=>{
+  const c=e.target.closest('.mode-card');if(!c||!c.dataset.rm)return;
+  document.querySelectorAll('#rating-mode-grid .mode-card').forEach(x=>x.classList.remove('sel'));
+  c.classList.add('sel');G.ratingMode=c.dataset.rm;
 });
+// Pro mode toggle tip
+document.getElementById('rat-tog').parentElement.addEventListener('click',()=>{
+  const on=document.getElementById('rat-tog').classList.contains('on');
+  const tip=document.getElementById('promode-tip');
+  if(tip)tip.style.display=on?'block':'none';
+});
+// mode-grid removed — always position-first
 $('formations').addEventListener('click',e=>{
   const b=e.target.closest('.f-btn');if(!b)return;
   document.querySelectorAll('.f-btn').forEach(x=>x.classList.remove('sel'));
   b.classList.add('sel');G.formation=b.dataset.f;checkStart();
 });
-function checkStart(){$('btn-start').classList.toggle('on',!!(G.mode&&G.formation));}
+function checkStart(){$('btn-start').classList.toggle('on',!!G.formation);}
 $('btn-start').addEventListener('click',()=>{
+  G.mode='position'; // always position-first
   G.slots=JSON.parse(JSON.stringify(FORMATIONS[G.formation].slots));
   G.filled={};G.currentSlot=null;G.chosenPlayer=null;G.respinsLeft=3;G.slotOptions=null;
-  G.goalscorers={};G.predictedPos=null;G.selectedTeam=null;
-  $('rat-tog-d').className='tog'+(G.showRatings?' on':'');
+  G.goalscorers={};G.predictedPos=null;G.selectedTeam=null;G.currentPickPos=null;
+  // Rating mode from intro selection
+  const rmSel=document.querySelector('#rating-mode-grid .mode-card.sel');
+  if(rmSel)G.ratingMode=rmSel.dataset.rm||'season';
+  // Show ratings setting
+  G.showRatings=!document.getElementById('rat-tog').classList.contains('on'); // tog on = hide ratings
+  
   updateDraftProg();drawPitch('pitch-svg');updateOverallBox();
   $('player-table').innerHTML='';
   $('btn-lock').classList.remove('on');$('btn-respin').classList.remove('on');
   if(G.mode==='position'){
     $('wheel-zone').style.display='';
     $('team-zone').style.cssText='display:none';
-    $('btn-spin').disabled=false;
+    $('btn-spin').disabled=true; // disabled until position picked
+    // Build position selector
+    const posZone=$('pos-selector-zone');
+    posZone.style.display='';
+    const grid=$('pos-btn-grid');
+    grid.innerHTML='';
+    G.currentPickPos=null;
+    function updateOpenPosBtns(){
+      const openPos=new Set(G.slots.filter((_,i)=>!G.filled[i]).map(s=>s.pos));
+      grid.innerHTML='';
+      // Group positions by line
+      const groups=[
+        {label:'GK', positions:['GK']},
+        {label:'DEF', positions:['RB','RWB','CB','LWB','LB']},
+        {label:'MID', positions:['CDM','RM','CM','LM','CAM','RAM','LAM']},
+        {label:'ATT', positions:['RW','ST','LW']}
+      ];
+      groups.forEach(group=>{
+        const available=group.positions.filter(p=>openPos.has(p));
+        if(!available.length)return;
+        const row=document.createElement('div');
+        row.style.cssText='display:flex;align-items:center;gap:6px;width:100%;margin-bottom:4px';
+        const lbl=document.createElement('div');
+        lbl.style.cssText='font-size:9px;letter-spacing:2px;color:var(--text3);font-weight:700;width:28px;flex-shrink:0;text-align:right';
+        lbl.textContent=group.label;
+        row.appendChild(lbl);
+        const btnWrap=document.createElement('div');
+        btnWrap.style.cssText='display:flex;gap:5px;flex-wrap:wrap';
+        available.forEach(pos=>{
+          const btn=document.createElement('button');
+          btn.className='slot-pick-btn'+(G.currentPickPos===pos?' active':'');
+          btn.textContent=pos;
+          btn.style.cssText='font-size:11px;font-weight:700;letter-spacing:1px;padding:8px 14px;border-radius:0;min-width:52px';
+          btn.addEventListener('click',()=>{
+            G.currentPickPos=pos;
+            $('spin-eyebrow-txt').textContent='2. SPIN FOR A '+pos+' →';
+            $('btn-spin').disabled=false;
+            grid.querySelectorAll('.slot-pick-btn').forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active');
+          });
+          btnWrap.appendChild(btn);
+        });
+        row.appendChild(btnWrap);
+        grid.appendChild(row);
+      });
+    }
+    updateOpenPosBtns();
+    G._updateOpenPosBtns=updateOpenPosBtns;
     initSlot();setRightHeader();showSpinner();
-  } else {
-    $('wheel-zone').style.display='none';
-    const tz=$('team-zone');tz.style.cssText='display:flex;flex:1;flex-direction:column;overflow:hidden';
-    buildTeamList('');setRightHeader();showSpinner();
   }
   show('s-draft');
 });
-$('era-filter').addEventListener('change',e=>buildTeamList(e.target.value));
-function buildTeamList(dec){
-  const list=$('team-list');list.innerHTML='';
-  (dec?TEAMS.filter(t=>t.decade===dec):TEAMS).forEach(t=>{
-    const ts=TIER_STYLES[t.tier];
-    const d=document.createElement('div');d.className='team-card'+(G.selectedTeam&&G.selectedTeam.id===t.id?' sel':'');
-    d.innerHTML=`<div class="tc-badge" style="background:${t.col}">${t.name.slice(0,3).toUpperCase()}</div>
-      <div class="tc-info"><div class="tc-name">${t.name}</div><div class="tc-season">${t.season}</div></div>
-      <div class="tc-tier" style="background:${ts.bg};color:${ts.color}">${ts.label}</div>`;
-    d.addEventListener('click',()=>{
-      document.querySelectorAll('.team-card').forEach(c=>c.classList.remove('sel'));
-      d.classList.add('sel');
-      G.selectedTeam=t;G.predictedPos=t.predicted;
-      setRightHeader();renderPlayerTable();showPlayers();
-    });
-    list.appendChild(d);
-  });
-}
+// era-filter removed
+// buildTeamList removed — squad-first mode eliminated
 function ordinal(n){const s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
 function setRightHeader(){
   const t=G.selectedTeam;
@@ -1674,9 +2076,14 @@ function renderPlayerTable(){
   }
   const usedNames=new Set(Object.values(G.filled).map(p=>p.n));
   const seen=new Set();
+  const POS_ORDER=['GK','RB','RWB','CB','LWB','LB','CDM','CM','RM','LM','CAM','RAM','LAM','RW','LW','ST'];
   const pool=G.selectedTeam.players
     .filter(p=>{if(seen.has(p.n))return false;seen.add(p.n);return true;})
-    .sort((a,b)=>b.r-a.r);
+    .sort((a,b)=>{
+      const ai=POS_ORDER.indexOf(a.pos),bi=POS_ORDER.indexOf(b.pos);
+      if(ai!==bi)return(ai===-1?99:ai)-(bi===-1?99:bi);
+      return b.r-a.r;
+    });
   pool.forEach(p=>{
     const alreadyUsed=usedNames.has(p.n);
     const openSlots=compatibleSlots(p.pos);
@@ -1698,9 +2105,10 @@ function renderPlayerTable(){
     } else {
       badgeHtml=`<span class="pos-badge used-badge">✓</span>`;
     }
+    const displayR = getPlayerRating(p);
     row.innerHTML=`
       <div class="pt-rat-badge ${posColClass}">
-        <span class="pt-rat-num${G.showRatings?'':' hidden'}">${p.r}</span>
+        <span class="pt-rat-num${G.showRatings?'':' hidden'}">${displayR}</span>
       </div>
       <div class="pt-player-info">
         <div class="pt-name">${p.n}</div>
@@ -1758,6 +2166,7 @@ function showSlotPicker(openSlots){
 $('btn-lock').addEventListener('click',()=>{
   if(!G.chosenPlayer||G.currentSlot===null)return;
   document.querySelector('.slot-picker')?.remove();
+  G.chosenPlayer._displayR = getPlayerRating(G.chosenPlayer);
   G.filled[G.currentSlot]=G.chosenPlayer;
   G.currentSlot=null;G.chosenPlayer=null;G.slotOptions=null;
   $('btn-lock').classList.remove('on');
@@ -1768,9 +2177,12 @@ $('btn-lock').addEventListener('click',()=>{
     $('btn-respin').textContent=`↻ RE-SPIN${rLabel}`;
     if(G.respinsLeft>0)$('btn-respin').classList.add('on');
     else $('btn-respin').classList.remove('on');
-    $('btn-spin').disabled=false;
+    G.currentPickPos=null;
+    $('btn-spin').disabled=true; // force position selection
     G.selectedTeam=null;setRightHeader();showSpinner();initSlot();
-  } else {showPlayers();}
+    if(G._updateOpenPosBtns)G._updateOpenPosBtns();
+    $('spin-eyebrow-txt').textContent='SPIN TO GET A TEAM';
+  }
   renderPlayerTable();
 });
 function updateDraftProg(){const el=$('draft-prog');if(el)el.textContent=`${Object.keys(G.filled).length} / ${G.slots.length}`;}
@@ -1804,7 +2216,7 @@ function goToSquad(){
 $('btn-simulate').addEventListener('click',startSeason);
 $('btn-reset-squad').addEventListener('click',resetAll);
 function myStrength(){
-  const vals=Object.values(G.filled).map(p=>p.r);
+  const vals=Object.values(G.filled).map(p=>p._displayR||p.r);
   const a=vals.reduce((x,y)=>x+y,0)/vals.length;
   if(a>=90)return Math.round(88+(a-90)*1.4);
   if(a>=80)return Math.round(74+(a-80)*1.4);
@@ -2010,11 +2422,24 @@ function showResult(){
   let squadCard=`<div class="res-card"><div class="res-card-title">YOUR SÜPER XI</div>`;
   G.slots.forEach((sl,i)=>{
     const p=G.filled[i];if(!p)return;
-    squadCard+=`<div class="res-player"><div class="res-player-pos">${sl.pos}</div><div class="res-player-name">${p.n}</div>${G.showRatings?`<div class="res-player-rat">${p.r}</div>`:''}</div>`;
+    squadCard+=`<div class="res-player"><div class="res-player-pos">${sl.pos}</div><div class="res-player-name">${p.n}</div><div class="res-player-rat">${p._displayR||p.r}</div></div>`;
   });
   squadCard+=`</div>`;
   $('res-body').innerHTML=posCard+scorerCard+squadCard;
   $('res-msg').textContent=msg;
+  // Build season summary bar
+  const{overall:ov2,att:att2,mid:mid2,def:def2,gk:gk2}=calcOverall();
+  const existingSummary=document.getElementById('res-squad-summary');
+  if(existingSummary)existingSummary.remove();
+  const summaryDiv=document.createElement('div');
+  summaryDiv.id='res-squad-summary';
+  summaryDiv.style.cssText='display:flex;gap:24px;justify-content:center;flex-wrap:wrap;background:var(--card);border:2px solid var(--bg3);padding:14px 20px;max-width:500px;width:100%;animation:up .4s .72s both';
+  summaryDiv.innerHTML=`<div style="text-align:center"><div style="font-size:36px;font-weight:700;color:var(--green)">${ov2}</div><div style="font-size:9px;letter-spacing:3px;color:var(--text3);margin-top:3px">SQUAD OVR</div></div>
+    <div style="text-align:center"><div style="font-size:24px;font-weight:700;color:var(--green)">${att2}</div><div style="font-size:9px;letter-spacing:3px;color:var(--text3);margin-top:3px">ATT</div></div>
+    <div style="text-align:center"><div style="font-size:24px;font-weight:700;color:var(--green)">${mid2}</div><div style="font-size:9px;letter-spacing:3px;color:var(--text3);margin-top:3px">MID</div></div>
+    <div style="text-align:center"><div style="font-size:24px;font-weight:700;color:var(--green)">${def2}</div><div style="font-size:9px;letter-spacing:3px;color:var(--text3);margin-top:3px">DEF</div></div>
+    <div style="text-align:center"><div style="font-size:24px;font-weight:700;color:var(--green)">${gk2}</div><div style="font-size:9px;letter-spacing:3px;color:var(--text3);margin-top:3px">GK</div></div>`;
+  $('res-msg').after(summaryDiv);
   show('s-result');
   if(L===0&&D===0)confetti();
 }
@@ -2124,7 +2549,7 @@ $('btn-share').addEventListener('click',()=>{
 });
 function resetAll(){
   if(G.simTimer)clearTimeout(G.simTimer);
-  G={mode:'position',formation:'4-3-3',slots:[],filled:{},showRatings:true,selectedTeam:null,currentSlot:null,chosenPlayer:null,slotOptions:null,spinning:false,respinsLeft:3,recentTeams:[],table:[],schedule:[],matchIdx:0,simRunning:false,simTimer:null,goalscorers:{},predictedPos:null};
+  G={mode:'position',formation:'4-3-3',slots:[],filled:{},showRatings:G.showRatings,ratingMode:G.ratingMode||'season',selectedTeam:null,currentSlot:null,chosenPlayer:null,slotOptions:null,spinning:false,respinsLeft:3,recentTeams:[],table:[],schedule:[],matchIdx:0,simRunning:false,simTimer:null,goalscorers:{},predictedPos:null};
   document.querySelectorAll('.f-btn,.mode-card').forEach(b=>b.classList.remove('sel'));
   $('btn-start').classList.remove('on');
   $('rat-tog').classList.add('on');
