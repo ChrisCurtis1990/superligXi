@@ -309,6 +309,14 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var
   .res-stat-n{font-size:32px}
   #s-result.active{padding:28px 16px 40px;gap:14px}
 }
+
+.faq-item{border-bottom:1px solid var(--bg3);width:100%}
+.faq-q{display:flex;justify-content:space-between;align-items:center;width:100%;background:none;border:none;padding:14px 4px;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:1px;color:var(--text);text-align:left;gap:12px}
+.faq-q:hover{color:var(--green)}
+.faq-icon{font-size:18px;color:var(--gold);flex-shrink:0;transition:transform .2s}
+.faq-a{font-family:var(--serif);font-size:14px;color:var(--text2);line-height:1.7;padding:0 4px 14px;display:none}
+.faq-item.open .faq-a{display:block}
+.faq-item.open .faq-icon{transform:rotate(45deg)}
 </style>
 </head>
 <body>
@@ -366,6 +374,60 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var
     Hide ratings before the game for the best experience — for players who want the ultimate challenge.
   </div>
   <button class="cta" id="btn-start">HADI BAŞLAYALIM →</button>
+
+  <div style="width:100%;max-width:580px;border-top:1px solid var(--bg3);padding-top:20px;margin-top:8px">
+    <div style="font-family:var(--serif);font-style:italic;font-size:12px;color:var(--text3);text-align:center;line-height:1.6;margin-bottom:24px">
+      Süper Lig XI, Türkiye Futbol Federasyonu, Süper Lig veya herhangi bir kulüp ile resmi bir bağlantısı bulunmayan bağımsız bir hayran projesidir. Tüm oyuncu ve kulüp isimleri yalnızca eğlence amaçlı kullanılmıştır.
+      <br><br>
+      Süper Lig XI is an independent fan project with no affiliation to the Turkish Football Federation, Süper Lig, or any football club. All player and club names are used for entertainment purposes only.
+    </div>
+
+    <div style="width:100%">
+      <div style="font-size:11px;letter-spacing:4px;color:var(--text3);font-weight:600;text-align:center;margin-bottom:16px">SSS — SIKÇA SORULAN SORULAR</div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>Süper Lig XI nedir?</span><span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Süper Lig XI, Süper Lig tarihinin her döneminden oyuncuları bir araya getirerek hayalinizdeki 11'i kurduğunuz bir taslak oyunudur. Takımınız tamamlandığında, kadronuzun nasıl performans gösterdiğini görmek için tam bir sezon simülasyonu başlatırsınız.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>Nasıl oynanır?</span><span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Bir pozisyon seçin ya da çarkı çevirerek rastgele bir Süper Lig kulübü ve sezonuna ulaşın. O kadrodan bir oyuncu seçip takımınıza ekleyin. 11'iniz tamamlanana kadar bu adımları tekrarlayın, ardından sezonu simüle edin ve kaç puan kazanabileceğinizi görün.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>Hangi oyuncular ve kulüpler dahil?</span><span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Süper Lig XI, 1990/91 sezonundan günümüze kadar 26 farklı Süper Lig kulübünden 98'den fazla kadro sezonunu kapsamaktadır. Gheorghe Hagi ve Galatasaray 1999/00'dan Victor Osimhen ve Galatasaray 2024/25'e kadar birbirinden farklı dönemlerin oyuncularını aynı kadro içinde birleştirebilirsiniz.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>Ücretsiz mi?</span><span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Evet. Süper Lig XI tamamen ücretsizdir ve tüm modern tarayıcılarda çalışır.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>Süper Lig XI, Fantezi Futbol ile aynı mı?</span><span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Hayır. Fantezi Futbol, gerçek zamanlı oyunculara ve haftalık maç haftalarına dayanır. Süper Lig XI ise Süper Lig tarihine dair bir nostalji oyunudur; herhangi bir dönemden bir kadro kurarak tüm sezonu anında simüle edersiniz.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>Sezon simülasyonu nasıl çalışır?</span><span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Simülasyon, Poisson istatistik modelini kullanır; bu model, gerçek futbol maç sonuçlarını taklit eden bir yöntemdir. Kadronuzun ortalama oyuncu puanı, genel takım gücünü belirler ve bu güç, her rakibin gücüyle karşılaştırılarak beklenen gol sayıları hesaplanır. Daha yüksek puanlı oyuncular daha güçlü bir kadro oluşturur; ancak sürprizler her zaman mümkündür.</div>
+      </div>
+    </div>
+  </div>
 </div>
 <div id="s-draft" class="screen">
   <div class="topbar">
@@ -1079,9 +1141,9 @@ const TEAMS=[
   ]},
   {id:'trabzon2122',name:'Trabzonspor',season:'2021/22',decade:'2020s',tier:'elite',col:'#cc6600',strength:88,predicted:2,players:[
     {n:'Uğurcan Çakır',pos:'GK',r:82},{n:'Saveljich',pos:'GK',r:62},
-    {n:'Vitor Hugo',pos:'RB',r:74},{n:'Anastasios Bakasetas',pos:'RB',r:72},
+    {n:'Vitor Hugo',pos:'RB',r:74},{n:'Anastasios Bakasetas',pos:'RAM',r:72},
     {n:'Marc Bartra',pos:'CB',r:78},{n:'Vitor Hugo',pos:'CB',r:74},{n:'Stefano Denswil',pos:'CB',r:72},
-    {n:'Yusuf Sarı',pos:'LB',r:70},{n:'Savenkov',pos:'LWB',r:66},
+    {n:'Yusuf Sarı',pos:'CM',r:70},{n:'Savenkov',pos:'LWB',r:66},
     {n:'Dorukhan Toköz',pos:'CDM',r:74},{n:'Okay Yokuşlu',pos:'CDM',r:78},
     {n:'Anastasios Bakasetas',pos:'CM',r:78},{n:'Edin Visca',pos:'CM',r:78},
     {n:'Edin Visca',pos:'CAM',r:78},{n:'Majeed Ashimeru',pos:'RAM',r:72},
@@ -1090,9 +1152,9 @@ const TEAMS=[
   ]},
   {id:'trabzon2526',name:'Trabzonspor',season:'2025/26',decade:'2020s',tier:'good',col:'#cc6600',strength:78,predicted:3,players:[
     {n:'Uğurcan Çakır',pos:'GK',r:80},{n:'Saveljich',pos:'GK',r:62},
-    {n:'Vitor Hugo',pos:'RB',r:72},{n:'Anastasios Bakasetas',pos:'RB',r:74},
+    {n:'Vitor Hugo',pos:'RB',r:72},{n:'Anastasios Bakasetas',pos:'RAM',r:74},
     {n:'Marc Bartra',pos:'CB',r:76},{n:'Vitor Hugo',pos:'CB',r:72},{n:'Stefano Denswil',pos:'CB',r:70},
-    {n:'Yusuf Sarı',pos:'LB',r:68},{n:'Anastasios Bakasetas',pos:'LWB',r:74},
+    {n:'Yusuf Sarı',pos:'CM',r:68},{n:'Anastasios Bakasetas',pos:'CAM',r:74},
     {n:'Dorukhan Toköz',pos:'CDM',r:72},{n:'Okay Yokuşlu',pos:'CDM',r:78},
     {n:'Anastasios Bakasetas',pos:'CM',r:78},{n:'Edin Visca',pos:'CM',r:76},
     {n:'Edin Visca',pos:'CAM',r:76},{n:'Majeed Ashimeru',pos:'RAM',r:72},
@@ -1527,7 +1589,7 @@ const TEAMS=[
     {n:'Uğurcan Çakır',pos:'GK',r:80},{n:'Cüneyt Çakır',pos:'GK',r:58},
     {n:'Vitor Hugo',pos:'RB',r:72},{n:'Zeki Yavru',pos:'RB',r:66},
     {n:'Marc Bartra',pos:'CB',r:76},{n:'Vitor Hugo',pos:'CB',r:72},{n:'Serdar Aziz',pos:'CB',r:68},
-    {n:'Yusuf Sarı',pos:'LB',r:66},{n:'Anastasios Bakasetas',pos:'LWB',r:72},
+    {n:'Yusuf Sarı',pos:'CM',r:66},{n:'Anastasios Bakasetas',pos:'CAM',r:72},
     {n:'Dorukhan Toköz',pos:'CDM',r:72},{n:'Okay Yokuşlu',pos:'CDM',r:76},
     {n:'Anastasios Bakasetas',pos:'CM',r:74},{n:'Edin Visca',pos:'CM',r:76},
     {n:'Edin Visca',pos:'CAM',r:76},{n:'Andreas Cornelius',pos:'RAM',r:72},
@@ -2486,6 +2548,13 @@ function confetti(){
   let f=0;(function tick(){cx.clearRect(0,0,cv.width,cv.height);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.rot+=p.rv;if(f>160)p.a=Math.max(0,p.a-.012);cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot*Math.PI/180);cx.globalAlpha=p.a;cx.fillStyle=p.col;cx.fillRect(-p.w/2,-p.h/2,p.w,p.h);cx.restore();});f++;if(f<320)requestAnimationFrame(tick);else cx.clearRect(0,0,cv.width,cv.height);})();
 }
 let darkMode=false;
+
+function toggleFaq(btn){
+  const item=btn.closest('.faq-item');
+  const wasOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));
+  if(!wasOpen)item.classList.add('open');
+}
 function toggleDark(){
   darkMode=!darkMode;
   document.documentElement.setAttribute('data-theme',darkMode?'dark':'');
