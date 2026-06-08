@@ -316,9 +316,21 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var
 <div id="s-intro" class="screen active">
   <div class="intro-badge">Süper Lig · All Eras · 1990–2026</div>
   <div class="intro-logo">SÜPER XI</div>
-  <div class="intro-tagline">Pick your position, spin for a team, build a legendary Süper Lig XI.</div>
+  <div class="intro-tagline">Spin for a team, draft a legendary Süper Lig XI, and conquer a perfect season.</div>
   <div class="intro-divider"></div>
-
+  <div style="width:100%;max-width:540px">
+    <div class="section-label">Choose your draft mode</div>
+    <div class="mode-grid" id="mode-grid">
+      <div class="mode-card sel" data-m="spin">
+        <div class="mode-card-title">SPIN FIRST</div>
+        <div class="mode-card-desc">Spin to get a random team — then pick any player from their squad for any open position.</div>
+      </div>
+      <div class="mode-card" data-m="position">
+        <div class="mode-card-title">POSITION FIRST</div>
+        <div class="mode-card-desc">Pick a position to fill — then spin to get a team that has a player for that slot.</div>
+      </div>
+    </div>
+  </div>
   <div style="width:100%;max-width:540px">
     <div class="section-label">Choose your formation</div>
     <div class="formations" id="formations">
@@ -494,6 +506,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var
   </div>
   <canvas id="share-canvas"></canvas>
 </div>
+
 <script>
 document.querySelectorAll('.mob-tab').forEach(tab => {
   tab.addEventListener('click', () => {
@@ -664,7 +677,7 @@ const TEAMS=[
     {n:'Bengü',pos:'LB',r:65},{n:'Bengü',pos:'LWB',r:65},
     {n:'Badou Ndiaye',pos:'CDM',r:76},{n:'Emre Akbaba',pos:'CDM',r:72},
     {n:'Selçuk İnan',pos:'CM',r:80},{n:'Emre Akbaba',pos:'CM',r:72},
-    {n:'Radamel Falcao',pos:'CAM',r:83},{n:'Ryan Babel',pos:'RAM',r:76},
+    {n:'Radamel Falcao',pos:'ST',r:83},{n:'Ryan Babel',pos:'RAM',r:76},
     {n:'Ryan Babel',pos:'RW',r:76},{n:'Younès Belhanda',pos:'LW',r:76},
     {n:'Radamel Falcao',pos:'ST',r:83},{n:'Eren Derdiyok',pos:'ST',r:70},{n:'Mbaye Diagne',pos:'ST',r:74}
   ]},
@@ -764,7 +777,7 @@ const TEAMS=[
     {n:'Stephen Appiah',pos:'CDM',r:82},{n:'Mehmet Topuz',pos:'CDM',r:72},
     {n:'Mehmet Topuz',pos:'CM',r:72},{n:'Saša Pandža',pos:'CM',r:74},
     {n:'Tuncay Şanlı',pos:'CAM',r:82},{n:'Stéphane Dalmat',pos:'RAM',r:74},
-    {n:'Tuncay Şanlı',pos:'RW',r:82},{n:'Pierre van Hooijdonk',pos:'LW',r:80},
+    {n:'Tuncay Şanlı',pos:'RW',r:82},{n:'Pierre van Hooijdonk',pos:'ST',r:80},
     {n:'Nicolas Anelka',pos:'ST',r:84},{n:'Pierre van Hooijdonk',pos:'ST',r:80},{n:'Tuncay Şanlı',pos:'ST',r:82}
   ]},
   {id:'fener0708',name:'Fenerbahçe',season:'2007/08',decade:'2000s',tier:'elite',col:'#003399',strength:89,predicted:1,players:[
@@ -863,7 +876,7 @@ const TEAMS=[
     {n:'Recep Çetin',pos:'CDM',r:76},{n:'Metin Tekin',pos:'CDM',r:74},
     {n:'Metin Tekin',pos:'CM',r:78},{n:'Recep Çetin',pos:'CM',r:76},
     {n:'Sergen Yalçın',pos:'CAM',r:82},{n:'Gordon Durie',pos:'RAM',r:76},
-    {n:'Gordon Durie',pos:'RW',r:76},{n:'Rıza Çalımbay',pos:'LW',r:72},
+    {n:'Gordon Durie',pos:'RW',r:76},{n:'Rıza Çalımbay',pos:'CM',r:72},
     {n:'Feyyaz Uçar',pos:'ST',r:80},{n:'Gordon Durie',pos:'ST',r:76},{n:'İhsan Hepsev',pos:'ST',r:68}
   ]},
   {id:'besik9293',name:'Beşiktaş',season:'1992/93',decade:'1990s',tier:'elite',col:'#1a1a1a',strength:88,predicted:1,players:[
@@ -973,7 +986,7 @@ const TEAMS=[
     {n:'Atiba Hutchinson',pos:'CDM',r:78},{n:'Necip Uysal',pos:'CDM',r:72},
     {n:'Oguzhan Özyakup',pos:'CM',r:76},{n:'Georges-Kévin Nkoudou',pos:'CM',r:72},
     {n:'Rachid Ghezzal',pos:'CAM',r:74},{n:'Cyle Larin',pos:'RAM',r:74},
-    {n:'Cyle Larin',pos:'RW',r:74},{n:'Georges-Kévin Nkoudou',pos:'LW',r:72},
+    {n:'Cyle Larin',pos:'ST',r:74},{n:'Georges-Kévin Nkoudou',pos:'LW',r:72},
     {n:'Burak Yılmaz',pos:'ST',r:80},{n:'Cyle Larin',pos:'ST',r:74},{n:'Vincent Aboubakar',pos:'ST',r:74}
   ]},
   {id:'besik2324',name:'Beşiktaş',season:'2023/24',decade:'2020s',tier:'good',col:'#1a1a1a',strength:76,predicted:4,players:[
@@ -1138,7 +1151,7 @@ const TEAMS=[
     {n:'Mert Hakan Yandaş',pos:'CDM',r:68},{n:'Emre Kılınç',pos:'CDM',r:66},
     {n:'Emre Kılınç',pos:'CM',r:66},{n:'Mert Hakan Yandaş',pos:'CM',r:68},
     {n:'Emre Kılınç',pos:'CAM',r:68},{n:'Mustapha Yatabaré',pos:'RAM',r:64},
-    {n:'Mustapha Yatabaré',pos:'RW',r:64},{n:'Yasin Öztekin',pos:'LW',r:62},
+    {n:'Mustapha Yatabaré',pos:'ST',r:64},{n:'Yasin Öztekin',pos:'LW',r:62},
     {n:'Mustapha Yatabaré',pos:'ST',r:68},{n:'Emre Kılınç',pos:'ST',r:66},{n:'Erdoğan Yeşilyurt',pos:'ST',r:60}
   ]},
   {id:'kasim1314',name:'Kasımpaşa',season:'2013/14',decade:'2010s',tier:'mid',col:'#cc0000',strength:64,predicted:7,players:[
@@ -1170,7 +1183,7 @@ const TEAMS=[
     {n:'Rodrigues',pos:'LB',r:64},{n:'Yassine Benzia',pos:'LWB',r:66},
     {n:'Tarik Tissoudali',pos:'CDM',r:66},{n:'Emrah Başsan',pos:'CDM',r:62},
     {n:'Emrah Başsan',pos:'CM',r:62},{n:'Tarik Tissoudali',pos:'CM',r:66},
-    {n:'Mario Balotelli',pos:'CAM',r:72},{n:'Yassine Benzia',pos:'RAM',r:66},
+    {n:'Mario Balotelli',pos:'ST',r:72},{n:'Yassine Benzia',pos:'RAM',r:66},
     {n:'Yassine Benzia',pos:'RW',r:66},{n:'Gökdeniz Karadeniz',pos:'LW',r:60},
     {n:'Mario Balotelli',pos:'ST',r:76},{n:'Gökdeniz Karadeniz',pos:'ST',r:62},{n:'Tarik Tissoudali',pos:'ST',r:66}
   ]},
@@ -1225,7 +1238,7 @@ const TEAMS=[
     {n:'Kévin Bérigaud',pos:'LB',r:62},{n:'Luiz Adriano',pos:'LWB',r:62},
     {n:'Franck Signorino',pos:'CDM',r:64},{n:'Hasan Hüseyin Acar',pos:'CDM',r:60},
     {n:'Franck Signorino',pos:'CM',r:64},{n:'Doğukan Sinik',pos:'CM',r:62},
-    {n:'Mbaye Diagne',pos:'CAM',r:68},{n:'Doğukan Sinik',pos:'RAM',r:62},
+    {n:'Mbaye Diagne',pos:'ST',r:68},{n:'Doğukan Sinik',pos:'RAM',r:62},
     {n:'Doğukan Sinik',pos:'RW',r:62},{n:'Gökhan Töre',pos:'LW',r:66},
     {n:'Mbaye Diagne',pos:'ST',r:72},{n:'Luiz Adriano',pos:'ST',r:64},{n:'Gökhan Töre',pos:'ST',r:66}
   ]},
@@ -1349,7 +1362,7 @@ const TEAMS=[
     {n:'Hasan Ali Kaldırım',pos:'LB',r:72},{n:'Caner Erkin',pos:'LWB',r:74},
     {n:'Mehmet Topal',pos:'CDM',r:78},{n:'Raul Meireles',pos:'CDM',r:78},
     {n:'Emre Belözoğlu',pos:'CM',r:80},{n:'Raul Meireles',pos:'CM',r:78},
-    {n:'Moussa Sow',pos:'CAM',r:74},{n:'Nani',pos:'RAM',r:78},
+    {n:'Moussa Sow',pos:'ST',r:74},{n:'Nani',pos:'RAM',r:78},
     {n:'Nani',pos:'RW',r:78},{n:'Miroslav Stoch',pos:'LW',r:68},
     {n:'Pierre-Alain Frau',pos:'ST',r:72},{n:'Moussa Sow',pos:'ST',r:74},{n:'Miroslav Stoch',pos:'ST',r:66}
   ]},
@@ -1461,7 +1474,7 @@ const TEAMS=[
     {n:'Yuto Nagatomo',pos:'LB',r:68},{n:'Bengü',pos:'LWB',r:62},
     {n:'Badou Ndiaye',pos:'CDM',r:74},{n:'Belhanda',pos:'CDM',r:74},
     {n:'Selçuk İnan',pos:'CM',r:80},{n:'Belhanda',pos:'CM',r:74},
-    {n:'Bafétimbi Gomis',pos:'CAM',r:76},{n:'Saracchi',pos:'RAM',r:66},
+    {n:'Bafétimbi Gomis',pos:'ST',r:76},{n:'Saracchi',pos:'RAM',r:66},
     {n:'Feghouli',pos:'RW',r:72},{n:'Nagatomo',pos:'LW',r:68},
     {n:'Bafétimbi Gomis',pos:'ST',r:78},{n:'Feghouli',pos:'ST',r:72},{n:'Selçuk İnan',pos:'ST',r:76}
   ]},
@@ -1472,7 +1485,7 @@ const TEAMS=[
     {n:'Patrick van Aanholt',pos:'LB',r:70},{n:'Bengü',pos:'LWB',r:62},
     {n:'Taylan Antalyalı',pos:'CDM',r:72},{n:'Oghenekaro Etebo',pos:'CDM',r:70},
     {n:'Emre Akbaba',pos:'CM',r:70},{n:'Taylan Antalyalı',pos:'CM',r:72},
-    {n:'Ryan Babel',pos:'CAM',r:72},{n:'Feghouli',pos:'RAM',r:70},
+    {n:'Ryan Babel',pos:'LW',r:72},{n:'Feghouli',pos:'RAM',r:70},
     {n:'Feghouli',pos:'RW',r:70},{n:'Emre Akbaba',pos:'LW',r:70},
     {n:'Radamel Falcao',pos:'ST',r:78},{n:'Mbaye Diagne',pos:'ST',r:70},{n:'Emre Akbaba',pos:'ST',r:68}
   ]},
@@ -1563,7 +1576,7 @@ const TEAMS=[
     {n:'Mert Hakan Yandaş',pos:'CDM',r:66},{n:'Emre Kılınç',pos:'CDM',r:62},
     {n:'Emre Kılınç',pos:'CM',r:62},{n:'Mert Hakan Yandaş',pos:'CM',r:66},
     {n:'Emre Kılınç',pos:'CAM',r:64},{n:'Mustapha Yatabaré',pos:'RAM',r:62},
-    {n:'Mustapha Yatabaré',pos:'RW',r:62},{n:'Yasin Öztekin',pos:'LW',r:60},
+    {n:'Mustapha Yatabaré',pos:'ST',r:62},{n:'Yasin Öztekin',pos:'LW',r:60},
     {n:'Mustapha Yatabaré',pos:'ST',r:66},{n:'Emre Kılınç',pos:'ST',r:64},{n:'Erdoğan Yeşilyurt',pos:'ST',r:58}
   ]},
   {id:'gaziantep9293',name:'Gaziantepspor',season:'1992/93',decade:'1990s',tier:'lower',col:'#cc0000',strength:50,predicted:15,players:[
@@ -1657,7 +1670,7 @@ const TIER_STYLES={
   lower:{label:'Lower Half',bg:'#8a3030',color:'#fff'}
 };
 let G={
-  mode:'position',formation:'4-3-3',slots:[],filled:{},
+  mode:'spin',formation:'4-3-3',slots:[],filled:{},
   showRatings:true,ratingMode:'season',selectedTeam:null,
   currentSlot:null,chosenPlayer:null,slotOptions:null,
   spinning:false,respinsLeft:3,recentTeams:[],
@@ -1856,7 +1869,7 @@ $('btn-respin').addEventListener('click',()=>{
   G.chosenPlayer=null;G.currentSlot=null;
   $('btn-lock').classList.remove('on');
   document.querySelector('.slot-picker')?.remove();
-  if(G.mode==='position'){
+  if(G.mode==='position'||G.mode==='spin'){
     const WEIGHTS2={elite:2,good:3,mid:3,lower:2};
     const recentSet2=new Set(G.recentTeams.slice(-4));
     const openPosSet2=new Set(G.slots.filter((_,i)=>!G.filled[i]).map(s=>s.pos));
@@ -1965,7 +1978,11 @@ document.getElementById('rat-tog').parentElement.addEventListener('click',()=>{
   const tip=document.getElementById('promode-tip');
   if(tip)tip.style.display=on?'block':'none';
 });
-// mode-grid removed — always position-first
+$('mode-grid').addEventListener('click',e=>{
+  const c=e.target.closest('.mode-card');if(!c||!c.dataset.m)return;
+  document.querySelectorAll('#mode-grid .mode-card').forEach(x=>x.classList.remove('sel'));
+  c.classList.add('sel');G.mode=c.dataset.m;
+});
 $('formations').addEventListener('click',e=>{
   const b=e.target.closest('.f-btn');if(!b)return;
   document.querySelectorAll('.f-btn').forEach(x=>x.classList.remove('sel'));
@@ -1973,7 +1990,9 @@ $('formations').addEventListener('click',e=>{
 });
 function checkStart(){$('btn-start').classList.toggle('on',!!G.formation);}
 $('btn-start').addEventListener('click',()=>{
-  G.mode='position'; // always position-first
+  // Read mode from intro selection
+  const mSel=document.querySelector('#mode-grid .mode-card.sel');
+  G.mode=mSel?mSel.dataset.m:'spin';
   G.slots=JSON.parse(JSON.stringify(FORMATIONS[G.formation].slots));
   G.filled={};G.currentSlot=null;G.chosenPlayer=null;G.respinsLeft=3;G.slotOptions=null;
   G.goalscorers={};G.predictedPos=null;G.selectedTeam=null;G.currentPickPos=null;
@@ -1986,9 +2005,16 @@ $('btn-start').addEventListener('click',()=>{
   updateDraftProg();drawPitch('pitch-svg');updateOverallBox();
   $('player-table').innerHTML='';
   $('btn-lock').classList.remove('on');$('btn-respin').classList.remove('on');
-  if(G.mode==='position'){
+  if(G.mode==='spin'){
+    // SPIN FIRST: show slot machine immediately, no position picker needed
     $('wheel-zone').style.display='';
-    $('team-zone').style.cssText='display:none';
+    const posZone=$('pos-selector-zone');
+    if(posZone)posZone.style.display='none';
+    $('spin-eyebrow-txt').textContent='SPIN TO GET A TEAM';
+    $('btn-spin').disabled=false;
+    initSlot();setRightHeader();showSpinner();
+  } else if(G.mode==='position'){
+    $('wheel-zone').style.display='';
     $('btn-spin').disabled=true; // disabled until position picked
     // Build position selector
     const posZone=$('pos-selector-zone');
@@ -2172,7 +2198,15 @@ $('btn-lock').addEventListener('click',()=>{
   $('btn-lock').classList.remove('on');
   drawPitch('pitch-svg');updateDraftProg();updateOverallBox();
   if(Object.keys(G.filled).length===G.slots.length){setTimeout(goToSquad,400);return;}
-  if(G.mode==='position'){
+  if(G.mode==='spin'){
+    // Spin-first: go back to spinner, ready for next spin
+    const rLabel=G.respinsLeft>0?` (${G.respinsLeft})`:'';
+    $('btn-respin').textContent=`↻ RE-SPIN${rLabel}`;
+    if(G.respinsLeft>0)$('btn-respin').classList.add('on');
+    else $('btn-respin').classList.remove('on');
+    $('btn-spin').disabled=false;
+    G.selectedTeam=null;setRightHeader();showSpinner();initSlot();
+  } else if(G.mode==='position'){
     const rLabel=G.respinsLeft>0?` (${G.respinsLeft})`:'';
     $('btn-respin').textContent=`↻ RE-SPIN${rLabel}`;
     if(G.respinsLeft>0)$('btn-respin').classList.add('on');
@@ -2549,13 +2583,18 @@ $('btn-share').addEventListener('click',()=>{
 });
 function resetAll(){
   if(G.simTimer)clearTimeout(G.simTimer);
-  G={mode:'position',formation:'4-3-3',slots:[],filled:{},showRatings:G.showRatings,ratingMode:G.ratingMode||'season',selectedTeam:null,currentSlot:null,chosenPlayer:null,slotOptions:null,spinning:false,respinsLeft:3,recentTeams:[],table:[],schedule:[],matchIdx:0,simRunning:false,simTimer:null,goalscorers:{},predictedPos:null};
+  G={mode:'spin',formation:'4-3-3',slots:[],filled:{},showRatings:G.showRatings,ratingMode:G.ratingMode||'season',selectedTeam:null,currentSlot:null,chosenPlayer:null,slotOptions:null,spinning:false,respinsLeft:3,recentTeams:[],table:[],schedule:[],matchIdx:0,simRunning:false,simTimer:null,goalscorers:{},predictedPos:null};
   document.querySelectorAll('.f-btn,.mode-card').forEach(b=>b.classList.remove('sel'));
   $('btn-start').classList.remove('on');
   $('rat-tog').classList.add('on');
   initSlot();show('s-intro');
 }
 $('btn-again').addEventListener('click',resetAll);
+// Auto-select 4-3-3 on load so button is immediately active
+(function(){
+  const defaultF = document.querySelector('.f-btn[data-f="4-3-3"]');
+  if(defaultF){ defaultF.classList.add('sel'); G.formation='4-3-3'; $('btn-start').classList.add('on'); }
+})();
 </script>
 </body>
 </html>
